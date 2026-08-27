@@ -768,45 +768,60 @@ li.has-hover-img::after {
 <section class="footer fade-in"><h3>The Great Nordic Adventure</h3><p>14 days. 3 countries. 3 generations.</p><p style="margin-top:2em; font-size:0.8rem; color:var(--slate);">September 6&ndash;19, 2026</p></section>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // On a narrow screen the map runs off both sides: sweep it from the
-  // eastern end of the trip to the western one, then hand control over.
+  // On a narrow screen the map runs off both sides. Park it at the eastern end
+  // straight away, then drift west once it comes into view.
   (function () {
     const box = document.querySelector('.map-container');
     if (!box) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let raf = null, stopped = false;
+    let raf = null, taken = false, swept = false;
+
+    function room() { return box.scrollWidth - box.clientWidth; }
+
+    function park() {                       // no animation, no jump: just start there
+      if (taken || swept) return;
+      const max = room();
+      if (max > 24) box.scrollLeft = max;   // Kuopio and Helsinki, where the trip begins
+    }
+    // as early as layout allows, and again once everything has settled
+    requestAnimationFrame(park);
+    window.addEventListener('load', () => requestAnimationFrame(park));
+    window.addEventListener('resize', () => requestAnimationFrame(park), { passive: true });
+
     function release() {
-      stopped = true;
+      taken = true;
       if (raf) cancelAnimationFrame(raf);
       raf = null;
     }
     ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (ev) {
       box.addEventListener(ev, release, { passive: true });
     });
-    function sweep() {
-      const max = box.scrollWidth - box.clientWidth;
-      if (max < 24) return;
-      box.scrollLeft = max;                 // Helsinki and Kuopio: where the trip starts
-      if (reduce || stopped) return;
-      const dur = Math.min(15000, Math.max(7000, max * 24));
+
+    function drift() {
+      if (taken || reduce) return;
+      swept = true;
+      const from = box.scrollLeft;
+      if (from < 24) return;
+      const dur = Math.min(15000, Math.max(7000, from * 24));
       const t0 = performance.now();
       (function step(t) {
-        if (stopped) return;
+        if (taken) return;
         const p = Math.min(1, (t - t0) / dur);
         const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-        box.scrollLeft = max * (1 - e);
+        box.scrollLeft = from * (1 - e);
         if (p < 1) raf = requestAnimationFrame(step);
       })(t0);
     }
+
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { io.disconnect(); setTimeout(sweep, 500); }
+          if (e.isIntersecting) { io.disconnect(); park(); drift(); }
         });
       }, { threshold: 0.4 });
       io.observe(box);
     } else {
-      setTimeout(sweep, 500);
+      drift();
     }
   })();
 
