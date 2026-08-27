@@ -161,9 +161,10 @@ body { background: var(--navy); color: #fff; font-family: 'Inter', sans-serif; o
 }
 .parallax-bg {
   position: absolute;
-  top: -20%; left: 0; right: 0; bottom: -20%;
+  top: -15%; left: 0; right: 0; height: 130%;
   background-size: cover; background-position: center;
-  background-attachment: fixed; z-index: 0;
+  z-index: 0;
+  will-change: transform;
 }
 .day-overlay {
   position: relative; z-index: 1;
@@ -456,9 +457,10 @@ body { background: var(--navy); color: #fff; font-family: 'Inter', sans-serif; o
 }
 .inline-photo-bg {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: -15%; left: 0; right: 0; height: 130%;
   background-size: cover;
   background-position: center;
+  will-change: transform;
 }
 .inline-caption {
   position: absolute;
@@ -491,7 +493,6 @@ body { background: var(--navy); color: #fff; font-family: 'Inter', sans-serif; o
 @media (max-width: 900px) {
   .hero { padding: 0 5vw 6vh; }
   .day-overlay { padding: 3rem 5vw 2rem; }
-  .parallax-bg { background-attachment: scroll; }
   .map-section { padding: 4rem 5vw; }
   .day-content { grid-template-columns: 1fr; }
   .split-images { grid-template-columns: 1fr; }
@@ -575,8 +576,6 @@ body { background: var(--navy); color: #fff; font-family: 'Inter', sans-serif; o
 
   .day-section { min-height: 85vh; }
   .parallax-bg {
-    top: 0; bottom: 0;
-    background-size: cover;
     background-position: center center;
   }
   .day-overlay {
@@ -621,6 +620,13 @@ body { background: var(--navy); color: #fff; font-family: 'Inter', sans-serif; o
   .footer { padding: 3rem 5vw; }
   .footer h3 { font-size: 1.5rem; }
 }
+@media (prefers-reduced-motion: reduce) {
+  .parallax-bg, .inline-photo-bg {
+    transform: none !important;
+    top: 0; height: 100%;
+  }
+}
+
 /* ── Hover image tooltip ── */
 li.has-hover-img {
   cursor: default;
@@ -738,6 +744,36 @@ li.has-hover-img::after {
 <section class="footer fade-in"><h3>The Great Nordic Adventure</h3><p>14 days. 3 countries. 3 generations.</p><p style="margin-top:2em; font-size:0.8rem; color:var(--slate);">September 6&ndash;19, 2026</p></section>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  // Scroll-driven parallax on every full-bleed photo
+  (function () {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    const layers = [...document.querySelectorAll('.parallax-bg, .inline-photo-bg')]
+      .map(el => ({ el, host: el.parentElement }));
+    if (!layers.length) return;
+    const DEPTH = 9;              // percent of the layer's own height
+    let ticking = false;
+    function frame() {
+      ticking = false;
+      const vh = window.innerHeight;
+      for (const { el, host } of layers) {
+        const r = host.getBoundingClientRect();
+        if (r.bottom < -120 || r.top > vh + 120) continue;
+        // -1 when the section sits below the fold, +1 when it has passed above
+        const centre = r.top + r.height / 2;
+        let p = (centre - vh / 2) / (vh / 2 + r.height / 2);
+        if (p < -1) p = -1; else if (p > 1) p = 1;
+        el.style.transform = 'translate3d(0,' + (p * DEPTH).toFixed(2) + '%,0)';
+      }
+    }
+    function onScroll() {
+      if (!ticking) { ticking = true; requestAnimationFrame(frame); }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    frame();
+  })();
+
   // Fade-in on scroll
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
