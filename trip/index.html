@@ -227,6 +227,30 @@ body { background: var(--navy); color: #fff; font-family: 'Inter', sans-serif; o
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
+.skip-current {
+  position: fixed;
+  left: 50%; bottom: 28px;
+  transform: translateX(-50%) translateY(16px);
+  z-index: 500;
+  display: inline-flex; align-items: center; gap: 0.55em;
+  background: rgba(15,27,45,0.92);
+  border: 1px solid rgba(245,166,35,0.55);
+  color: var(--amber);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  padding: 0.65em 1.3em;
+  border-radius: 30px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  backdrop-filter: blur(6px);
+}
+.skip-current.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.skip-current:hover { background: rgba(15,27,45,0.98); }
+.skip-current .pulse-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--amber); animation: current-day-pulse 2.2s ease-in-out infinite; }
 .day-section h2 {
   font-family: 'Playfair Display', serif;
   font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.2em;
@@ -682,6 +706,7 @@ body { background: var(--navy); color: #fff; font-family: 'Inter', sans-serif; o
   .day-subtitle { font-size: 0.95rem; }
   .day-label { font-size: 0.65rem; padding: 0.25em 0.8em; }
   .current-day-badge { font-size: 0.65rem; padding: 0.25em 0.8em 0.25em 0.7em; margin-left: 0.4em; }
+  .skip-current { font-size: 0.7rem; padding: 0.55em 1.1em; bottom: 18px; }
   .weather-pill { font-size: 0.7rem; padding: 0.2em 0.6em; }
   .ancestry-badge, .crew-badge { font-size: 0.7rem; padding: 0.25em 0.8em; }
 
@@ -1113,6 +1138,50 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
   }, { threshold: 0.15 });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // "Jump to Current Day" — surfaces on a fast downward scroll and offers a
+  // shortcut straight to the top of the day-section the trip currently
+  // stands at. Ties to the same badge as the map's pulsing marker, so it
+  // retires itself on its own once that badge is gone at trip's end.
+  (function () {
+    const badge = document.querySelector('.current-day-badge');
+    const target = badge && badge.closest('.day-section');
+    if (!target) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'skip-current';
+    btn.innerHTML = '<span class="pulse-dot"></span>Jump to Current Day';
+    document.body.appendChild(btn);
+
+    const FAST_PX_PER_SEC = 900;
+    let lastY = window.scrollY, lastT = performance.now(), hideTimer = null;
+
+    function targetPassed() { return target.getBoundingClientRect().top <= 0; }
+
+    function show() {
+      if (targetPassed()) return;
+      btn.classList.add('visible');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => btn.classList.remove('visible'), 2600);
+    }
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY, t = performance.now(), dt = t - lastT;
+      if (dt > 40) {
+        const speed = ((y - lastY) / dt) * 1000;   // px/sec, positive = downward
+        lastY = y; lastT = t;
+        if (speed > FAST_PX_PER_SEC) show();
+      }
+      if (targetPassed()) btn.classList.remove('visible');
+    }, { passive: true });
+
+    btn.addEventListener('click', () => {
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      btn.classList.remove('visible');
+    });
+  })();
 
   // Hover image tooltips (desktop hover + mobile tap)
   const tip = document.createElement('div');
