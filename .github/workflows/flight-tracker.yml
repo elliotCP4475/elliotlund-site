@@ -1,0 +1,84 @@
+name: Flight tracker data
+
+# Polls public ADS-B feeds for the two homeward flights and writes trip/data/flight.json
+# so the trip site can show a live position. Only does anything inside the travel window.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: flight-tracker
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check travel window (Fri Sep 18 08:00Z to Sat Sep 19 18:00Z)
+        id: window
+        run: |
+          now=$(date -u +%s)
+          start=$(date -u -d "2026-09-18T08:00:00Z" +%s)
+          end=$(date -u -d "2026-09-19T18:00:00Z" +%s)
+          if [ "$now" -ge "$start" ] && [ "$now" -le "$end" ]; then echo "active=true" >> "$GITHUB_OUTPUT"; else echo "active=false" >> "$GITHUB_OUTPUT"; fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "active=true" >> "$GITHUB_OUTPUT"; fi
+
+      - uses: actions/checkout@v4
+        if: steps.window.outputs.active == 'true'
+
+      - name: Fetch positions
+        if: steps.window.outputs.active == 'true'
+        run: |
+          python3 - <<'PY'
+          import json, time, urllib.request, os
+          path = 'trip/data/flight.json'
+          try:
+              prev = json.load(open(path))
+          except Exception:
+              prev = {"flights": {}}
+          out = {"updated": int(time.time()*1000), "source": "adsb.lol / adsb.fi", "flights": dict(prev.get("flights", {}))}
+          def get(url):
+              req = urllib.request.Request(url, headers={"User-Agent": "elliotlund-trip-site (flight tracker)"})
+              with urllib.request.urlopen(req, timeout=20) as r:
+                  return json.load(r)
+          for cs in ("THY1752", "THY185"):
+              obs = None
+              for base in ("https://api.adsb.lol/v2/callsign/", "https://opendata.adsb.fi/api/v2/callsign/"):
+                  try:
+                      d = get(base + cs)
+                      acs = [a for a in d.get("ac", []) if a.get("lat") is not None]
+                      if acs:
+                          a = acs[0]
+                          alt = a.get("alt_baro")
+                          obs = {
+                              "t": int((d.get("now") or time.time()*1000) - (a.get("seen_pos") or 0)*1000),
+                              "lat": a["lat"], "lon": a["lon"],
+                              "alt": None if alt in (None, "ground") else alt,
+                              "ground": alt == "ground",
+                              "gs": a.get("gs"), "track": a.get("track"),
+                              "hex": a.get("hex"), "reg": a.get("r"), "type": a.get("t"),
+                          }
+                          break
+                  except Exception as e:
+                      print(cs, base, "failed:", e)
+              if obs:
+                  out["flights"][cs] = obs
+                  print(cs, "live:", obs)
+              else:
+                  print(cs, "no live data; keeping last known:", out["flights"].get(cs))
+          os.makedirs(os.path.dirname(path), exist_ok=True)
+          json.dump(out, open(path, "w"), indent=1)
+          PY
+
+      - name: Commit if changed
+        if: steps.window.outputs.active == 'true'
+        run: |
+          git config user.name "flight-tracker[bot]"
+          git config user.email "flight-tracker@users.noreply.github.com"
+          git add trip/data/flight.json
+          if git diff --cached --quiet; then echo "no change"; else git commit -m "flight tracker: update positions" && git push; fi
