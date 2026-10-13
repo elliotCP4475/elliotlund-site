@@ -127,6 +127,23 @@ a{color:var(--lake); font-weight:700}
 .plaque .addr{font-weight:800; font-size:1.25rem; line-height:1.25; margin:2px 0 10px}
 .plaque .row{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
 
+/* ---------- Hanging oval sign ---------- */
+.hang{position:relative; padding-top:34px; margin:0 6px}
+.chain{position:absolute; top:-8px; width:8px; height:80px; z-index:0;
+  background:radial-gradient(ellipse 3px 5px at 50% 50%, transparent 55%, #C8952B 60%, #F6D98A 75%, #8A5D12 90%, transparent 95%) 0 0/8px 9px repeat-y;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.35))}
+.chain.l{left:22%} .chain.r{right:22%}
+.chain::before{content:""; position:absolute; top:-3px; left:-2px; width:12px; height:12px; border-radius:50%; background:radial-gradient(circle at 35% 35%,#fff6d0,#B98521 60%,#6E4A0E)}
+.oval{position:relative; z-index:1; border-radius:50%; padding:34px 42px 38px; text-align:center; color:var(--cream);
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(255,220,170,.14), transparent 60%),
+    repeating-linear-gradient(176deg, rgba(255,255,255,.035) 0 3px, rgba(0,0,0,.09) 3px 6px),
+    linear-gradient(180deg,#6B3F1E,#3B2210);
+  border:4px solid #2A1708; box-shadow:inset 0 0 0 3px rgba(227,167,47,.35), inset 0 3px 0 rgba(255,220,170,.18), 0 8px 16px rgba(0,0,0,.4)}
+.oval h3{font-family:var(--display); font-weight:400; color:var(--gold); font-size:1.45rem; margin:0 0 6px; text-shadow:0 -1px 0 rgba(0,0,0,.7), 0 1px 0 rgba(255,210,140,.2)}
+.oval p{margin:0 auto; max-width:30ch; font-weight:600; line-height:1.45}
+@media (max-width:360px){ .oval{padding:30px 30px 34px} }
+
 /* ---------- Buttons ---------- */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:46px;
@@ -448,6 +465,21 @@ dialog::backdrop{background:rgba(20,8,2,.65)}
 .say{background:#fff; border:2px solid #EAD7C8; border-radius:10px; padding:10px 12px; margin:12px 0}
 .say b{font-size:1.1rem}
 
+/* ---------- Locked codes ---------- */
+button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-appearance:none; appearance:none}
+.keysnote{font-weight:700; padding:6px 0 2px}
+.locked{color:var(--ink-soft)}
+.v.locked{letter-spacing:.12em}
+.keysnote.locked, .wrow b.locked{font-weight:800; color:var(--lake); cursor:pointer}
+.lockhint{margin:8px 0 0}
+#lockDlg{margin:auto; width:min(420px, calc(100% - 32px)); max-height:none}
+.lockcard{background:var(--paper); border-radius:14px; border:3px solid #2A1708; padding:18px; box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.lockcard h2{font-family:var(--display); font-weight:400; color:var(--bark); margin:0 0 8px; font-size:1.5rem}
+.lockcard label{display:block; font-weight:700; margin-bottom:8px}
+.lockcard input{width:100%; min-height:48px; border:2px solid #CDBF9C; border-radius:10px; padding:9px 12px; background:#fff; font-size:1.1rem}
+.lockerr{color:var(--red); font-weight:700; margin:8px 0 0}
+.lockbtns{display:flex; gap:8px; justify-content:flex-end; margin-top:14px}
+
 /* ---------- Toast ---------- */
 .toast{position:fixed; left:50%; bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px); transform:translate(-50%,20px); opacity:0; z-index:50;
   background:var(--bark-dk); color:var(--cream); border:2px solid var(--gold); border-radius:12px; padding:10px 12px 10px 16px; display:flex; align-items:center; gap:12px;
@@ -548,25 +580,29 @@ dialog::backdrop{background:rgba(20,8,2,.65)}
       <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=3132+N+Artishon+Ln,+Lac+du+Flambeau,+WI+54538">Google Maps</a>
     </div>
   </div>
-  <div class="paper" style="margin-top:12px">
-    <h3>Last stretch</h3>
-    <p>The mailbox is on Artishon Lane, but to get to the cabin take a right down Baylis Ln and hang a left after you've gone a good little bit.</p>
+  <div class="hang">
+    <span class="chain l" aria-hidden="true"></span><span class="chain r" aria-hidden="true"></span>
+    <div class="oval">
+      <h3>Last stretch</h3>
+      <p>The mailbox is on Artishon Lane, but to get to the cabin take a right down Baylis Ln and hang a left after you've gone a good little bit.</p>
+    </div>
   </div>
 
   <div class="flannel">
     <div class="paper">
       <h3>Codes</h3>
       <div class="codes">
-        <div class="code"><div class="k">Garage</div><div class="v">1714</div></div>
-        <div class="code"><div class="k">Bunkhouse</div><div class="v">2244</div></div>
-        <div class="code" style="grid-column:1/-1"><div class="k">Main cabin</div><div style="font-weight:700;padding:6px 0 2px">Keys to the main cabin hang just inside the bunkhouse door.</div></div>
+        <button class="code" type="button" data-unlock><div class="k">Garage</div><div class="v locked" data-secret="garage" data-mask="••••">••••</div></button>
+        <button class="code" type="button" data-unlock><div class="k">Bunkhouse</div><div class="v locked" data-secret="bunkhouse" data-mask="••••">••••</div></button>
+        <button class="code" type="button" data-unlock style="grid-column:1/-1"><div class="k">Main cabin</div><div class="keysnote locked" data-secret="keys" data-mask="Tap to view">Tap to view</div></button>
       </div>
+      <p class="muted lockhint" data-lockhint>Tap a code to view it.</p>
     </div>
     <div class="paper" style="margin-top:10px">
       <h3>WiFi</h3>
       <div class="wrows">
         <div class="wrow"><div><span class="k">Network</span><b>Lund</b></div></div>
-        <div class="wrow"><div><span class="k">Password</span><b>getconnected</b></div><button class="btn ghost sm" type="button" id="copyPw">Copy</button></div>
+        <div class="wrow"><div><span class="k">Password</span><b class="locked" data-secret="wifi" data-mask="Tap to view" data-unlock role="button" tabindex="0">Tap to view</b></div><button class="btn ghost sm" type="button" id="copyPw">Copy</button></div>
       </div>
     </div>
   </div>
@@ -858,6 +894,16 @@ dialog::backdrop{background:rgba(20,8,2,.65)}
       <div class="callrow"><div><b>Breaker panel</b><span class="tbd">Add location</span></div></div>
     </div>
   </div>
+</dialog>
+
+<dialog id="lockDlg" aria-labelledby="lockTitle">
+  <form class="lockcard" id="lockForm" method="dialog" autocomplete="off">
+    <h2 id="lockTitle">Quick question</h2>
+    <label for="lockIn">What is Elliot and Grace's beloved dog's name?</label>
+    <input id="lockIn" type="text" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="go">
+    <p class="lockerr" id="lockErr" hidden>That's not it. Try again.</p>
+    <div class="lockbtns"><button class="btn ghost" type="button" id="lockCancel">Cancel</button><button class="btn pine" type="submit" id="lockGo">Show codes</button></div>
+  </form>
 </dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastUndo" hidden>Undo</button></div>
@@ -1250,10 +1296,55 @@ $('#sosBtn').onclick = () => sos.showModal();
 $('#sosClose').onclick = () => sos.close();
 sos.addEventListener('click', e => { if (e.target === sos) sos.close(); });
 
-$('#copyPw').onclick = async () => {
-  try { await navigator.clipboard.writeText('getconnected'); toast('Password copied'); }
-  catch(e){ toast('Password: getconnected'); }
-};
+/* ---------- Locked codes ----------
+   Codes and passwords are stored encrypted. The answer to the dog question
+   is the key; it is never stored in this file. */
+const LOCK = {"s": "/jP91iiYe9+MGygpd0uWcg==", "i": "e+g6f1EaP/mOWwj9", "n": 250000, "c": "qBMkFtqPWvMjmaSApCTkTqLjFTe1NQ6Jr4Jm4TjemA62st3LQGSPB0u32o1MAUY1QdHvJmOKDYK2A1UjWea08bnFqo5dkzhdIGk0m638s8N2x2r7c3+rD0UTCsVXSaPOrYz2eF1atmDd/1UGwavPKffkPQU/DK2+82mhLvGm6z9nH64RHIrBNjweWJCGp1X1kOELln4u"};
+let SECRETS = null;
+const b64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
+async function openLock(answer){
+  const raw = new TextEncoder().encode(answer.trim().toLowerCase());
+  const base = await crypto.subtle.importKey('raw', raw, 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64(LOCK.s), iterations:LOCK.n, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+  const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(LOCK.i)}, key, b64(LOCK.c));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+function showSecrets(){
+  document.querySelectorAll('[data-secret]').forEach(el => { el.textContent = SECRETS[el.dataset.secret]; el.classList.remove('locked'); });
+  document.querySelectorAll('[data-lockhint]').forEach(el => el.hidden = true);
+}
+const lockDlg = $('#lockDlg');
+let afterUnlock = null;
+function askUnlock(then){
+  if (SECRETS){ if (then) then(); return; }
+  afterUnlock = then || null;
+  $('#lockErr').hidden = true; $('#lockIn').value = '';
+  lockDlg.showModal(); setTimeout(() => $('#lockIn').focus(), 50);
+}
+$('#lockCancel').onclick = () => lockDlg.close();
+$('#lockForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const ans = $('#lockIn').value; if (!ans.trim()) return;
+  $('#lockGo').disabled = true;
+  try {
+    SECRETS = await openLock(ans);
+    try { localStorage.setItem('lundCabinAnswer', ans.trim().toLowerCase()); } catch(_){}
+    showSecrets(); lockDlg.close();
+    if (afterUnlock) afterUnlock();
+  } catch(_){ $('#lockErr').hidden = false; $('#lockIn').select(); }
+  finally { $('#lockGo').disabled = false; }
+});
+document.addEventListener('click', e => { if (e.target.closest('[data-unlock]')) askUnlock(); });
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-unlock][role=button]')){ e.preventDefault(); askUnlock(); } });
+(async () => {
+  let saved = null; try { saved = localStorage.getItem('lundCabinAnswer'); } catch(_){}
+  if (saved){ try { SECRETS = await openLock(saved); showSecrets(); } catch(_){} }
+})();
+
+$('#copyPw').onclick = () => askUnlock(async () => {
+  try { await navigator.clipboard.writeText(SECRETS.wifi); toast('Password copied'); }
+  catch(e){ toast('Password: ' + SECRETS.wifi); }
+});
 
 $('#outClear').onclick = () => {
   const was = S.checkout.map(c => c.checked);
