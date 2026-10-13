@@ -926,7 +926,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <ul class="list" id="outList"></ul>
 
       <div class="stephead"><i>2</i>Snap the pantry</div>
-      <p class="muted" style="margin:0 0 4px">Photos of anything you used, in the cabin and the bunkhouse. They become the Pantry board for the next grocery run.</p>
+      <p class="muted" style="margin:0 0 4px">Only snap what you used. If you stayed in the bunkhouse, skip the cabin. Your photos update the Pantry board for the next grocery run.</p>
       <div id="snaps"></div>
 
       <div class="stephead"><i>3</i>Anything broken?</div>
@@ -1279,7 +1279,7 @@ function renderBins(){
 function renderCheckout(){
   $('#outList').innerHTML = S.checkout.map(c => `
     <li><label class="chk"><input type="checkbox" data-oid="${c.id}" ${c.checked?'checked':''}><span class="t">${esc(c.text)}</span></label></li>`).join('');
-  $('#snaps').innerHTML = PLACES.map(pl => `
+  $('#snaps').innerHTML = ['Bunkhouse', 'Cabin'].map(pl => `
     <p class="snaphead">${pl}</p>
     <div class="snapgrid">${Object.entries(S.pantry).filter(([k,p]) => p.place === pl).map(([k,p]) => `
       <label class="snap ${p.fresh?'done':''}">
