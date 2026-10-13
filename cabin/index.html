@@ -77,7 +77,7 @@ img{max-width:100%; display:block}
 .sos{
   position:fixed; top:calc(10px + env(safe-area-inset-top)); right:10px; z-index:40;
   background:var(--red); color:#fff; border:2px solid #fff; border-radius:999px;
-  padding:7px 14px 7px 11px; font-weight:800; font-size:.95rem; display:flex; align-items:center; gap:6px;
+  padding:7px 14px; font-weight:800; font-size:.95rem; display:flex; align-items:center; gap:6px;
   box-shadow:0 3px 0 #5e120f, 0 6px 14px rgba(0,0,0,.35);
 }
 .sos svg{width:18px;height:18px}
@@ -492,9 +492,7 @@ dialog::backdrop{background:rgba(20,8,2,.65)}
   </defs>
 </svg>
 
-<button class="sos" type="button" id="sosBtn" aria-haspopup="dialog">
-  <svg><use href="#i-phone"/></svg> Emergency
-</button>
+<button class="sos" type="button" id="sosBtn" aria-haspopup="dialog">Emergency Info</button>
 
 <!-- ================= HOME ================= -->
 <main class="wrap">
@@ -975,17 +973,59 @@ function toast(msg, undo){
 }
 $('#toastUndo').onclick = () => { if (undoFn) undoFn(); $('#toast').classList.remove('show'); };
 
+/* ---------- Google Sheet connection ----------
+   API_URL is the Apps Script web app URL. Empty = demo mode (nothing saves). */
+const API_URL = '';
+const live = () => !!API_URL;
+let pending = 0;
+async function api(body){
+  if (!live()) return {ok:true};
+  pending++;
+  try {
+    const r = await fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body)});
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Save failed');
+    return j;
+  } catch(e){ toast("That didn't save. Check the connection and try again."); throw e; }
+  finally { pending--; }
+}
+async function load(){
+  if (!live() || pending) return;
+  try {
+    const j = await (await fetch(API_URL + '?t=' + Date.now())).json();
+    if (pending) return;
+    ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = j[k] || []);
+    Object.entries(j.pantry || {}).forEach(([k,v]) => S.pantry[k] = Object.assign({}, S.pantry[k], v, S.pantry[k] && S.pantry[k].fresh ? {fresh:true} : {}));
+    renderAll();
+  } catch(e){ /* keep what's on screen; next poll retries */ }
+}
+function shrink(file){
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => {
+      const sc = Math.min(1, 1280 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas'); c.width = Math.round(img.width*sc); c.height = Math.round(img.height*sc);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(img.src);
+      res(c.toDataURL('image/jpeg', .8));
+    };
+    img.onerror = rej; img.src = URL.createObjectURL(file);
+  });
+}
+
 function clearTo(list, items){
   const at = Date.now();
   items.forEach(d => { S[list] = S[list].filter(x => x.id !== d.id); S.cleared.unshift({list, at, data:d}); });
   renderAll();
-  return () => { items.forEach(d => { S.cleared = S.cleared.filter(c => c.data.id !== d.id); S[list].push(d); }); renderAll(); };
+  api({op:'clear', list, ids:items.map(d => d.id)}).catch(()=>{});
+  return () => { items.forEach(d => { S.cleared = S.cleared.filter(c => c.data.id !== d.id); S[list].push(d); }); renderAll();
+    api({op:'restore', list, ids:items.map(d => d.id)}).catch(()=>{}); };
 }
 function restore(id){
   const c = S.cleared.find(c => c.data.id === id); if (!c) return;
   S.cleared = S.cleared.filter(x => x !== c);
   if (c.list === 'groceries') c.data.checked = false;
   S[c.list].push(c.data); renderAll(); toast('Restored');
+  api({op:'restore', list:c.list, ids:[id]}).catch(()=>{});
 }
 
 /* ---------- Polaroid placeholder art ---------- */
@@ -1000,7 +1040,7 @@ function renderPantry(){
   $('#polas').innerHTML = Object.entries(S.pantry).map(([k,p]) => `
     <figure class="pola" style="margin:0">
       <div class="ph">${p.src ? `<img src="${p.src}" alt="${esc(p.label)} photo">` : art[k]}</div>
-      <figcaption class="cap">${esc(p.label)}<small>${fmtShort(p.at)}</small></figcaption>
+      <figcaption class="cap">${esc(p.label)}<small>${p.at ? fmtShort(p.at) : 'No photo yet'}</small></figcaption>
     </figure>`).join('');
 }
 
@@ -1125,12 +1165,17 @@ function renderAll(){ renderPantry(); renderGroceries(); renderMaintenance(); re
 /* ---------- Events ---------- */
 document.addEventListener('change', e => {
   const t = e.target;
-  if (t.dataset.gid){ const g = S.groceries.find(x => x.id === t.dataset.gid); g.checked = t.checked; renderGroceries(); }
-  if (t.dataset.oid){ S.checkout.find(x => x.id === t.dataset.oid).checked = t.checked; }
+  if (t.dataset.gid){ const g = S.groceries.find(x => x.id === t.dataset.gid); g.checked = t.checked; renderGroceries(); api({op:'update', list:'groceries', id:g.id, fields:{checked:g.checked}}).catch(()=>{}); }
+  if (t.dataset.oid){ const c = S.checkout.find(x => x.id === t.dataset.oid); c.checked = t.checked; api({op:'checkoutSet', items:[{id:c.id, checked:c.checked}]}).catch(()=>{}); }
   if (t.dataset.snap && t.files[0]){
-    const k = t.dataset.snap, r = new FileReader();
-    r.onload = () => { Object.assign(S.pantry[k], {src:r.result, at:Date.now(), fresh:true}); renderPantry(); renderCheckout(); toast(`${S.pantry[k].label} photo saved`); };
-    r.readAsDataURL(t.files[0]);
+    const k = t.dataset.snap;
+    shrink(t.files[0]).then(async dataUrl => {
+      Object.assign(S.pantry[k], {src:dataUrl, at:Date.now(), fresh:true}); renderPantry(); renderCheckout();
+      toast(live() ? `Saving ${S.pantry[k].label.toLowerCase()} photo…` : `${S.pantry[k].label} photo saved`);
+      const r = await api({op:'photo', key:k, dataUrl});
+      if (r.src){ S.pantry[k].src = r.src; renderPantry(); }
+      if (live()) toast(`${S.pantry[k].label} photo saved`);
+    }).catch(()=>{});
   }
 });
 
@@ -1141,8 +1186,8 @@ document.addEventListener('click', e => {
   if (d.gdel){ const g = S.groceries.find(x => x.id === d.gdel); toast(`Removed ${g.text}`, clearTo('groceries', [g])); }
   if (d.wfix){ const w = S.maintenance.find(x => x.id === d.wfix); toast('Marked fixed', clearTo('maintenance', [w])); }
   if (d.wdel){ const w = S.maintenance.find(x => x.id === d.wdel); toast('Work order removed', clearTo('maintenance', [w])); }
-  if (d.icyc){ const t = S.inventory.find(x => x.id === d.icyc); t.s = {ok:'low', low:'missing', missing:'ok'}[t.s]; renderInventory(); }
-  if (d.istar){ const t = S.inventory.find(x => x.id === d.istar); t.common = !t.common; renderInventory(); toast(t.common ? `${t.item} moved to Most used` : `${t.item} unstarred`); }
+  if (d.icyc){ const t = S.inventory.find(x => x.id === d.icyc); t.s = {ok:'low', low:'missing', missing:'ok'}[t.s]; renderInventory(); api({op:'update', list:'inventory', id:t.id, fields:{s:t.s}}).catch(()=>{}); }
+  if (d.istar){ const t = S.inventory.find(x => x.id === d.istar); t.common = !t.common; renderInventory(); api({op:'update', list:'inventory', id:t.id, fields:{common:t.common}}).catch(()=>{}); toast(t.common ? `${t.item} moved to Most used` : `${t.item} unstarred`); }
   if (d.chip){ invCat = d.chip; invShowAll = false; renderInventory(); }
   if ('invmore' in d){ invShowAll = true; renderInventory(); }
   if (d.idel){ const t = S.inventory.find(x => x.id === d.idel); toast(`Removed ${t.item}`, clearTo('inventory', [t])); }
@@ -1151,7 +1196,9 @@ document.addEventListener('click', e => {
 
 $('#grocForm').addEventListener('submit', e => {
   e.preventDefault(); const v = $('#grocIn').value.trim(); if (!v) return;
-  S.groceries.push({id:uid(), text:v, note:'', checked:false}); $('#grocIn').value = ''; renderGroceries(); $('#grocIn').focus();
+  const item = {id:uid(), text:v, note:'', checked:false};
+  S.groceries.push(item); $('#grocIn').value = ''; renderGroceries(); $('#grocIn').focus();
+  api({op:'add', list:'groceries', item}).catch(()=>{});
 });
 $('#grocClear').onclick = () => {
   const done = S.groceries.filter(g => g.checked); if (!done.length) return;
@@ -1160,15 +1207,20 @@ $('#grocClear').onclick = () => {
 
 let woPhoto = null;
 $('#woPhoto').addEventListener('change', e => {
-  const f = e.target.files[0]; if (!f) return; const r = new FileReader();
-  r.onload = () => { woPhoto = r.result; $('#woPrev').src = woPhoto; $('#woPrev').hidden = false; $('#woPhotoLbl').textContent = 'Photo added'; };
-  r.readAsDataURL(f);
+  const f = e.target.files[0]; if (!f) return;
+  shrink(f).then(d => { woPhoto = d; $('#woPrev').src = woPhoto; $('#woPrev').hidden = false; $('#woPhotoLbl').textContent = 'Photo added'; });
 });
 $('#woForm').addEventListener('submit', e => {
   e.preventDefault();
-  S.maintenance.push({id:uid(), what:$('#woWhat').value.trim(), where:$('#woWhere').value, urg:document.querySelector('input[name=urg]:checked').value, note:$('#woNote').value.trim(), photo:woPhoto, added:Date.now()});
+  const item = {id:uid(), what:$('#woWhat').value.trim(), where:$('#woWhere').value, urg:document.querySelector('input[name=urg]:checked').value, note:$('#woNote').value.trim(), photo:woPhoto, added:Date.now()};
+  const photo = woPhoto;
+  S.maintenance.push(item);
   e.target.reset(); woPhoto = null; $('#woPrev').hidden = true; $('#woPhotoLbl').textContent = 'Add a photo';
   $('#woDetails').open = false; renderMaintenance(); toast('Work order added');
+  (async () => {
+    if (photo && live()){ const r = await api({op:'photo', dataUrl:photo}); item.photo = r.src; }
+    await api({op:'add', list:'maintenance', item:Object.assign({}, item, {photo:item.photo || ''})});
+  })().catch(()=>{});
 });
 
 $('#invQ').addEventListener('input', e => { invQ = e.target.value; renderInventory(); });
@@ -1177,7 +1229,8 @@ $('#invAddBtn').onclick = () => { $('#invForm').hidden = false; $('#invAddBtn').
 $('#invCancel').onclick = () => { $('#invForm').hidden = true; $('#invAddBtn').hidden = false; };
 $('#invForm').addEventListener('submit', e => {
   e.preventDefault();
-  S.inventory.push({id:uid(), item:$('#invItem').value.trim(), where:$('#invWhere').value.trim(), cat:$('#invCat').value, common:false, s:'ok'});
+  const item = {id:uid(), item:$('#invItem').value.trim(), where:$('#invWhere').value.trim(), cat:$('#invCat').value, common:false, s:'ok'};
+  S.inventory.push(item); api({op:'add', list:'inventory', item}).catch(()=>{});
   e.target.reset(); $('#invForm').hidden = true; $('#invAddBtn').hidden = false; renderInventory(); toast('Item added');
 });
 
@@ -1206,7 +1259,9 @@ $('#outClear').onclick = () => {
   const was = S.checkout.map(c => c.checked);
   if (!was.some(Boolean)) return;
   S.checkout.forEach(c => c.checked = false); renderCheckout();
-  toast('List reset', () => { S.checkout.forEach((c,i) => c.checked = was[i]); renderCheckout(); });
+  api({op:'checkoutSet', items:S.checkout.map(c => ({id:c.id, checked:false}))}).catch(()=>{});
+  toast('List reset', () => { S.checkout.forEach((c,i) => c.checked = was[i]); renderCheckout();
+    api({op:'checkoutSet', items:S.checkout.map(c => ({id:c.id, checked:c.checked}))}).catch(()=>{}); });
 };
 
 /* ---------- Cabin Cam ----------
@@ -1218,7 +1273,7 @@ function loadCam(){
   const img = new Image();
   img.onload = () => {
     $('#camImg').src = img.src; $('#camImg').hidden = false; $('#camArt').style.display = 'none';
-    $('#camTxt').textContent = 'Cabin Cam, checked ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+    $('#camTxt').textContent = 'Cabin Cam';
     $('#camDot').style.cssText = '';
   };
   img.onerror = () => { $('#camTxt').textContent = 'Cabin Cam is offline right now'; $('#camDot').style.background = '#B3261E'; $('#camDot').style.boxShadow = 'none'; };
@@ -1227,7 +1282,14 @@ function loadCam(){
 loadCam(); setInterval(() => { if (!document.hidden) loadCam(); }, 60000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) loadCam(); });
 
+if (live()){
+  ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = []);
+  Object.values(S.pantry).forEach(p => { p.src = null; p.at = null; });
+}
 renderAll();
+load();
+setInterval(() => { if (!document.hidden) load(); }, 30000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
 </script>
 </body>
 </html>
