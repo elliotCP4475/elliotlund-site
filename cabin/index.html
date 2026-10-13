@@ -144,6 +144,9 @@ a{color:var(--lake); font-weight:700}
 .oval p{margin:0 auto; max-width:30ch; font-weight:600; line-height:1.45}
 @media (max-width:360px){ .oval{padding:30px 30px 34px} }
 
+.store{margin-top:16px}
+.store .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+
 /* ---------- Buttons ---------- */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:46px;
@@ -645,6 +648,14 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       </div>
     </div>
   </div>
+    <div class="paper store">
+    <h3>Nearest grocery store</h3>
+    <p><b>Ojibwe Market</b>, 501 Old Abe Rd, Lac du Flambeau. About 10 minutes, 4 miles.<br><span class="muted">Groceries, beer, gas and hot food to go.</span></p>
+    <div class="row">
+      <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Ojibwe+Market,+501+Old+Abe+Rd,+Lac+du+Flambeau,+WI+54538">Directions</a>
+      <a class="btn ghost sm" href="tel:17155883447">715-588-3447</a>
+    </div>
+  </div>
   <details class="bin" id="bin-groceries"></details>
 </section>
 
@@ -734,7 +745,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <h4>Bunkhouse</h4>
       <p>About 100 yards from the cabin. The door code is on the home screen.</p>
       <h4>Kitchen</h4>
-      <p>Pots, pans and the basics are stocked. Check the pantry photos before you shop.</p>
+      <p>Pots, pans and the basics are stocked. Check the pantry photos before you shop. The nearest grocery store is the Ojibwe Market in Lac du Flambeau, about 10 minutes away. Directions are on the Groceries tab.</p>
       <h4>ATV and dirt bikes</h4>
       <p>Please ask before using them.</p>
       <h4>Games and gear</h4>
