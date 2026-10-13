@@ -229,6 +229,8 @@ a{color:var(--lake); font-weight:700}
   box-shadow:inset 0 3px 8px rgba(0,0,0,.35), 0 8px 18px rgba(0,0,0,.35);
 }
 .polas{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.corkrow + .corkrow{margin-top:18px}
+.corktag{display:inline-block; margin:0 0 10px 4px; font-family:var(--hand); font-size:1.15rem; background:#FFF6DE; padding:1px 10px; border-radius:3px; box-shadow:0 2px 3px rgba(0,0,0,.3); transform:rotate(-2deg)}
 .pola{background:#FDFBF4; padding:6px 6px 0; box-shadow:0 3px 8px rgba(0,0,0,.35); position:relative; text-align:center}
 .pola:nth-child(1){transform:rotate(-3deg)}
 .pola:nth-child(2){transform:rotate(2deg); margin-top:6px}
@@ -422,6 +424,7 @@ details.guide[open] > summary .chev{transform:rotate(180deg)}
 .stephead{display:flex; align-items:center; gap:10px; margin:16px 0 6px; font-weight:800}
 .stephead i{font-style:normal; width:30px; height:30px; border-radius:50%; background:var(--bark); color:var(--gold); display:grid; place-items:center; font-family:var(--display); font-size:1rem; flex:none}
 .snapgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.snaphead{font-weight:800; margin:10px 0 6px; font-size:.95rem}
 .snap{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; aspect-ratio:1; border:2px dashed #B9A57B; border-radius:10px; background:#fff; cursor:pointer; font-weight:800; font-size:.88rem; text-align:center; padding:6px; position:relative; overflow:hidden}
 .snap svg{width:26px;height:26px;color:var(--orange)}
 .snap input{display:none}
@@ -462,6 +465,7 @@ dialog::backdrop{background:rgba(20,8,2,.65)}
 .callrow div{flex:1; min-width:0}
 .callrow b{display:block}
 .big911{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:64px; border-radius:14px; background:var(--red); color:#fff; font-family:var(--display); font-size:1.8rem; text-decoration:none; box-shadow:0 5px 0 #5e120f; border:2px solid #5e120f}
+.drive{display:block; font-weight:800; color:var(--red); margin-top:2px}
 .say{background:#fff; border:2px solid #EAD7C8; border-radius:10px; padding:10px 12px; margin:12px 0}
 .say b{font-size:1.1rem}
 
@@ -543,7 +547,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       </div>
       <div class="plaid" aria-hidden="true"></div>
     </header>
-    <p class="mock-banner">Draft content. Anything <span class="tbd">underlined in orange</span> still needs a real answer.</p>
   </div>
 
   <div class="tv" role="figure" aria-label="Cabin Cam: latest snapshot of the yard">
@@ -620,7 +623,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 <section class="view" id="v-groceries" aria-labelledby="h-groc">
   <h2 class="sign" id="h-groc"><svg><use href="#i-basket"/></svg>Pantry</h2>
   <div class="cork">
-    <div class="polas" id="polas"></div>
+    <div id="polas"></div>
     <div class="actions">
       <button class="btn ghost" type="button" data-go="checkout"><svg><use href="#i-cam"/></svg>Take new photos</button>
     </div>
@@ -853,8 +856,8 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <ul class="list" id="outList"></ul>
 
       <div class="stephead"><i>2</i>Snap the pantry</div>
-      <p class="muted" style="margin:0 0 8px">Photos of anything you used. They become the Pantry board for the next grocery run.</p>
-      <div class="snapgrid" id="snaps"></div>
+      <p class="muted" style="margin:0 0 4px">Photos of anything you used, in the cabin and the bunkhouse. They become the Pantry board for the next grocery run.</p>
+      <div id="snaps"></div>
 
       <div class="stephead"><i>3</i>Anything broken?</div>
       <p style="margin:0 0 10px"><button class="btn ghost sm" type="button" data-go="fixit">Report it on the Fix-it tab</button></p>
@@ -885,9 +888,9 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <span class="muted">Tell the dispatcher:</span><br>
         <b>3132 N Artishon Ln, Lac du Flambeau</b>
       </div>
-      <div class="callrow"><div><b>Hospital, Minocqua</b>Marshfield Medical Center, 9576 Hwy 70. Emergency department.</div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Marshfield+Medical+Center+Minocqua,+9576+Highway+70,+Minocqua,+WI+54548">Directions</a></div>
-      <div class="callrow"><div><b>Hospital, Woodruff</b>Howard Young Medical Center, 240 Maple St. 715-356-8000</div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Howard+Young+Medical+Center,+240+Maple+St,+Woodruff,+WI+54568">Directions</a></div>
-      <div class="callrow"><div><b>Urgent care</b>Marshfield, Minocqua. 7 AM to 7 PM, every day.</div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Marshfield+Medical+Center+Minocqua,+9576+Highway+70,+Minocqua,+WI+54548">Directions</a></div>
+      <div class="callrow"><div><b>Hospital, Minocqua</b>Marshfield Medical Center, 9576 Hwy 70. Emergency department.<span class="drive">About 35 min, 17 mi</span></div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Marshfield+Medical+Center+Minocqua,+9576+Highway+70,+Minocqua,+WI+54548">Directions</a></div>
+      <div class="callrow"><div><b>Hospital, Woodruff</b>Howard Young Medical Center, 240 Maple St. 715-356-8000<span class="drive">About 30 min, 16 mi</span></div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Howard+Young+Medical+Center,+240+Maple+St,+Woodruff,+WI+54568">Directions</a></div>
+      <div class="callrow"><div><b>Urgent care</b>Marshfield, Minocqua. 7 AM to 7 PM, every day.<span class="drive">About 35 min, 17 mi</span></div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Marshfield+Medical+Center+Minocqua,+9576+Highway+70,+Minocqua,+WI+54548">Directions</a></div>
       <div class="callrow"><div><b>Vilas County Sheriff, non-emergency</b>715-479-4441</div><a class="btn ghost sm" href="tel:17154794441">Call</a></div>
       <div class="callrow"><div><b>Elliot</b>715-566-2244</div><a class="btn ghost sm" href="tel:17155662244">Call</a></div>
       <div class="callrow"><div><b>Water shutoff</b><span class="tbd">Add location</span></div></div>
@@ -993,9 +996,12 @@ const S = {
     {list:'maintenance', at:now - 6*DAY, data:{id:uid(), what:'Dripping kitchen faucet', where:'Kitchen', urg:'low', note:'', photo:null, added:now - 9*DAY}},
   ],
   pantry: {
-    fridge:{label:'Fridge', src:null, at:now - 5*DAY},
-    freezer:{label:'Freezer', src:null, at:now - 5*DAY},
-    spice:{label:'Spice cabinet', src:null, at:now - 12*DAY},
+    cabin_fridge:{place:'Cabin', label:'Fridge', src:null, at:now - 5*DAY},
+    cabin_freezer:{place:'Cabin', label:'Freezer', src:null, at:now - 5*DAY},
+    cabin_spice:{place:'Cabin', label:'Spices', src:null, at:now - 12*DAY},
+    bunk_fridge:{place:'Bunkhouse', label:'Fridge', src:null, at:now - 9*DAY},
+    bunk_freezer:{place:'Bunkhouse', label:'Freezer', src:null, at:now - 9*DAY},
+    bunk_spice:{place:'Bunkhouse', label:'Spices', src:null, at:now - 20*DAY},
   },
   checkout: [
     {id:uid(), text:'Strip the beds, sheets in the washer', checked:false},
@@ -1021,7 +1027,7 @@ $('#toastUndo').onclick = () => { if (undoFn) undoFn(); $('#toast').classList.re
 
 /* ---------- Google Sheet connection ----------
    API_URL is the Apps Script web app URL. Empty = demo mode (nothing saves). */
-const API_URL = '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbydwLEyKO32cJDxN5mJnjsCqAZgNOCoF2U_LFLMgUmzFO1U_qGewwRWHVR70ujjH1etwg/exec';
 const live = () => !!API_URL;
 let pending = 0;
 async function api(body){
@@ -1082,12 +1088,17 @@ const art = {
 };
 
 /* ---------- Renderers ---------- */
+const PLACES = ['Cabin', 'Bunkhouse'];
+const artFor = k => art[k.split('_')[1]];
 function renderPantry(){
-  $('#polas').innerHTML = Object.entries(S.pantry).map(([k,p]) => `
-    <figure class="pola" style="margin:0">
-      <div class="ph">${p.src ? `<img src="${p.src}" alt="${esc(p.label)} photo">` : art[k]}</div>
-      <figcaption class="cap">${esc(p.label)}<small>${p.at ? fmtShort(p.at) : 'No photo yet'}</small></figcaption>
-    </figure>`).join('');
+  $('#polas').innerHTML = PLACES.map(pl => `
+    <div class="corkrow"><span class="corktag">${pl}</span>
+      <div class="polas">${Object.entries(S.pantry).filter(([k,p]) => p.place === pl).map(([k,p]) => `
+        <figure class="pola" style="margin:0">
+          <div class="ph">${p.src ? `<img src="${p.src}" alt="${esc(pl + ' ' + p.label.toLowerCase())} photo">` : artFor(k)}</div>
+          <figcaption class="cap">${esc(p.label)}<small>${p.at ? fmtShort(p.at) : 'No photo yet'}</small></figcaption>
+        </figure>`).join('')}</div>
+    </div>`).join('');
 }
 
 function renderGroceries(){
@@ -1198,12 +1209,14 @@ function renderBins(){
 function renderCheckout(){
   $('#outList').innerHTML = S.checkout.map(c => `
     <li><label class="chk"><input type="checkbox" data-oid="${c.id}" ${c.checked?'checked':''}><span class="t">${esc(c.text)}</span></label></li>`).join('');
-  $('#snaps').innerHTML = Object.entries(S.pantry).map(([k,p]) => `
-    <label class="snap ${p.fresh?'done':''}">
-      ${p.fresh ? `<img src="${p.src}" alt="">` : `<svg><use href="#i-cam"/></svg>`}
-      <span>${esc(p.label)}</span>
-      <input type="file" accept="image/*" capture="environment" data-snap="${k}">
-    </label>`).join('');
+  $('#snaps').innerHTML = PLACES.map(pl => `
+    <p class="snaphead">${pl}</p>
+    <div class="snapgrid">${Object.entries(S.pantry).filter(([k,p]) => p.place === pl).map(([k,p]) => `
+      <label class="snap ${p.fresh?'done':''}">
+        ${p.fresh ? `<img src="${p.src}" alt="">` : `<svg><use href="#i-cam"/></svg>`}
+        <span>${esc(p.label)}</span>
+        <input type="file" accept="image/*" capture="environment" data-snap="${k}">
+      </label>`).join('')}</div>`).join('');
 }
 
 function renderAll(){ renderPantry(); renderGroceries(); renderMaintenance(); renderInventory(); renderBins(); renderCheckout(); }
@@ -1217,10 +1230,10 @@ document.addEventListener('change', e => {
     const k = t.dataset.snap;
     shrink(t.files[0]).then(async dataUrl => {
       Object.assign(S.pantry[k], {src:dataUrl, at:Date.now(), fresh:true}); renderPantry(); renderCheckout();
-      toast(live() ? `Saving ${S.pantry[k].label.toLowerCase()} photo…` : `${S.pantry[k].label} photo saved`);
+      toast(live() ? `Saving ${S.pantry[k].place.toLowerCase()} ${S.pantry[k].label.toLowerCase()} photo…` : `${S.pantry[k].place} ${S.pantry[k].label.toLowerCase()} photo saved`);
       const r = await api({op:'photo', key:k, dataUrl});
       if (r.src){ S.pantry[k].src = r.src; renderPantry(); }
-      if (live()) toast(`${S.pantry[k].label} photo saved`);
+      if (live()) toast(`${S.pantry[k].place} ${S.pantry[k].label.toLowerCase()} photo saved`);
     }).catch(()=>{});
   }
 });
