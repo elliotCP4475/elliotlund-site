@@ -233,6 +233,15 @@ a{color:var(--lake); font-weight:700}
 }
 .polas{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
 .corkrow + .corkrow{margin-top:18px}
+label.pola{display:block; cursor:pointer}
+label.pola input{position:absolute; width:1px; height:1px; opacity:0; pointer-events:none}
+label.pola:focus-within{outline:3px solid var(--gold); outline-offset:3px}
+label.pola:active{transform:scale(.97)}
+.pola .ph{position:relative}
+.pola .cap{display:block}
+.polacam{position:absolute; right:4px; bottom:4px; width:26px; height:26px; border-radius:50%; background:rgba(43,27,16,.78); color:#fff; display:grid; place-items:center; box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.polacam svg{width:15px; height:15px}
+.corkhint{font-family:var(--hand); font-size:1.1rem; color:#3B2210; text-align:center; margin:14px 0 0}
 .corktag{display:inline-block; margin:0 0 10px 4px; font-family:var(--hand); font-size:1.15rem; background:#FFF6DE; padding:1px 10px; border-radius:3px; box-shadow:0 2px 3px rgba(0,0,0,.3); transform:rotate(-2deg)}
 .pola{background:#FDFBF4; padding:6px 6px 0; box-shadow:0 3px 8px rgba(0,0,0,.35); position:relative; text-align:center}
 .pola:nth-child(1){transform:rotate(-3deg)}
@@ -627,9 +636,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   <h2 class="sign" id="h-groc"><svg><use href="#i-basket"/></svg>Pantry</h2>
   <div class="cork">
     <div id="polas"></div>
-    <div class="actions">
-      <button class="btn ghost" type="button" data-go="checkout"><svg><use href="#i-cam"/></svg>Take new photos</button>
-    </div>
+    <p class="corkhint">Tap a photo to replace it.</p>
   </div>
 
   <div class="fridge">
@@ -681,7 +688,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
           </div>
         </div>
         <label class="field"><span>Details</span><textarea id="woNote" placeholder="Anything that helps whoever fixes it"></textarea></label>
-        <label class="photo-pick"><svg><use href="#i-cam"/></svg><span id="woPhotoLbl">Add a photo</span><input type="file" accept="image/*" capture="environment" id="woPhoto"><img id="woPrev" alt="" hidden></label>
+        <label class="photo-pick"><svg><use href="#i-cam"/></svg><span id="woPhotoLbl">Add a photo</span><input type="file" accept="image/*" id="woPhoto"><img id="woPrev" alt="" hidden></label>
         <button class="btn pine wide" type="submit" style="margin-top:12px">Add work order</button>
       </form>
     </details>
@@ -1182,10 +1189,11 @@ function renderPantry(){
   $('#polas').innerHTML = PLACES.map(pl => `
     <div class="corkrow"><span class="corktag">${pl}</span>
       <div class="polas">${Object.entries(S.pantry).filter(([k,p]) => p.place === pl).map(([k,p]) => `
-        <figure class="pola" style="margin:0">
-          <div class="ph">${p.src ? `<img src="${p.src}" alt="${esc(pl + ' ' + p.label.toLowerCase())} photo">` : artFor(k)}</div>
-          <figcaption class="cap">${esc(p.label)}<small>${p.at ? fmtShort(p.at) : 'No photo yet'}</small></figcaption>
-        </figure>`).join('')}</div>
+        <label class="pola" aria-label="Add a new photo of the ${esc(pl.toLowerCase() + ' ' + p.label.toLowerCase())}">
+          <div class="ph">${p.src ? `<img src="${p.src}" alt="${esc(pl + ' ' + p.label.toLowerCase())} photo">` : artFor(k)}<span class="polacam" aria-hidden="true"><svg><use href="#i-cam"/></svg></span></div>
+          <span class="cap">${esc(p.label)}<small>${p.at ? fmtShort(p.at) : 'No photo yet'}</small></span>
+          <input type="file" accept="image/*" data-snap="${k}">
+        </label>`).join('')}</div>
     </div>`).join('');
 }
 
@@ -1303,7 +1311,7 @@ function renderCheckout(){
       <label class="snap ${p.fresh?'done':''}">
         ${p.fresh ? `<img src="${p.src}" alt="">` : `<svg><use href="#i-cam"/></svg>`}
         <span>${esc(p.label)}</span>
-        <input type="file" accept="image/*" capture="environment" data-snap="${k}">
+        <input type="file" accept="image/*" data-snap="${k}">
       </label>`).join('')}</div>`).join('');
 }
 
