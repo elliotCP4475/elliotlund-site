@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#4A2C17">
 <title>The Lund Cabin</title>
-<meta name="description" content="Everything for guests at the Lund Cabin on Pokegama Lake: codes, WiFi, groceries, fix-its, maps, fishing and checkout.">
+<meta name="description" content="Everything for guests at the Lund Cabin on Pokegama Lake: codes, WiFi, groceries, the garage, maps, fishing and checkout.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Patrick+Hand&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
@@ -323,6 +323,8 @@ details.bin[open] summary{border-bottom:1px solid rgba(255,255,255,.15)}
 .binnote{font-size:.82rem; opacity:.65; padding:0 14px 12px; margin:0}
 
 /* ---------- Handyman Corner clipboard ---------- */
+.handygif{width:fit-content; margin:0 auto 16px; padding:8px 8px 10px; background:#F3E3BE; border:2px solid #2E1A0D; border-radius:6px; box-shadow:0 4px 0 rgba(46,26,13,.55), 0 8px 16px rgba(0,0,0,.3); transform:rotate(-1deg)}
+.handygif img{display:block; width:200px; max-width:100%; aspect-ratio:165/176; height:auto; border-radius:3px; background:#2E1A0D}
 .clipboard{
   position:relative; border-radius:14px; padding:34px 12px 14px; margin-top:8px;
   background:linear-gradient(135deg,#9A6A3A,#7A4E26); border:3px solid #4A2C17;
@@ -644,7 +646,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <ul class="feat">
         <li><svg><use href="#i-fish"/></svg><span><b>Fish cleaning station</b> in the back room</span></li>
         <li><svg><use href="#i-snow"/></svg><span><b>Chest freezer</b> for your catch and for fish scraps you haven't taken out yet</span></li>
-        <li><svg><use href="#i-wrench"/></svg><span><b>Tools and yard games</b>. The full list is on Fix-it.</span></li>
+        <li><svg><use href="#i-wrench"/></svg><span><b>Tools and yard games</b>. The full list is on the Garage tab.</span></li>
       </ul>
     </article>
   </div>
@@ -740,9 +742,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   <details class="bin" id="bin-groceries"></details>
 </section>
 
-<!-- ================= FIX-IT ================= -->
+<!-- ================= GARAGE ================= -->
 <section class="view" id="v-fixit" aria-labelledby="h-fix">
   <h2 class="sign" id="h-fix"><svg><use href="#i-wrench"/></svg>Handyman Corner</h2>
+  <figure class="handygif"><img src="https://media.tenor.com/aNPLcM1RS2oAAAAM/red-green-steve-smith.gif" alt="Red Green reaching for the Handyman's Secret Weapon" loading="lazy"></figure>
   <div class="clipboard">
     <div class="clip" aria-hidden="true"></div>
     <details class="formcard" id="woDetails">
@@ -842,7 +845,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <li><b>Kindling and fire starters:</b> <span class="tbd">bin inside the garage door</span></li>
         <li><b>Yard games and Jarts:</b> cabin garage.</li>
         <li><b>Fish cleaning station and chest freezer:</b> back room of the detached garage.</li>
-        <li><b>Tools:</b> garage pegboard. The full list is on the Fix-it tab.</li>
+        <li><b>Tools:</b> garage pegboard. The full list is on the Garage tab.</li>
         <li><b>First aid kit:</b> <span class="tbd">kitchen, under the sink</span></li>
         <li><b>Fire extinguisher:</b> <span class="tbd">kitchen, by the back door</span></li>
         <li><b>Water shutoff:</b> <span class="tbd">add location</span></li>
@@ -1014,7 +1017,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <h4>Our spots</h4>
       <p><span class="tbd">Add a lake map with depth lines and favorite spots</span></p>
       <h4>Gear at the cabin</h4>
-      <p><span class="tbd">Rods, tackle box, net</span>. See the tool list on the Fix-it tab.</p>
+      <p><span class="tbd">Rods, tackle box, net</span>. See the tool list on the Garage tab.</p>
       <h4>Cleaning fish</h4>
       <p>The fish cleaning station is in the back room of the detached garage, with a chest freezer for your catch and for scraps you haven't taken out yet. Put all fish waste out in the forest, at least 100 yards from the house.</p>
     </div>
@@ -1035,7 +1038,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <div id="snaps"></div>
 
       <div class="stephead"><i>3</i>Anything broken?</div>
-      <p style="margin:0 0 10px"><button class="btn ghost sm" type="button" data-go="fixit">Report it on the Fix-it tab</button></p>
+      <p style="margin:0 0 10px"><button class="btn ghost sm" type="button" data-go="fixit">Report it in Handyman Corner</button></p>
 
       <p style="margin:18px 0 0; text-align:right"><button class="btn ghost sm" type="button" id="outClear">Reset list</button></p>
     </div>
@@ -1048,7 +1051,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 <nav class="tabs" aria-label="Sections">
   <button data-tab="home" aria-current="page"><svg><use href="#i-home"/></svg>Home</button>
   <button data-tab="groceries"><svg><use href="#i-basket"/></svg>Groceries</button>
-  <button data-tab="fixit"><svg><use href="#i-wrench"/></svg>Fix-it</button>
+  <button data-tab="fixit"><svg><use href="#i-wrench"/></svg>Garage</button>
   <button data-tab="guide"><svg><use href="#i-pine"/></svg>Guide</button>
   <button data-tab="checkout"><svg><use href="#i-door"/></svg>Checkout</button>
 </nav>
