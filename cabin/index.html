@@ -147,6 +147,12 @@ a{color:var(--lake); font-weight:700}
 .store{margin-top:16px}
 .store .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
 
+.lakes{width:100%; border-collapse:collapse; margin:8px 0 10px}
+.lakes td{padding:5px 2px; border-bottom:1px solid #EADDBD}
+.lakes td:last-child{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+.lakes tr.ours td{font-weight:800; color:var(--lake)}
+.lakes tr.tot td{font-weight:800; border-bottom:0; border-top:2px solid var(--bark)}
+
 /* ---------- Buttons ---------- */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:46px;
@@ -912,14 +918,20 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   <details class="guide" id="g-chain">
     <summary><svg class="ic"><use href="#i-map"/></svg>The lake chain<svg class="chev"><use href="#i-chev"/></svg></summary>
     <div class="guide-body">
-      <p>Pokegama is one of the ten spring-fed lakes of the Lac du Flambeau chain, known for clear water and good fishing. The chain sits among more than 250 lakes around Lac du Flambeau.</p>
-      <ul>
-        <li><b>Pokegama</b>. About 1,050 acres, 65 feet at the deepest. Lake of the Torches casino is on its shore.</li>
-        <li><b>Fence Lake</b>. The chain's largest lake at about 3,480 acres. Musky, walleye, northern, smallmouth and panfish.</li>
-        <li><b>Long Interlaken</b>. About 380 acres, along downtown Lac du Flambeau.</li>
-        <li><b>Flambeau Lake</b>. About 1,170 acres.</li>
-        <li><b>Crawling Stone</b> and <b>Little Crawling Stone</b>. About 1,480 and 110 acres.</li>
-      </ul>
+      <p>Pokegama is one of the ten spring-fed lakes of the Lac du Flambeau chain, about <b>8,000 acres</b> of connected water in all. The chain is known for clear water and good fishing, and sits among more than 250 lakes around Lac du Flambeau.</p>
+      <table class="lakes">
+        <tr><td>Fence</td><td>3,480 acres</td></tr>
+        <tr><td>Big Crawling Stone</td><td>1,480</td></tr>
+        <tr><td>Flambeau</td><td>1,170</td></tr>
+        <tr class="ours"><td>Pokegama (ours)</td><td>1,040</td></tr>
+        <tr><td>Long Interlaken</td><td>380</td></tr>
+        <tr><td>Moss</td><td>185</td></tr>
+        <tr><td>Little Crawling Stone</td><td>115</td></tr>
+        <tr><td>To To Tom</td><td>105</td></tr>
+        <tr><td>North and South Placid Twin</td><td>70</td></tr>
+        <tr class="tot"><td>Total</td><td>about 8,025 acres</td></tr>
+      </table>
+      <p class="muted">Fence Lake is the biggest, with musky, walleye, northern, smallmouth and panfish. Long Interlaken runs along downtown Lac du Flambeau. Lake of the Torches casino sits on Pokegama's shore.</p>
       <h4>Boating the chain</h4>
       <p><span class="tbd">Add your route: which way to head out from the dock, the channels, and anything shallow to watch for</span></p>
       <p>The chain is inside the Lac du Flambeau reservation. Fishing rules for walleye and musky are in the Fishing section, and some landings on tribal land need a launch permit for non-members.</p>
