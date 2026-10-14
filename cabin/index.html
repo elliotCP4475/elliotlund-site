@@ -1486,8 +1486,7 @@ function renderBins(){
       <ul class="binlist">${items.length ? items.map(x => `
         <li><div class="what">${esc(c.name(x.data))}<small>${c.sub(x.data) ? esc(c.sub(x.data)) + ', ' : ''}${fmtShort(x.at)}</small></div>
         <button class="btn ghost sm" data-restore="${x.data.id}">Restore</button></li>`).join('')
-        : `<li class="empty">Nothing here. Cleared items wait here for 30 days.</li>`}</ul>
-      ${items.length ? `<p class="binnote">Items stay here for 30 days.</p>` : ''}`;
+        : ''}</ul>`;
     el.open = wasOpen;
   }
 }
