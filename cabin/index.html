@@ -322,7 +322,7 @@ details.bin[open] summary{border-bottom:1px solid rgba(255,255,255,.15)}
 .binlist .empty{opacity:.7; font-size:.95rem; padding:8px 0}
 .binnote{font-size:.82rem; opacity:.65; padding:0 14px 12px; margin:0}
 
-/* ---------- Clipboard work orders ---------- */
+/* ---------- Handyman Corner clipboard ---------- */
 .clipboard{
   position:relative; border-radius:14px; padding:34px 12px 14px; margin-top:8px;
   background:linear-gradient(135deg,#9A6A3A,#7A4E26); border:3px solid #4A2C17;
@@ -551,7 +551,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   <defs>
     <symbol id="i-home" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10"/><path fill="currentColor" d="M10 20v-5h4v5z"/></symbol>
     <symbol id="i-basket" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 10h18l-2 10H5zM8 10l4-6 4 6M9 14v3M12 14v3M15 14v3"/></symbol>
-    <symbol id="i-wrench" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M14.5 4a4.5 4.5 0 0 0-4.3 5.9L4 16.1 7.9 20l6.2-6.2A4.5 4.5 0 0 0 20 9.5l-2.7 2.7-3-.8-.8-3L16.2 5.7A4.5 4.5 0 0 0 14.5 4z"/></symbol>
+    <symbol id="i-wrench" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
     <symbol id="i-pine" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 7 9h3l-4 5h4l-5 6h14l-5-6h4l-4-5h3z"/><rect x="11" y="20" width="2" height="3" fill="currentColor"/></symbol>
     <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 12h9M18 12v3M21 12v2"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></symbol>
@@ -616,9 +616,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 
   <div class="tiles" style="margin-top:18px">
     <button class="tile" data-go="groceries"><svg style="color:var(--orange)"><use href="#i-basket"/></svg><b>Groceries &amp; pantry</b><span>See what's in the fridge, add to the list</span></button>
-    <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it with a photo</span></button>
     <button class="tile" data-go="guide" data-open="g-where"><svg style="color:var(--pine)"><use href="#i-fire"/></svg><b>Wood &amp; tools</b><span>Where things are kept</span></button>
-    <button class="tile" data-go="guide" data-open="g-fish"><svg style="color:var(--lake)"><use href="#i-fish"/></svg><b>Fishing</b><span>What's biting and where</span></button>
   </div>
 
   <div class="stays">
@@ -695,6 +693,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       </div>
     </div>
   </div>
+
+  <div class="tiles" style="margin-top:18px;grid-template-columns:1fr">
+    <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it in Handyman Corner with a photo</span></button>
+  </div>
 </section>
 
 <!-- ================= GROCERIES ================= -->
@@ -740,7 +742,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 
 <!-- ================= FIX-IT ================= -->
 <section class="view" id="v-fixit" aria-labelledby="h-fix">
-  <h2 class="sign" id="h-fix"><svg><use href="#i-wrench"/></svg>Work orders</h2>
+  <h2 class="sign" id="h-fix"><svg><use href="#i-wrench"/></svg>Handyman Corner</h2>
   <div class="clipboard">
     <div class="clip" aria-hidden="true"></div>
     <details class="formcard" id="woDetails">
@@ -761,7 +763,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         </div>
         <label class="field"><span>Details</span><textarea id="woNote" placeholder="Anything that helps whoever fixes it"></textarea></label>
         <label class="photo-pick"><svg><use href="#i-cam"/></svg><span id="woPhotoLbl">Add a photo</span><input type="file" accept="image/*" id="woPhoto"><img id="woPrev" alt="" hidden></label>
-        <button class="btn pine wide" type="submit" style="margin-top:12px">Add work order</button>
+        <button class="btn pine wide" type="submit" style="margin-top:12px">Add to Handyman Corner</button>
       </form>
     </details>
     <div id="woList"></div>
@@ -1321,7 +1323,7 @@ function renderMaintenance(){
         <button class="btn pine sm" data-wfix="${w.id}">Mark fixed</button>
         <button class="btn ghost sm" data-wdel="${w.id}">Remove</button>
       </div>
-    </article>`).join('') : `<p class="empty-note">No open work orders. Everything's working.</p>`;
+    </article>`).join('') : `<p class="empty-note">Nothing in Handyman Corner. Everything's working.</p>`;
 }
 
 const INV_CATS = ['Tools','Yard & wood','Fire','Boat & fishing','Household','Cleaning','Kitchen'];
@@ -1440,7 +1442,7 @@ document.addEventListener('click', e => {
   if (d.go){ go(d.go, d.open); return; }
   if (d.gdel){ const g = S.groceries.find(x => x.id === d.gdel); toast(`Removed ${g.text}`, clearTo('groceries', [g])); }
   if (d.wfix){ const w = S.maintenance.find(x => x.id === d.wfix); toast('Marked fixed', clearTo('maintenance', [w])); }
-  if (d.wdel){ const w = S.maintenance.find(x => x.id === d.wdel); toast('Work order removed', clearTo('maintenance', [w])); }
+  if (d.wdel){ const w = S.maintenance.find(x => x.id === d.wdel); toast('Removed from Handyman Corner', clearTo('maintenance', [w])); }
   if (d.icyc){ const t = S.inventory.find(x => x.id === d.icyc); t.s = {ok:'low', low:'missing', missing:'ok'}[t.s]; renderInventory(); api({op:'update', list:'inventory', id:t.id, fields:{s:t.s}}).catch(()=>{}); }
   if (d.istar){ const t = S.inventory.find(x => x.id === d.istar); t.common = !t.common; renderInventory(); api({op:'update', list:'inventory', id:t.id, fields:{common:t.common}}).catch(()=>{}); toast(t.common ? `${t.item} moved to Most used` : `${t.item} unstarred`); }
   if (d.chip){ invCat = d.chip; invShowAll = false; renderInventory(); }
@@ -1471,7 +1473,7 @@ $('#woForm').addEventListener('submit', e => {
   const photo = woPhoto;
   S.maintenance.push(item);
   e.target.reset(); woPhoto = null; $('#woPrev').hidden = true; $('#woPhotoLbl').textContent = 'Add a photo';
-  $('#woDetails').open = false; renderMaintenance(); toast('Work order added');
+  $('#woDetails').open = false; renderMaintenance(); toast('Added to Handyman Corner');
   (async () => {
     if (photo && live()){ const r = await api({op:'photo', dataUrl:photo}); item.photo = r.src; }
     await api({op:'add', list:'maintenance', item:Object.assign({}, item, {photo:item.photo || ''})});
