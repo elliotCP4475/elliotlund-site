@@ -271,6 +271,11 @@ button.pola:focus-visible{outline:3px solid var(--gold); outline-offset:3px}
 .pola::before{content:""; position:absolute; top:-6px; left:50%; width:14px; height:14px; margin-left:-7px; border-radius:50%; background:radial-gradient(circle at 35% 35%,#ff8a7a,#A8231F 70%); box-shadow:0 2px 2px rgba(0,0,0,.4); z-index:2}
 .pola .ph{aspect-ratio:1; background:#2b2b2b; overflow:hidden}
 .pola .ph img,.pola .ph svg{width:100%;height:100%;object-fit:cover;display:block}
+.phload{position:absolute; inset:0; display:grid; place-items:center; font-family:var(--hand, inherit); font-size:.8rem; color:#d8cbb0; background:linear-gradient(100deg,#2b2b2b 30%,#3a3530 50%,#2b2b2b 70%) 0 0/300% 100%; animation:phl 1.4s linear infinite; pointer-events:none}
+@keyframes phl{to{background-position:-300% 0}}
+.ph.loaded .phload{display:none}
+.ph.failed .phload{animation:none; background:#2b2b2b}
+.ph.failed .phload::after{content:"Couldn't load. Tap to try again."; position:absolute; inset:0; display:grid; place-items:center; padding:6px; text-align:center; background:#2b2b2b}
 .pola .cap{font-family:var(--hand); font-size:1.05rem; line-height:1.1; padding:6px 0 4px}
 .pola .cap small{display:block; font-size:.88rem; color:var(--ink-soft)}
 .cork .actions{margin-top:16px; display:flex; justify-content:center}
@@ -1268,7 +1273,18 @@ async function load(){
 function readOriginal(file){
   return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
 }
-const sized = (src, w) => /drive\.google\.com\/thumbnail/.test(src || '') ? src.replace(/sz=w\d+/, 'sz=w' + w) : src;
+/* Drive photos: Google's image host (lh3) is much faster and steadier than the
+   drive.google.com/thumbnail link the Sheet stores. If it fails, the image
+   falls back to the thumbnail link, then offers a tap to retry. */
+const driveId = src => ((src || '').match(/drive\.google\.com\/thumbnail\?id=([\w-]+)/) || [])[1];
+const sized = (src, w) => { const id = driveId(src); return id ? `https://lh3.googleusercontent.com/d/${id}=w${w}` : src; };
+const backup = (src, w) => { const id = driveId(src); return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w${w}` : ''; };
+document.addEventListener('error', e => {
+  const img = e.target; if (!(img instanceof HTMLImageElement) || !img.dataset.alt) return;
+  if (!img.dataset.tried){ img.dataset.tried = '1'; img.src = img.dataset.alt; return; }
+  img.closest('.ph, .thumbwrap')?.classList.add('failed');
+}, true);
+document.addEventListener('load', e => { const img = e.target; if (img instanceof HTMLImageElement) img.closest('.ph')?.classList.add('loaded'); }, true);
 function shrink(file){
   return new Promise((res, rej) => {
     const img = new Image();
@@ -1313,7 +1329,7 @@ function renderPantry(){
     <div class="corkrow"><span class="corktag">${pl}</span>
       <div class="polas">${Object.entries(S.pantry).filter(([k,p]) => p.place === pl).map(([k,p]) => `
         ${p.src ? `<button type="button" class="pola" data-view="${k}" aria-label="View the ${esc(pl.toLowerCase() + ' ' + p.label.toLowerCase())} photo">
-          <div class="ph"><img src="${sized(p.src, 600)}" alt="" loading="lazy"></div>
+          <div class="ph"><img src="${sized(p.src, 600)}" data-alt="${backup(p.src, 600)}" alt=""><span class="phload" aria-hidden="true">Loading photo…</span></div>
           <span class="cap">${esc(p.label)}<small>${fmtShort(p.at)}</small></span>
         </button>` : `<label class="pola" aria-label="Add a photo of the ${esc(pl.toLowerCase() + ' ' + p.label.toLowerCase())}">
           <div class="ph">${artFor(k)}<span class="polacam" aria-hidden="true"><svg><use href="#i-cam"/></svg></span></div>
@@ -1342,7 +1358,7 @@ function renderMaintenance(){
     <article class="ticket urg-${w.urg}">
       <div class="hd"><b>${esc(w.what)}</b><span class="pill ${w.urg}">${lbl[w.urg]}</span></div>
       <div class="meta">${esc(w.where)}, reported ${fmtShort(w.added)}</div>
-      ${w.photo ? `<img class="thumb" src="${w.photo}" alt="Photo of ${esc(w.what)}">` : ''}
+      ${w.photo ? `<img class="thumb" src="${sized(w.photo, 600)}" data-alt="${backup(w.photo, 600)}" alt="Photo of ${esc(w.what)}">` : ''}
       ${w.note ? `<p style="margin:0 0 10px">${esc(w.note)}</p>` : ''}
       <div style="display:flex;gap:8px">
         <button class="btn pine sm" data-wfix="${w.id}">Mark fixed</button>
@@ -1683,6 +1699,8 @@ function zoomAt(cx, cy, ns){
 function openViewer(k){
   const p = S.pantry[k]; if (!p || !p.src) return;
   viewKey = k; vs = 1; vx = 0; vy = 0; vApply();
+  if (document.querySelector('.ph.failed')) renderPantry();
+  delete vimg.dataset.tried; vimg.dataset.alt = backup(p.src, 8000);
   vimg.src = p.src.startsWith('data:') ? p.src : sized(p.src, 8000);
   vimg.alt = `${p.place} ${p.label.toLowerCase()} photo`;
   $('#vcap').textContent = `${p.place} ${p.label.toLowerCase()} · ${fmt(p.at)}`;
