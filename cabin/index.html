@@ -1538,7 +1538,7 @@ function zoomAt(cx, cy, ns){
 function openViewer(k){
   const p = S.pantry[k]; if (!p || !p.src) return;
   viewKey = k; vs = 1; vx = 0; vy = 0; vApply();
-  vimg.src = p.src.startsWith('data:') ? p.src : sized(p.src, 4000);
+  vimg.src = p.src.startsWith('data:') ? p.src : sized(p.src, 8000);
   vimg.alt = `${p.place} ${p.label.toLowerCase()} photo`;
   $('#vcap').textContent = `${p.place} ${p.label.toLowerCase()} · ${fmt(p.at)}`;
   $('#vrep').dataset.snap = k;
