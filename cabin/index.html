@@ -400,7 +400,13 @@ details.bin[open] summary{border-bottom:1px solid rgba(255,255,255,.15)}
 .invgroup span{font-weight:700; color:var(--ink-soft); font-size:.82rem}
 .inv{display:flex; align-items:center; gap:6px; padding:6px 6px 6px 4px; border-bottom:1px solid #EADDBD; min-height:56px}
 .inv:last-child{border-bottom:0}
-.inv .what{flex:1; min-width:0}
+.inv .what{flex:1; min-width:0; border:0; background:transparent; text-align:left; padding:4px 2px; font:inherit; color:inherit; cursor:pointer; border-radius:6px}
+.inv .what:active{background:#F1E2BC}
+.inv .what .addnote{font-style:italic; opacity:.75}
+.inv.editing{display:block; padding:10px 12px 12px; background:#FFF3D1}
+.iedit .field{display:block; margin-bottom:8px}
+.iedit input{width:100%; box-sizing:border-box}
+.ieditbtns{display:flex; gap:8px}
 .inv .what b{display:block; font-size:1rem; line-height:1.25}
 .inv .what small{display:block; color:var(--ink-soft); font-size:.84rem; line-height:1.25}
 .gtag{display:inline-block; margin-left:6px; padding:1px 6px; border-radius:4px; background:#7A4E26; color:#FCE9B8; font-size:.68rem; font-weight:800; letter-spacing:.03em; vertical-align:2px; text-transform:uppercase}
@@ -1387,16 +1393,27 @@ function hl(text, q){
   return esc(text.slice(0,i)) + '<mark>' + esc(text.slice(i, i+q.length)) + '</mark>' + esc(text.slice(i+q.length));
 }
 function invRow(bk, t, q){
-  const what = `<div class="what"><b>${hl(t.item,q)}</b><small>${hl(t.where,q)}</small></div>`;
+  if (editing && editing.id === t.id) return editRow(t);
+  const sub = t.where ? `<small>${hl(t.where,q)}</small>` : `<small class="addnote">Tap to add where it is</small>`;
+  const tag = bk === 'sup' && garageSup(t) ? '<span class="gtag">Garage</span>' : '';
+  const what = `<button type="button" class="what" data-iedit="${t.id}" aria-label="Edit ${esc(t.item)}"><b>${hl(t.item,q)}${tag}</b>${sub}</button>`;
   const del = `<button class="iconbtn" data-idel="${t.id}" aria-label="Remove ${esc(t.item)}"><svg><use href="#i-trash"/></svg></button>`;
   const stb = `<button class="st" data-s="${t.s || 'ok'}" data-icyc="${t.id}" aria-label="${esc(t.item)}: ${SLBL[t.s] || 'Stocked'}. Tap to change.">${SLBL[t.s] || 'Stocked'}</button>`;
   if (bk === 'sup'){
-    const w = garageSup(t) ? `<div class="what"><b>${hl(t.item,q)}<span class="gtag">Garage</span></b><small>${hl(t.where,q)}</small></div>` : what;
-    return `<div class="inv" data-row="${t.id}" style="padding-left:12px">${w}${stb}${del}</div>`;
+    return `<div class="inv" data-row="${t.id}" style="padding-left:12px">${what}${stb}${del}</div>`;
   }
   if (garageSup(t)) return `<div class="inv" style="padding-left:12px">${what}${stb}${del}</div>`;
   return `<div class="inv">
     <button class="star" data-istar="${t.id}" aria-pressed="${t.common}" aria-label="${t.common ? 'Unstar' : 'Star'} ${esc(t.item)}"><svg><use href="#i-star"/></svg></button>${what}${del}</div>`;
+}
+/* Tap an item to edit its name and where it is. The draft survives the 30-second refresh. */
+let editing = null;
+function editRow(t){
+  return `<div class="inv editing" data-row="${t.id}"><form class="iedit" data-ieditform="${t.id}" autocomplete="off">
+    <label class="field"><span>Item</span><input name="item" required value="${esc(editing.item)}"></label>
+    <label class="field"><span>Where it is, or a note</span><input name="where" value="${esc(editing.where)}" placeholder="Drawer left of the stove" enterkeyhint="done"></label>
+    <div class="ieditbtns"><button class="btn pine sm" type="submit">Save</button><button class="btn ghost sm" type="button" data-icancel>Cancel</button></div>
+  </form></div>`;
 }
 function renderBoard(bk){
   const B = BOARDS[bk], st = BS[bk];
@@ -1545,6 +1562,9 @@ document.addEventListener('click', e => {
   if (d.istar){ const t = S.inventory.find(x => x.id === d.istar); t.common = !t.common; renderInventory(); api({op:'update', list:'inventory', id:t.id, fields:{common:t.common}}).catch(()=>{}); toast(t.common ? `${t.item} moved to Most used` : `${t.item} unstarred`); }
   if (d.chip){ const [bk, c] = d.chip.split('|'); BS[bk].cat = c; BS[bk].all = false; renderInventory(); }
   if (d.invmore){ BS[d.invmore].all = true; renderInventory(); }
+  if (d.iedit){ const t = S.inventory.find(x => x.id === d.iedit); editing = {id:t.id, item:t.item, where:t.where || ''}; renderInventory();
+    const f = document.querySelector(`[data-ieditform="${t.id}"] input[name=where]`); if (f){ f.focus(); f.scrollIntoView({block:'center', behavior:'smooth'}); } }
+  if ('icancel' in d){ editing = null; renderInventory(); }
   if (d.idel){ const t = S.inventory.find(x => x.id === d.idel); toast(`Removed ${t.item}`, clearTo('inventory', [t])); }
   if (d.restore){ restore(d.restore); }
 });
@@ -1591,6 +1611,16 @@ for (const bk of Object.keys(BOARDS)){
     e.target.reset(); $b('Form').hidden = true; $b('AddBtn').hidden = false; renderInventory(); toast(`${item.item} added`);
   });
 }
+
+document.addEventListener('input', e => { const f = e.target.closest('form.iedit'); if (f && editing) editing[e.target.name] = e.target.value; });
+document.addEventListener('submit', e => {
+  const f = e.target.closest('form.iedit'); if (!f) return;
+  e.preventDefault();
+  const t = S.inventory.find(x => x.id === f.dataset.ieditform); if (!t) return;
+  const fields = {item:f.item.value.trim() || t.item, where:f.where.value.trim()};
+  Object.assign(t, fields); editing = null; renderInventory(); toast(`${t.item} saved`);
+  api({op:'update', list:'inventory', id:t.id, fields}).catch(()=>{});
+});
 
 /* ---------- Tabs ---------- */
 function go(tab, openId){
