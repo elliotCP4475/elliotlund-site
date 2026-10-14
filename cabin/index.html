@@ -403,6 +403,7 @@ details.bin[open] summary{border-bottom:1px solid rgba(255,255,255,.15)}
 .inv .what{flex:1; min-width:0}
 .inv .what b{display:block; font-size:1rem; line-height:1.25}
 .inv .what small{display:block; color:var(--ink-soft); font-size:.84rem; line-height:1.25}
+.gtag{display:inline-block; margin-left:6px; padding:1px 6px; border-radius:4px; background:#7A4E26; color:#FCE9B8; font-size:.68rem; font-weight:800; letter-spacing:.03em; vertical-align:2px; text-transform:uppercase}
 .inv mark{background:#F6D68C; color:inherit; border-radius:3px; padding:0 1px}
 .star{width:36px; height:40px; flex:none; border:0; background:transparent; display:grid; place-items:center; color:#B9A57B}
 .star svg{width:22px; height:22px; fill:none}
@@ -800,10 +801,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   </div>
   <details class="bin" id="bin-maintenance"></details>
 
-  <h2 class="sign"><svg><use href="#i-wrench"/></svg>Tools</h2>
+  <h2 class="sign"><svg><use href="#i-wrench"/></svg>Tools &amp; supplies</h2>
   <div class="peg">
     <div class="invbar">
-      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="toolsQ" placeholder="Search tools" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search tools</span></label>
+      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="toolsQ" placeholder="Search the garage" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search the garage</span></label>
       <div class="chips" id="toolsChips" role="toolbar" aria-label="Filter by category"></div>
     </div>
     <div class="invpaper" id="toolsList"></div>
@@ -815,7 +816,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <div style="display:flex;gap:8px"><button class="btn pine" type="submit" style="flex:1">Add item</button><button class="btn ghost" type="button" id="toolsCancel">Cancel</button></div>
     </form>
   </div>
-  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Tap the star to keep a tool at the top. If something's broken, add it to Handyman Corner.</p>
+  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Tap the star to keep a tool at the top. Supplies kept in the garage can be marked Low or Out, and then they show up on the Supplies list too. If something's broken, add it to Handyman Corner.</p>
   <details class="bin" id="bin-tools"></details>
 </section>
 
@@ -1368,12 +1369,14 @@ function renderMaintenance(){
 }
 
 const BOARDS = {
-  tools:{cats:['Tools','Yard','Boat & fishing','Games'], label:'tools'},
+  tools:{cats:['Tools','Yard','Boat & fishing','Games','Supplies'], label:'tools'},
   sup:{cats:['Firewood & fire','Kitchen & pantry','Cleaning','Bath & paper','Outdoors','Household'], label:'supplies', status:true},
 };
 const LEGACY_CAT = {'Yard & wood':'Yard', 'Fire':'Firewood & fire', 'Kitchen':'Kitchen & pantry'};
 const catOf = t => LEGACY_CAT[t.cat] || t.cat;
 const boardOf = t => BOARDS.sup.cats.includes(catOf(t)) ? 'sup' : 'tools';
+/* Supplies added from the Garage live in the Garage, and also show on the Supplies list while they're Low or Out. */
+const garageSup = t => boardOf(t) === 'tools' && catOf(t) === 'Supplies';
 const BS = {tools:{q:'', cat:'All', all:false}, sup:{q:'', cat:'All', all:false}};
 const SLBL = {ok:'Stocked', low:'Low', missing:'Out'};
 const LOWCHIP = 'To buy';
@@ -1386,14 +1389,18 @@ function hl(text, q){
 function invRow(bk, t, q){
   const what = `<div class="what"><b>${hl(t.item,q)}</b><small>${hl(t.where,q)}</small></div>`;
   const del = `<button class="iconbtn" data-idel="${t.id}" aria-label="Remove ${esc(t.item)}"><svg><use href="#i-trash"/></svg></button>`;
-  if (bk === 'sup') return `<div class="inv" data-row="${t.id}" style="padding-left:12px">${what}
-    <button class="st" data-s="${t.s || 'ok'}" data-icyc="${t.id}" aria-label="${esc(t.item)}: ${SLBL[t.s] || 'Stocked'}. Tap to change.">${SLBL[t.s] || 'Stocked'}</button>${del}</div>`;
+  const stb = `<button class="st" data-s="${t.s || 'ok'}" data-icyc="${t.id}" aria-label="${esc(t.item)}: ${SLBL[t.s] || 'Stocked'}. Tap to change.">${SLBL[t.s] || 'Stocked'}</button>`;
+  if (bk === 'sup'){
+    const w = garageSup(t) ? `<div class="what"><b>${hl(t.item,q)}<span class="gtag">Garage</span></b><small>${hl(t.where,q)}</small></div>` : what;
+    return `<div class="inv" data-row="${t.id}" style="padding-left:12px">${w}${stb}${del}</div>`;
+  }
+  if (garageSup(t)) return `<div class="inv" style="padding-left:12px">${what}${stb}${del}</div>`;
   return `<div class="inv">
     <button class="star" data-istar="${t.id}" aria-pressed="${t.common}" aria-label="${t.common ? 'Unstar' : 'Star'} ${esc(t.item)}"><svg><use href="#i-star"/></svg></button>${what}${del}</div>`;
 }
 function renderBoard(bk){
   const B = BOARDS[bk], st = BS[bk];
-  const all = S.inventory.filter(t => boardOf(t) === bk);
+  const all = S.inventory.filter(t => boardOf(t) === bk || (bk === 'sup' && garageSup(t) && (t.s || 'ok') !== 'ok'));
   const isLow = t => (t.s || 'ok') !== 'ok';
   const count = c => c === 'All' ? all.length : c === LOWCHIP ? all.filter(isLow).length : all.filter(t => catOf(t) === c).length;
   const chips = ['All', ...(B.status ? [LOWCHIP] : []), ...B.cats].filter(c => c === 'All' || count(c));
@@ -1454,9 +1461,9 @@ function queueMove(t){
   moveTimer = setTimeout(() => {
     const id = moving.id, before = document.querySelector(`[data-row="${id}"]`);
     const y0 = before ? before.getBoundingClientRect().top : null;
-    renderBoard('sup');
+    renderBoard('sup'); renderBoard('tools');
     const row = document.querySelector(`[data-row="${id}"]`);
-    if (!row) return;
+    if (!row){ toast(`${moving.item} is stocked. It's back on the Garage list only.`); return; }
     const where = {missing:'Out', low:'Low', ok:'Stocked'}[moving.s];
     const dy = y0 === null ? 0 : y0 - row.getBoundingClientRect().top;
     if (Math.abs(dy) > 4 && !matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -1533,7 +1540,8 @@ document.addEventListener('click', e => {
   if (d.wdel){ const w = S.maintenance.find(x => x.id === d.wdel); toast('Removed from Handyman Corner', clearTo('maintenance', [w])); }
   if (d.icyc){ const t = S.inventory.find(x => x.id === d.icyc); t.s = {ok:'low', low:'missing', missing:'ok'}[t.s || 'ok'];
     b.dataset.s = t.s; b.textContent = SLBL[t.s]; b.setAttribute('aria-label', `${t.item}: ${SLBL[t.s]}. Tap to change.`);
-    queueMove(t); api({op:'update', list:'inventory', id:t.id, fields:{s:t.s}}).catch(()=>{}); }
+    if (b.closest('#supList')) queueMove(t); else { renderBoard('sup'); if (garageSup(t)) toast(t.s === 'ok' ? `${t.item}: Stocked` : `${t.item}: ${SLBL[t.s]}. Added to the Supplies list.`); }
+    api({op:'update', list:'inventory', id:t.id, fields:{s:t.s}}).catch(()=>{}); }
   if (d.istar){ const t = S.inventory.find(x => x.id === d.istar); t.common = !t.common; renderInventory(); api({op:'update', list:'inventory', id:t.id, fields:{common:t.common}}).catch(()=>{}); toast(t.common ? `${t.item} moved to Most used` : `${t.item} unstarred`); }
   if (d.chip){ const [bk, c] = d.chip.split('|'); BS[bk].cat = c; BS[bk].all = false; renderInventory(); }
   if (d.invmore){ BS[d.invmore].all = true; renderInventory(); }
