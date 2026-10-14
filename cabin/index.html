@@ -378,6 +378,7 @@ details.bin[open] summary{border-bottom:1px solid rgba(255,255,255,.15)}
 .status[data-s="missing"]{background:var(--red)}
 .tag .iconbtn{width:36px;height:38px}
 .peg .actions{margin-top:14px; display:flex; justify-content:center}
+.peg.shelf{border-color:#5E3816; background-color:#B9874E; background-image:repeating-linear-gradient(180deg, rgba(255,235,200,.08) 0 3px, transparent 3px 58px, rgba(46,26,13,.45) 58px 62px)}
 
 .invbar{position:sticky; top:calc(56px + env(safe-area-inset-top)); z-index:5; margin:-4px -4px 10px; padding:8px; border-radius:10px; background:rgba(122,78,38,.96); box-shadow:0 4px 10px rgba(0,0,0,.3)}
 .search{display:flex; align-items:center; gap:8px; background:#fff; border:2px solid #2A1708; border-radius:12px; padding:0 10px; min-height:48px}
@@ -403,6 +404,9 @@ details.bin[open] summary{border-bottom:1px solid rgba(255,255,255,.15)}
 .star[aria-pressed="true"]{color:var(--orange)}
 .star[aria-pressed="true"] svg{fill:currentColor}
 .st{flex:none; min-width:66px; min-height:34px; border-radius:999px; border:2px solid #CDBF9C; background:transparent; font-weight:800; font-size:.8rem; color:var(--ink-soft)}
+.inv.moved{animation:moved 2.2s ease-out}
+@keyframes moved{0%,35%{background:#F6D68C; box-shadow:inset 4px 0 0 var(--orange)} 100%{background:transparent; box-shadow:inset 0 0 0 transparent}}
+.st[data-s="ok"]{border-color:#9DB59A; color:var(--pine)}
 .st[data-s="low"]{background:var(--gold); border-color:#8A5D12; color:var(--ink)}
 .st[data-s="missing"]{background:var(--red); border-color:#5e120f; color:#fff}
 .inv .iconbtn{width:34px; height:40px}
@@ -617,7 +621,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   </div>
 
   <div class="tiles" style="margin-top:18px">
-    <button class="tile" data-go="groceries"><svg style="color:var(--orange)"><use href="#i-basket"/></svg><b>Groceries &amp; pantry</b><span>See what's in the fridge, add to the list</span></button>
+    <button class="tile" data-go="groceries"><svg style="color:var(--orange)"><use href="#i-basket"/></svg><b>Supplies &amp; groceries</b><span>Pantry photos, the grocery list, and what's running low</span></button>
     <button class="tile" data-go="guide" data-open="g-where"><svg style="color:var(--pine)"><use href="#i-fire"/></svg><b>Wood &amp; tools</b><span>Where things are kept</span></button>
   </div>
 
@@ -701,7 +705,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   </div>
 </section>
 
-<!-- ================= GROCERIES ================= -->
+<!-- ================= SUPPLIES ================= -->
 <section class="view" id="v-groceries" aria-labelledby="h-groc">
   <h2 class="sign" id="h-groc"><svg><use href="#i-basket"/></svg>Pantry</h2>
   <div class="cork">
@@ -725,7 +729,25 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       </div>
     </div>
   </div>
-    <div class="paper store">
+  <h2 class="sign"><svg><use href="#i-basket"/></svg>Supplies</h2>
+  <div class="peg shelf">
+    <div class="invbar">
+      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="supQ" placeholder="Search supplies" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search supplies</span></label>
+      <div class="chips" id="supChips" role="toolbar" aria-label="Filter by category"></div>
+    </div>
+    <div class="invpaper" id="supList"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="supAddBtn"><svg><use href="#i-plus"/></svg>Add an item</button></div>
+    <form class="formcard" id="supForm" hidden style="margin-top:12px" autocomplete="off">
+      <label class="field"><span>Item</span><input type="text" id="supItem" required placeholder="Paper towels"></label>
+      <label class="field"><span>Where it's kept</span><input type="text" id="supWhere" required placeholder="Bunkhouse pantry"></label>
+      <label class="field"><span>Category</span><select id="supCat"></select></label>
+      <div style="display:flex;gap:8px"><button class="btn pine" type="submit" style="flex:1">Add item</button><button class="btn ghost" type="button" id="supCancel">Cancel</button></div>
+    </form>
+  </div>
+  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Tap the label to mark something Low or Out. Those move to the top, so this doubles as the shopping list.</p>
+  <details class="bin" id="bin-sup"></details>
+
+  <div class="paper store" style="margin-top:22px">
     <h3>Stocking up</h3>
     <p><b>Trig's</b>, 9750 Hwy 70, Minocqua. Full-service grocery and pharmacy, right on Hwy 70 on the way in. About 35 minutes, 17 miles from the cabin.</p>
     <div class="row">
@@ -773,23 +795,23 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   </div>
   <details class="bin" id="bin-maintenance"></details>
 
-  <h2 class="sign"><svg><use href="#i-wrench"/></svg>Tools &amp; supplies</h2>
+  <h2 class="sign"><svg><use href="#i-wrench"/></svg>Tools</h2>
   <div class="peg">
     <div class="invbar">
-      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="invQ" placeholder="Search tools and supplies" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search tools and supplies</span></label>
-      <div class="chips" id="invChips" role="toolbar" aria-label="Filter by category"></div>
+      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="toolsQ" placeholder="Search tools" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search tools</span></label>
+      <div class="chips" id="toolsChips" role="toolbar" aria-label="Filter by category"></div>
     </div>
-    <div class="invpaper" id="invList"></div>
-    <div class="actions"><button class="btn ghost" type="button" id="invAddBtn"><svg><use href="#i-plus"/></svg>Add an item</button></div>
-    <form class="formcard" id="invForm" hidden style="margin-top:12px" autocomplete="off">
-      <label class="field"><span>Item</span><input type="text" id="invItem" required placeholder="Shop vac"></label>
-      <label class="field"><span>Where it's kept</span><input type="text" id="invWhere" required placeholder="Garage, left wall"></label>
-      <label class="field"><span>Category</span><select id="invCat"></select></label>
-      <div style="display:flex;gap:8px"><button class="btn pine" type="submit" style="flex:1">Add item</button><button class="btn ghost" type="button" id="invCancel">Cancel</button></div>
+    <div class="invpaper" id="toolsList"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="toolsAddBtn"><svg><use href="#i-plus"/></svg>Add an item</button></div>
+    <form class="formcard" id="toolsForm" hidden style="margin-top:12px" autocomplete="off">
+      <label class="field"><span>Item</span><input type="text" id="toolsItem" required placeholder="Shop vac"></label>
+      <label class="field"><span>Where it's kept</span><input type="text" id="toolsWhere" required placeholder="Main garage, left wall"></label>
+      <label class="field"><span>Category</span><select id="toolsCat"></select></label>
+      <div style="display:flex;gap:8px"><button class="btn pine" type="submit" style="flex:1">Add item</button><button class="btn ghost" type="button" id="toolsCancel">Cancel</button></div>
     </form>
   </div>
-  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Tap the star to keep an item at the top. Tap the status to switch between OK, low, and missing.</p>
-  <details class="bin" id="bin-inventory"></details>
+  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Tap the star to keep a tool at the top. If something's broken, add it to Handyman Corner.</p>
+  <details class="bin" id="bin-tools"></details>
 </section>
 
 <!-- ================= GUIDE ================= -->
@@ -1050,7 +1072,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 <!-- ================= NAV ================= -->
 <nav class="tabs" aria-label="Sections">
   <button data-tab="home" aria-current="page"><svg><use href="#i-home"/></svg>Home</button>
-  <button data-tab="groceries"><svg><use href="#i-basket"/></svg>Groceries</button>
+  <button data-tab="groceries"><svg><use href="#i-basket"/></svg>Supplies</button>
   <button data-tab="fixit"><svg><use href="#i-wrench"/></svg>Garage</button>
   <button data-tab="guide"><svg><use href="#i-pine"/></svg>Guide</button>
   <button data-tab="checkout"><svg><use href="#i-door"/></svg>Checkout</button>
@@ -1329,60 +1351,106 @@ function renderMaintenance(){
     </article>`).join('') : `<p class="empty-note">Nothing in Handyman Corner. Everything's working.</p>`;
 }
 
-const INV_CATS = ['Tools','Yard & wood','Fire','Boat & fishing','Household','Cleaning','Kitchen'];
-let invQ = '', invCat = 'All', invShowAll = false;
+const BOARDS = {
+  tools:{cats:['Tools','Yard','Boat & fishing','Games'], label:'tools'},
+  sup:{cats:['Firewood & fire','Kitchen & pantry','Cleaning','Bath & paper','Outdoors','Household'], label:'supplies', status:true},
+};
+const LEGACY_CAT = {'Yard & wood':'Yard', 'Fire':'Firewood & fire', 'Kitchen':'Kitchen & pantry'};
+const catOf = t => LEGACY_CAT[t.cat] || t.cat;
+const boardOf = t => BOARDS.sup.cats.includes(catOf(t)) ? 'sup' : 'tools';
+const BS = {tools:{q:'', cat:'All', all:false}, sup:{q:'', cat:'All', all:false}};
+const SLBL = {ok:'Stocked', low:'Low', missing:'Out'};
+const LOWCHIP = 'To buy';
 const norm = t => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 function hl(text, q){
   if (!q) return esc(text);
   const i = norm(text).indexOf(q); if (i < 0) return esc(text);
   return esc(text.slice(0,i)) + '<mark>' + esc(text.slice(i, i+q.length)) + '</mark>' + esc(text.slice(i+q.length));
 }
-function invRow(t, q){
-  const lbl = {ok:'OK', low:'Low', missing:'Missing'};
+function invRow(bk, t, q){
+  const what = `<div class="what"><b>${hl(t.item,q)}</b><small>${hl(t.where,q)}</small></div>`;
+  const del = `<button class="iconbtn" data-idel="${t.id}" aria-label="Remove ${esc(t.item)}"><svg><use href="#i-trash"/></svg></button>`;
+  if (bk === 'sup') return `<div class="inv" data-row="${t.id}" style="padding-left:12px">${what}
+    <button class="st" data-s="${t.s || 'ok'}" data-icyc="${t.id}" aria-label="${esc(t.item)}: ${SLBL[t.s] || 'Stocked'}. Tap to change.">${SLBL[t.s] || 'Stocked'}</button>${del}</div>`;
   return `<div class="inv">
-    <button class="star" data-istar="${t.id}" aria-pressed="${t.common}" aria-label="${t.common ? 'Unstar' : 'Star'} ${esc(t.item)}"><svg><use href="#i-star"/></svg></button>
-    <div class="what"><b>${hl(t.item,q)}</b><small>${hl(t.where,q)}</small></div>
-    <button class="st" data-s="${t.s}" data-icyc="${t.id}" aria-label="${esc(t.item)}: ${lbl[t.s]}. Tap to change.">${lbl[t.s]}</button>
-    <button class="iconbtn" data-idel="${t.id}" aria-label="Remove ${esc(t.item)}"><svg><use href="#i-trash"/></svg></button>
-  </div>`;
+    <button class="star" data-istar="${t.id}" aria-pressed="${t.common}" aria-label="${t.common ? 'Unstar' : 'Star'} ${esc(t.item)}"><svg><use href="#i-star"/></svg></button>${what}${del}</div>`;
 }
-function renderInventory(){
-  const all = S.inventory;
-  const count = c => c === 'All' ? all.length : c === 'Needs attention' ? all.filter(t => t.s !== 'ok').length : all.filter(t => t.cat === c).length;
-  const chips = ['All', 'Needs attention', ...INV_CATS].filter(c => c === 'All' || count(c));
-  $('#invChips').innerHTML = chips.map(c => `<button class="chip" data-chip="${esc(c)}" aria-pressed="${c === invCat}">${esc(c)}<span class="n">${count(c)}</span></button>`).join('');
+function renderBoard(bk){
+  const B = BOARDS[bk], st = BS[bk];
+  const all = S.inventory.filter(t => boardOf(t) === bk);
+  const isLow = t => (t.s || 'ok') !== 'ok';
+  const count = c => c === 'All' ? all.length : c === LOWCHIP ? all.filter(isLow).length : all.filter(t => catOf(t) === c).length;
+  const chips = ['All', ...(B.status ? [LOWCHIP] : []), ...B.cats].filter(c => c === 'All' || count(c));
+  if (!chips.includes(st.cat)) st.cat = 'All';
+  $('#' + bk + 'Chips').innerHTML = chips.map(c => `<button class="chip" data-chip="${bk}|${esc(c)}" aria-pressed="${c === st.cat}">${esc(c)}<span class="n">${count(c)}</span></button>`).join('');
 
-  const q = norm(invQ.trim());
-  let L = all.filter(t => invCat === 'All' || (invCat === 'Needs attention' ? t.s !== 'ok' : t.cat === invCat));
+  const q = norm(st.q.trim());
+  let L = all.filter(t => st.cat === 'All' || (st.cat === LOWCHIP ? isLow(t) : catOf(t) === st.cat));
   const byName = (a,b) => a.item.localeCompare(b.item);
   let html = '';
   if (q){
     const score = t => {
-      const n = norm(t.item), w = norm(t.where), c = norm(t.cat);
+      const n = norm(t.item), w = norm(t.where), c = norm(catOf(t));
       let sc = n.startsWith(q) ? 3 : n.split(/\s+/).some(x => x.startsWith(q)) ? 2 : n.includes(q) ? 1 : (w.includes(q) || c.includes(q)) ? .5 : 0;
       return sc ? sc + (t.common ? 2 : 0) : 0;
     };
     L = L.map(t => [score(t), t]).filter(x => x[0]).sort((a,b) => b[0]-a[0] || byName(a[1],b[1])).map(x => x[1]);
-    html = L.length ? `<div class="invgroup">Results<span>${L.length}</span></div>` + L.map(t => invRow(t,q)).join('')
-                    : `<p class="invempty">Nothing matches "${esc(invQ.trim())}". Add it below if it's at the cabin.</p>`;
+    html = L.length ? `<div class="invgroup">Results<span>${L.length}</span></div>` + L.map(t => invRow(bk,t,q)).join('')
+                    : `<p class="invempty">Nothing matches "${esc(st.q.trim())}". Add it below if it's at the cabin.</p>`;
   } else {
-    const top = L.filter(t => t.common).sort(byName);
-    const rest = L.filter(t => !t.common);
-    if (top.length) html += `<div class="invgroup">Most used<span>${top.length}</span></div>` + top.map(t => invRow(t)).join('');
-    const cats = invCat === 'All' || invCat === 'Needs attention' ? INV_CATS : [invCat];
-    let shown = 0; const LIMIT = 25;
-    for (const c of cats){
-      const g = rest.filter(t => t.cat === c).sort(byName); if (!g.length) continue;
-      if (!invShowAll && invCat === 'All' && shown >= LIMIT) break;
-      const take = (!invShowAll && invCat === 'All') ? g.slice(0, Math.max(0, LIMIT - shown)) : g;
-      html += `<div class="invgroup">${esc(c)}<span>${g.length}</span></div>` + take.map(t => invRow(t)).join('');
-      shown += take.length;
+    if (B.status){
+      const out = L.filter(t => t.s === 'missing'), low = L.filter(t => t.s === 'low'), rest = L.filter(t => !isLow(t));
+      if (out.length) html += `<div class="invgroup">Out<span>${out.length}</span></div>` + out.map(t => invRow(bk,t)).join('');
+      if (low.length) html += `<div class="invgroup">Low<span>${low.length}</span></div>` + low.map(t => invRow(bk,t)).join('');
+      if (rest.length && st.cat !== LOWCHIP){
+        const LIMIT = 40, take = st.all ? rest : rest.slice(0, LIMIT);
+        html += `<div class="invgroup">Stocked<span>${rest.length}</span></div>` + take.map(t => invRow(bk,t)).join('');
+        if (take.length < rest.length) html += `<button class="invmore" data-invmore="${bk}">Show all ${rest.length} stocked items</button>`;
+      }
+    } else {
+      const top = L.filter(t => t.common).sort(byName);
+      const rest = L.filter(t => !t.common);
+      if (top.length) html += `<div class="invgroup">Most used<span>${top.length}</span></div>` + top.map(t => invRow(bk,t)).join('');
+      const cats = st.cat === 'All' ? B.cats : [st.cat];
+      const known = new Set(B.cats);
+      const other = rest.filter(t => !known.has(catOf(t)));
+      let shown = 0; const LIMIT = 25;
+      for (const c of [...cats, ...(other.length && st.cat === 'All' ? ['Other'] : [])]){
+        const g = (c === 'Other' ? other : rest.filter(t => catOf(t) === c)).sort(byName); if (!g.length) continue;
+        if (!st.all && st.cat === 'All' && shown >= LIMIT) break;
+        const take = (!st.all && st.cat === 'All') ? g.slice(0, Math.max(0, LIMIT - shown)) : g;
+        html += `<div class="invgroup">${esc(c)}<span>${g.length}</span></div>` + take.map(t => invRow(bk,t)).join('');
+        shown += take.length;
+      }
+      if (!st.all && st.cat === 'All' && rest.length > shown) html += `<button class="invmore" data-invmore="${bk}">Show all ${all.length} items</button>`;
     }
-    const total = rest.length;
-    if (!invShowAll && invCat === 'All' && total > shown) html += `<button class="invmore" data-invmore>Show all ${all.length} items</button>`;
-    if (!html) html = `<p class="invempty">Nothing here yet.</p>`;
+    if (!html) html = `<p class="invempty">${B.status ? (st.cat === LOWCHIP ? 'Nothing to buy. Everything is stocked.' : 'No supplies listed yet. Add the first one below.') : 'Nothing here yet.'}</p>`;
   }
-  $('#invList').innerHTML = html;
+  $('#' + bk + 'List').innerHTML = html;
+}
+function renderInventory(){ renderBoard('tools'); renderBoard('sup'); }
+
+/* A supply changes status in place; after a short pause (so it can be tapped
+   again) it slides to its new spot, glows, and the page follows it there. */
+let moveTimer = null, moving = null;
+function queueMove(t){
+  moving = t; clearTimeout(moveTimer);
+  moveTimer = setTimeout(() => {
+    const id = moving.id, before = document.querySelector(`[data-row="${id}"]`);
+    const y0 = before ? before.getBoundingClientRect().top : null;
+    renderBoard('sup');
+    const row = document.querySelector(`[data-row="${id}"]`);
+    if (!row) return;
+    const where = {missing:'Out', low:'Low', ok:'Stocked'}[moving.s];
+    const dy = y0 === null ? 0 : y0 - row.getBoundingClientRect().top;
+    if (Math.abs(dy) > 4 && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+      row.style.transition = 'none'; row.style.transform = `translateY(${dy}px)`; row.style.position = 'relative'; row.style.zIndex = 2;
+      requestAnimationFrame(() => requestAnimationFrame(() => { row.style.transition = 'transform .45s cubic-bezier(.2,.8,.2,1)'; row.style.transform = ''; }));
+      setTimeout(() => { row.style.zIndex = ''; const r = row.getBoundingClientRect(); if (r.top < 120 || r.bottom > innerHeight - 90) row.scrollIntoView({behavior:'smooth', block:'center'}); }, 470);
+    }
+    row.classList.remove('moved'); void row.offsetWidth; row.classList.add('moved');
+    if (Math.abs(dy) > 4) toast(`${moving.item} moved to ${where}`);
+  }, 900);
 }
 
 function renderBins(){
@@ -1390,11 +1458,13 @@ function renderBins(){
   const conf = {
     groceries:{title:'Recently cleared', name:d => d.text, sub:d => d.note},
     maintenance:{title:'Recently fixed', name:d => d.what, sub:d => d.where},
-    inventory:{title:'Recently removed', name:d => d.item, sub:d => d.where},
+    tools:{list:'inventory', title:'Recently removed', name:d => d.item, sub:d => d.where, keep:d => boardOf(d) === 'tools'},
+    sup:{list:'inventory', title:'Recently removed', name:d => d.item, sub:d => d.where, keep:d => boardOf(d) === 'sup'},
   };
-  for (const [list, c] of Object.entries(conf)){
-    const items = S.cleared.filter(x => x.list === list && x.at >= cutoff);
-    const el = $('#bin-' + list), wasOpen = el.open;
+  for (const [key, c] of Object.entries(conf)){
+    const list = c.list || key;
+    const items = S.cleared.filter(x => x.list === list && x.at >= cutoff && (!c.keep || c.keep(x.data)));
+    const el = $('#bin-' + key), wasOpen = el.open;
     el.innerHTML = `
       <summary><svg><use href="#i-trash"/></svg>${c.title}<span class="ct">${items.length || 'Empty'}</span></summary>
       <ul class="binlist">${items.length ? items.map(x => `
@@ -1446,10 +1516,12 @@ document.addEventListener('click', e => {
   if (d.gdel){ const g = S.groceries.find(x => x.id === d.gdel); toast(`Removed ${g.text}`, clearTo('groceries', [g])); }
   if (d.wfix){ const w = S.maintenance.find(x => x.id === d.wfix); toast('Marked fixed', clearTo('maintenance', [w])); }
   if (d.wdel){ const w = S.maintenance.find(x => x.id === d.wdel); toast('Removed from Handyman Corner', clearTo('maintenance', [w])); }
-  if (d.icyc){ const t = S.inventory.find(x => x.id === d.icyc); t.s = {ok:'low', low:'missing', missing:'ok'}[t.s]; renderInventory(); api({op:'update', list:'inventory', id:t.id, fields:{s:t.s}}).catch(()=>{}); }
+  if (d.icyc){ const t = S.inventory.find(x => x.id === d.icyc); t.s = {ok:'low', low:'missing', missing:'ok'}[t.s || 'ok'];
+    b.dataset.s = t.s; b.textContent = SLBL[t.s]; b.setAttribute('aria-label', `${t.item}: ${SLBL[t.s]}. Tap to change.`);
+    queueMove(t); api({op:'update', list:'inventory', id:t.id, fields:{s:t.s}}).catch(()=>{}); }
   if (d.istar){ const t = S.inventory.find(x => x.id === d.istar); t.common = !t.common; renderInventory(); api({op:'update', list:'inventory', id:t.id, fields:{common:t.common}}).catch(()=>{}); toast(t.common ? `${t.item} moved to Most used` : `${t.item} unstarred`); }
-  if (d.chip){ invCat = d.chip; invShowAll = false; renderInventory(); }
-  if ('invmore' in d){ invShowAll = true; renderInventory(); }
+  if (d.chip){ const [bk, c] = d.chip.split('|'); BS[bk].cat = c; BS[bk].all = false; renderInventory(); }
+  if (d.invmore){ BS[d.invmore].all = true; renderInventory(); }
   if (d.idel){ const t = S.inventory.find(x => x.id === d.idel); toast(`Removed ${t.item}`, clearTo('inventory', [t])); }
   if (d.restore){ restore(d.restore); }
 });
@@ -1483,17 +1555,19 @@ $('#woForm').addEventListener('submit', e => {
   })().catch(()=>{});
 });
 
-$('#invQ').addEventListener('input', e => { invQ = e.target.value; renderInventory(); });
-$('#invCat').innerHTML = INV_CATS.map(c => `<option>${esc(c)}</option>`).join('');
-$('#invAddBtn').onclick = () => { $('#invForm').hidden = false; $('#invAddBtn').hidden = true; $('#invItem').value = invQ.trim(); $('#invItem').focus(); };
-$('#invCancel').onclick = () => { $('#invForm').hidden = true; $('#invAddBtn').hidden = false; };
-$('#invForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const item = {id:uid(), item:$('#invItem').value.trim(), where:$('#invWhere').value.trim(), cat:$('#invCat').value, common:false, s:'ok'};
-  S.inventory.push(item); api({op:'add', list:'inventory', item}).catch(()=>{});
-  e.target.reset(); $('#invForm').hidden = true; $('#invAddBtn').hidden = false; renderInventory(); toast('Item added');
-});
-
+for (const bk of Object.keys(BOARDS)){
+  const $b = id => $('#' + bk + id);
+  $b('Q').addEventListener('input', e => { BS[bk].q = e.target.value; renderBoard(bk); });
+  $b('Cat').innerHTML = BOARDS[bk].cats.map(c => `<option>${esc(c)}</option>`).join('');
+  $b('AddBtn').onclick = () => { $b('Form').hidden = false; $b('AddBtn').hidden = true; $b('Item').value = BS[bk].q.trim(); if (!['All', LOWCHIP].includes(BS[bk].cat)) $b('Cat').value = BS[bk].cat; $b('Item').focus(); };
+  $b('Cancel').onclick = () => { $b('Form').hidden = true; $b('AddBtn').hidden = false; };
+  $b('Form').addEventListener('submit', e => {
+    e.preventDefault();
+    const item = {id:uid(), item:$b('Item').value.trim(), where:$b('Where').value.trim(), cat:$b('Cat').value, common:false, s:'ok'};
+    S.inventory.push(item); api({op:'add', list:'inventory', item}).catch(()=>{});
+    e.target.reset(); $b('Form').hidden = true; $b('AddBtn').hidden = false; renderInventory(); toast(`${item.item} added`);
+  });
+}
 
 /* ---------- Tabs ---------- */
 function go(tab, openId){
