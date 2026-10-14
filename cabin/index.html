@@ -152,6 +152,21 @@ a{color:var(--lake); font-weight:700}
 .lakes tr.ours td{font-weight:800; color:var(--lake)}
 .lakes tr.tot td{font-weight:800; border-bottom:0; border-top:2px solid var(--bark)}
 
+/* ---------- Stay summaries ---------- */
+.stays{display:grid; gap:14px; margin-top:18px}
+.stay{background:var(--paper); border-radius:8px; padding:14px 16px 12px; box-shadow:0 6px 14px rgba(30,12,2,.3); border-top:6px solid var(--pine); overflow:hidden}
+.stay + .stay{border-top-color:var(--orange)}
+.stay:last-child{border-top-color:var(--lake)}
+.stay h3{font-family:var(--display); font-weight:400; font-size:1.35rem; color:var(--bark); margin:0 0 8px}
+.feat{list-style:none; margin:0; padding:0}
+.feat li{display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-top:1px dashed #E2D2AE}
+.feat li:first-child{border-top:0}
+.feat svg{width:22px; height:22px; flex:none; color:var(--pine); margin-top:1px}
+.stay-photos{margin:-14px -16px 12px; display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none}
+.stay-photos::-webkit-scrollbar{display:none}
+.stay-photos img{flex:0 0 100%; width:100%; aspect-ratio:4/3; object-fit:cover; scroll-snap-align:start}
+@media (min-width:600px){ .stays{grid-template-columns:1fr 1fr} .stay:last-child{grid-column:1/-1} }
+
 /* ---------- Buttons ---------- */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:46px;
@@ -554,6 +569,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     <symbol id="i-door" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M5 21V4h11l3 1v16M3 21h18"/><circle cx="13" cy="13" r="1.2" fill="currentColor"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 18V6M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="2" fill="currentColor"/></symbol>
+    <symbol id="i-pot" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6c0-1 1-2 3-2s3 1 3 2"/></symbol>
+    <symbol id="i-bath" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12h18v2a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM6 12V6a2 2 0 0 1 4 0M7 19l-1 2M17 19l1 2"/></symbol>
+    <symbol id="i-snow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2v20M4 7l16 10M20 7 4 17M9 4l3 2 3-2M9 20l3-2 3 2"/></symbol>
     <symbol id="i-loon" viewBox="0 0 48 24"><path fill="currentColor" d="M6 16c4-1 10-1 16-1 4 0 7-1 9-4 1-2 4-4 7-3 2 .5 3 2 5 2.5-2 .5-3 .5-4 .2-1 3-3 6-8 7.5-6 2-17 2-25-.2z"/><circle cx="38" cy="9.5" r=".9" fill="#fff"/></symbol>
   </defs>
 </svg>
@@ -600,6 +619,36 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it with a photo</span></button>
     <button class="tile" data-go="guide" data-open="g-where"><svg style="color:var(--pine)"><use href="#i-fire"/></svg><b>Wood &amp; tools</b><span>Where things are kept</span></button>
     <button class="tile" data-go="guide" data-open="g-fish"><svg style="color:var(--lake)"><use href="#i-fish"/></svg><b>Fishing</b><span>What's biting and where</span></button>
+  </div>
+
+  <div class="stays">
+    <article class="stay">
+      <div class="stay-photos" data-photos="bunkhouse" hidden></div>
+      <h3>The Bunkhouse</h3>
+      <ul class="feat">
+        <li><svg><use href="#i-bed"/></svg><span><b>2 queen beds</b> and <b>a twin bunk bed</b> in a shared sleeping room</span></li>
+        <li><svg><use href="#i-bed"/></svg><span><b>Futon</b> in the mudroom</span></li>
+        <li><svg><use href="#i-pot"/></svg><span><b>Full kitchen</b></span></li>
+        <li><svg><use href="#i-bath"/></svg><span><b>Full bathroom</b></span></li>
+      </ul>
+    </article>
+    <article class="stay">
+      <div class="stay-photos" data-photos="cabin" hidden></div>
+      <h3>The Cabin</h3>
+      <ul class="feat">
+        <li><svg><use href="#i-bed"/></svg><span><b>Bedroom 1:</b> king bed</span></li>
+        <li><svg><use href="#i-bed"/></svg><span><b>Bedroom 2:</b> two sets of twin bunk beds</span></li>
+        <li><svg><use href="#i-pot"/></svg><span><b>Full kitchen</b></span></li>
+      </ul>
+    </article>
+    <article class="stay">
+      <h3>The Garage</h3>
+      <ul class="feat">
+        <li><svg><use href="#i-fish"/></svg><span><b>Fish cleaning station</b> in the back room</span></li>
+        <li><svg><use href="#i-snow"/></svg><span><b>Chest freezer</b> for your catch and for fish scraps you haven't taken out yet</span></li>
+        <li><svg><use href="#i-wrench"/></svg><span><b>Tools and yard games</b>. The full list is on Fix-it.</span></li>
+      </ul>
+    </article>
   </div>
 
   <div class="tv" style="margin-top:18px" role="figure" aria-label="Cabin Cam: latest snapshot of the yard">
@@ -790,7 +839,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <li><b>Firewood:</b> east side of the cabin. Take from the oldest end.</li>
         <li><b>Kindling and fire starters:</b> <span class="tbd">bin inside the garage door</span></li>
         <li><b>Yard games and Jarts:</b> cabin garage.</li>
-        <li><b>Fish cleaning station:</b> back of the cabin garage.</li>
+        <li><b>Fish cleaning station and chest freezer:</b> back room of the detached garage.</li>
         <li><b>Tools:</b> garage pegboard. The full list is on the Fix-it tab.</li>
         <li><b>First aid kit:</b> <span class="tbd">kitchen, under the sink</span></li>
         <li><b>Fire extinguisher:</b> <span class="tbd">kitchen, by the back door</span></li>
@@ -965,7 +1014,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <h4>Gear at the cabin</h4>
       <p><span class="tbd">Rods, tackle box, net</span>. See the tool list on the Fix-it tab.</p>
       <h4>Cleaning fish</h4>
-      <p>The fish cleaning station is in the back of the main cabin garage. Put all fish waste out in the forest, at least 100 yards from the house.</p>
+      <p>The fish cleaning station is in the back room of the detached garage, with a chest freezer for your catch and for scraps you haven't taken out yet. Put all fish waste out in the forest, at least 100 yards from the house.</p>
     </div>
   </details>
 </section>
