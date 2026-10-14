@@ -92,13 +92,12 @@ img{max-width:100%; display:block}
 
 /* ---------- Routed wood signs as section headers ---------- */
 .sign{
-  display:flex; align-items:center; gap:10px; margin:30px 0 12px;
-  font-family:var(--display); font-weight:400; font-size:1.55rem; line-height:1.1; color:var(--gold);
-  background:linear-gradient(180deg,#5B3519,#3B2210); border:3px solid #2A1708; border-radius:10px;
-  padding:10px 14px; box-shadow:inset 0 2px 0 rgba(255,220,170,.15), 0 4px 0 rgba(0,0,0,.28);
-  text-shadow:0 -1px 0 rgba(0,0,0,.75), 0 1px 0 rgba(255,210,140,.25);
+  display:flex; align-items:center; gap:10px; margin:34px 2px 12px; padding:0 0 8px;
+  font-family:var(--display); font-weight:400; font-size:1.6rem; line-height:1.1; color:#FCE9B8;
+  text-shadow:0 2px 0 #4A2C17, 0 3px 6px rgba(0,0,0,.35);
+  border-bottom:2px solid rgba(46,26,13,.55); box-shadow:0 1px 0 rgba(255,230,190,.25);
 }
-.sign svg{width:28px;height:28px;flex:none; color:var(--cream)}
+.sign svg{width:26px;height:26px;flex:none; color:#FCE9B8; filter:drop-shadow(0 2px 0 #4A2C17)}
 .sign small{font-family:var(--hand); font-size:1rem; color:var(--cream); margin-left:auto; text-shadow:none}
 
 /* ---------- Paper ---------- */
@@ -580,7 +579,30 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </header>
   </div>
 
-  <div class="tv" role="figure" aria-label="Cabin Cam: latest snapshot of the yard">
+  <div style="margin-top:16px"></div>
+  <div class="plaque">
+    <div class="addr">3132 N Artishon Ln<br>Lac du Flambeau, WI 54538</div>
+    <div class="row">
+      <a class="btn lake sm" href="https://maps.apple.com/?daddr=3132+N+Artishon+Ln,+Lac+du+Flambeau,+WI+54538">Apple Maps</a>
+      <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=3132+N+Artishon+Ln,+Lac+du+Flambeau,+WI+54538">Google Maps</a>
+    </div>
+  </div>
+  <div class="hang">
+    <span class="chain l" aria-hidden="true"></span><span class="chain r" aria-hidden="true"></span>
+    <div class="oval">
+      <h3>Last stretch</h3>
+      <p>The mailbox is on Artishon Lane, but to get to the cabin take a right down Baylis Ln and hang a left after you've gone a good little bit.</p>
+    </div>
+  </div>
+
+  <div class="tiles" style="margin-top:18px">
+    <button class="tile" data-go="groceries"><svg style="color:var(--orange)"><use href="#i-basket"/></svg><b>Groceries &amp; pantry</b><span>See what's in the fridge, add to the list</span></button>
+    <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it with a photo</span></button>
+    <button class="tile" data-go="guide" data-open="g-where"><svg style="color:var(--pine)"><use href="#i-fire"/></svg><b>Wood &amp; tools</b><span>Where things are kept</span></button>
+    <button class="tile" data-go="guide" data-open="g-fish"><svg style="color:var(--lake)"><use href="#i-fish"/></svg><b>Fishing</b><span>What's biting and where</span></button>
+  </div>
+
+  <div class="tv" style="margin-top:18px" role="figure" aria-label="Cabin Cam: latest snapshot of the yard">
     <div class="screen">
       <img id="camImg" alt="Cabin Cam snapshot of the yard" hidden style="width:100%;height:100%;object-fit:cover;display:block">
       <svg id="camArt" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -606,23 +628,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </div>
   </div>
 
-  <h2 class="sign"><svg><use href="#i-pin"/></svg>Getting here</h2>
-  <div class="plaque">
-    <div class="addr">3132 N Artishon Ln<br>Lac du Flambeau, WI 54538</div>
-    <div class="row">
-      <a class="btn lake sm" href="https://maps.apple.com/?daddr=3132+N+Artishon+Ln,+Lac+du+Flambeau,+WI+54538">Apple Maps</a>
-      <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=3132+N+Artishon+Ln,+Lac+du+Flambeau,+WI+54538">Google Maps</a>
-    </div>
-  </div>
-  <div class="hang">
-    <span class="chain l" aria-hidden="true"></span><span class="chain r" aria-hidden="true"></span>
-    <div class="oval">
-      <h3>Last stretch</h3>
-      <p>The mailbox is on Artishon Lane, but to get to the cabin take a right down Baylis Ln and hang a left after you've gone a good little bit.</p>
-    </div>
-  </div>
-
-  <div class="flannel">
+  <div class="flannel" style="margin-top:18px">
     <div class="paper">
       <h3>Codes</h3>
       <div class="codes">
@@ -639,14 +645,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <div class="wrow"><div><span class="k">Password</span><b class="locked" data-secret="wifi" data-mask="Tap to view" data-unlock role="button" tabindex="0">Tap to view</b></div><button class="btn ghost sm" type="button" id="copyPw">Copy</button></div>
       </div>
     </div>
-  </div>
-
-  <h2 class="sign"><svg><use href="#i-pine"/></svg>Around the cabin</h2>
-  <div class="tiles">
-    <button class="tile" data-go="groceries"><svg style="color:var(--orange)"><use href="#i-basket"/></svg><b>Groceries &amp; pantry</b><span>See what's in the fridge, add to the list</span></button>
-    <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it with a photo</span></button>
-    <button class="tile" data-go="guide" data-open="g-where"><svg style="color:var(--pine)"><use href="#i-fire"/></svg><b>Wood &amp; tools</b><span>Where things are kept</span></button>
-    <button class="tile" data-go="guide" data-open="g-fish"><svg style="color:var(--lake)"><use href="#i-fish"/></svg><b>Fishing</b><span>What's biting and where</span></button>
   </div>
 </section>
 
@@ -1163,22 +1161,29 @@ $('#toastUndo').onclick = () => { if (undoFn) undoFn(); $('#toast').classList.re
 const API_URL = 'https://script.google.com/macros/s/AKfycbydwLEyKO32cJDxN5mJnjsCqAZgNOCoF2U_LFLMgUmzFO1U_qGewwRWHVR70ujjH1etwg/exec';
 const live = () => !!API_URL;
 let pending = 0;
-async function api(body){
-  if (!live()) return {ok:true};
-  pending++;
-  try {
-    const r = await fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body)});
-    const j = await r.json();
-    if (!j.ok) throw new Error(j.error || 'Save failed');
-    return j;
-  } catch(e){ toast("That didn't save. Check the connection and try again."); throw e; }
-  finally { pending--; }
+let writeQueue = Promise.resolve(), writeSeq = 0;
+function api(body){
+  if (!live()) return Promise.resolve({ok:true});
+  pending++; writeSeq++;
+  const run = async () => {
+    try {
+      const r = await fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body)});
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || 'Save failed');
+      return j;
+    } catch(e){ toast("That didn't save. Check the connection and try again."); throw e; }
+    finally { pending--; writeSeq++; }
+  };
+  const p = writeQueue.then(run, run);
+  writeQueue = p.catch(() => {});
+  return p;
 }
 async function load(){
   if (!live() || pending) return;
+  const seq = writeSeq;
   try {
     const j = await (await fetch(API_URL + '?t=' + Date.now())).json();
-    if (pending) return;
+    if (pending || seq !== writeSeq) return;
     ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = j[k] || []);
     Object.entries(j.pantry || {}).forEach(([k,v]) => S.pantry[k] = Object.assign({}, S.pantry[k], v, S.pantry[k] && S.pantry[k].fresh ? {fresh:true} : {}));
     renderAll();
@@ -1503,7 +1508,7 @@ $('#copyPw').onclick = () => askUnlock(async () => {
 
 $('#outClear').onclick = () => {
   const was = S.checkout.map(c => c.checked);
-  if (!was.some(Boolean)) return;
+  if (!was.some(Boolean)){ toast('Nothing checked yet'); return; }
   S.checkout.forEach(c => c.checked = false); renderCheckout();
   api({op:'checkoutSet', items:S.checkout.map(c => ({id:c.id, checked:false}))}).catch(()=>{});
   toast('List reset', () => { S.checkout.forEach((c,i) => c.checked = was[i]); renderCheckout();
