@@ -2060,7 +2060,7 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
           const p = f.properties; let html = `<b>${esc(p.name || '')}</b>`;
           if (p.kind === 'road'){ const g = f.geometry, c = g.type === 'MultiLineString' ? g.coordinates[0] : g.coordinates;
             const v = Math.abs(c[c.length-1][1] - c[0][1]) > Math.abs(c[c.length-1][0] - c[0][0]);
-            const at = v ? c.reduce((a, x) => Math.abs(x[1] - 45.9995) < Math.abs(a[1] - 45.9995) ? x : a) : c[Math.floor(c.length * 0.3)];
+            const at = v ? c.reduce((a, x) => Math.abs(x[1] - 45.9995) < Math.abs(a[1] - 45.9995) ? x : a) : c[Math.floor(c.length * 0.15)];
             L.tooltip({permanent:true, direction:v ? 'right' : 'top', offset:v ? [6, 0] : [0, -8], className:'plabel rlabel'}).setLatLng([at[1], at[0]]).setContent(esc(p.name)).addTo(map); return; }
           else fit.push(l);
           if (p.kind === 'point') l.bindTooltip(esc(p.name || ''), {permanent:true, direction:p.label === 'left' ? 'left' : 'right', offset:[p.label === 'left' ? -8 : 8, 0], className:'plabel'});
