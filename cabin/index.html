@@ -114,6 +114,16 @@ img{max-width:100%; display:block}
 .hunt p{margin:0; line-height:1.35}
 .hunt b{display:block; font-family:var(--display); font-size:1.1rem; text-shadow:0 2px 0 rgba(46,26,13,.4)}
 .huntflag{width:26px; height:26px; flex:none; border-radius:50%; background:#fff; box-shadow:inset 0 0 0 6px #FFB347}
+.pmap{height:420px; border:3px solid #2E1A0D; border-radius:8px; overflow:hidden; background:#2b3a2b; box-shadow:0 4px 0 rgba(46,26,13,.35)}
+.pmapbar{display:flex; gap:8px; margin:10px 0 4px}
+.trailkey{list-style:none; padding:0; margin:6px 0 0}
+.trailkey li{margin:0}
+.trailkey button{display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:transparent; border:0; border-bottom:1px dashed #C9B58A; padding:9px 2px; font:inherit; color:inherit; cursor:pointer}
+.trailkey .sw{width:26px; height:6px; border-radius:3px; flex:none}
+.trailkey small{margin-left:auto; color:#7A5C3E; font-weight:700; white-space:nowrap}
+.pmap .leaflet-popup-content{font-family:var(--body, inherit); font-size:.95rem; line-height:1.4}
+.pmap .leaflet-popup-content b{display:block; font-size:1.05rem}
+.here-dot{width:16px; height:16px; border-radius:50%; background:#1E88E5; border:3px solid #fff; box-shadow:0 0 0 6px rgba(30,136,229,.25)}
 .tbd{border-bottom:2px dashed var(--orange); color:var(--orange); font-weight:700}
 .verify{display:inline-block; font-family:var(--hand); font-size:.95rem; color:#fff; background:var(--orange); border-radius:4px; padding:0 6px; margin-left:4px; transform:rotate(-2deg)}
 .muted{color:var(--ink-soft); font-size:.92rem}
@@ -569,6 +579,8 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
 @media (min-width:600px){ body{font-size:18px} }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" defer></script>
 </head>
 <body>
 
@@ -922,57 +934,17 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   <details class="guide" id="g-maps">
     <summary><svg class="ic"><use href="#i-map"/></svg>Maps<svg class="chev"><use href="#i-chev"/></svg></summary>
     <div class="guide-body">
-      <h4>The property</h4>
-      <p class="muted">Traced from the 1987 Inman-Foltz survey. Buildings are where the survey put them; some may have changed since.</p>
-      <div class="mapbox">
-        <svg viewBox="1390 120 490 820" role="img" aria-label="Property map traced from the 1987 survey: the 5.09-acre parcel on Pokegama Lake with the peninsula at its north end, driveway from Baylis Lane, buildings and about 650 feet of frontage">
-          <defs>
-            <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#7A4E26"/><path d="M0 0v8" stroke="#4A2C17" stroke-width="3"/></pattern>
-          </defs>
-          <rect x="1390" y="120" width="490" height="820" fill="#E3D6B0"/>
-          <!-- lake -->
-          <path d="M1390 120 L1880 120 L1880 420 C1860 330 1832 240 1806 192 C1792 172 1770 192 1760 230 C1750 280 1752 330 1722 368 C1692 392 1670 346 1640 345 C1610 350 1606 400 1582 424 C1560 442 1530 436 1510 430 L1390 418 Z" fill="#8FB3C7"/>
-          <g stroke="#6E98AF" stroke-width="2" fill="none" opacity=".7"><path d="M1440 220h60M1560 270h50M1470 320h40"/></g>
-          <!-- parcel -->
-          <path d="M1510 430 C1530 436 1560 442 1582 424 C1606 400 1610 350 1640 345 C1670 346 1692 392 1722 368 C1752 330 1750 280 1760 230 C1770 192 1792 172 1806 192 L1812 200 L1812 890 L1512 866 Z" fill="#F2E7C9" stroke="#B3261E" stroke-width="5" stroke-linejoin="round"/>
-          <!-- road -->
-          <path d="M1390 858 L1880 884 L1880 912 L1390 886 Z" fill="#C9B58A"/>
-          <text x="1640" y="932" font-family="Nunito" font-weight="800" font-size="24" fill="#4A2C17" text-anchor="middle">Baylis Ln</text>
-          <!-- driveway -->
-          <path d="M1605 878 C1590 800 1575 720 1585 640 C1592 580 1612 552 1648 546" fill="none" stroke="#A88D5C" stroke-width="10" stroke-linecap="round"/>
-          <!-- buildings -->
-          <rect x="1636" y="500" width="40" height="22" transform="rotate(-15 1656 511)" fill="url(#hatch)" stroke="#2B1B10" stroke-width="2"/>
-          <rect x="1672" y="558" width="22" height="22" fill="url(#hatch)" stroke="#2B1B10" stroke-width="2"/>
-          <!-- boardwalk -->
-          <path d="M1514 467 L1612 470" stroke="#6E4524" stroke-width="8"/>
-          <!-- labels -->
-          <g font-family="Patrick Hand" fill="#2B1B10">
-            <text x="1690" y="500" font-size="28">building</text>
-            <text x="1702" y="600" font-size="28">building</text>
-            <text x="1528" y="500" font-size="24">boardwalk</text>
-            <text x="1560" y="760" font-size="24" transform="rotate(-80 1560 760)">driveway</text>
-            <text x="1795" y="300" font-size="26" transform="rotate(-72 1795 300)">peninsula</text>
-            <text x="1620" y="400" font-size="24" transform="rotate(-20 1620 400)">&#177;650 ft frontage</text>
-            <text x="1650" y="720" font-size="30" fill="#B3261E">5.09 acres</text>
-            <text x="1440" y="650" font-size="24" fill="#5C4532" transform="rotate(-90 1450 650)">neighbor</text>
-          </g>
-          <text x="1420" y="190" font-family="Shrikhand" font-size="36" fill="#1F4E6B">Pokegama</text>
-          <g transform="translate(1680 800)">
-            <rect width="82" height="10" fill="#2B1B10"/><rect x="41" width="41" height="10" fill="#F2E7C9" stroke="#2B1B10" stroke-width="2"/>
-            <text x="0" y="38" font-family="Nunito" font-weight="700" font-size="22" fill="#2B1B10">100 ft</text>
-          </g>
-          <g transform="translate(1840 150)"><path d="M0 50 L12 -6 L24 50 L12 40 Z" fill="#2B1B10"/><text x="4" y="-12" font-family="Nunito" font-weight="800" font-size="24" fill="#2B1B10">N</text></g>
-        </svg>
+      <h4>The property and trails</h4>
+      <div class="pmap" id="pmap" aria-label="Map of the property and trails"></div>
+      <div class="pmapbar">
+        <button type="button" class="btn ghost sm" id="pmapLocate"><svg><use href="#i-pin"/></svg>Show where I am</button>
       </div>
-      <ul style="margin-top:8px">
-        <li>5.09 acres, outlined in red, per the 1987 survey.</li>
-        <li>About 650 feet of lake frontage, per the survey.</li>
-        <li>The peninsula is the point of land at the north end.</li>
-      </ul>
+      <ul class="trailkey" id="trailKey"></ul>
+      <p class="muted" style="margin-top:6px">The red outline is the property, about 5.09 acres, from county parcel records. Trails are GPS tracks. Tap one for details.</p>
       <h4>Trails nearby</h4>
       <ul>
         <li><b>Bearskin State Trail</b>, Minocqua. Flat, crushed-stone rail trail for walking and biking.</li>
-        <li><b>Hiking and dirt bike trail maps:</b> <span class="tbd">coming soon</span></li>
+        <li><b>On the property:</b> see the map above.</li>
       </ul>
     </div>
   </details>
@@ -1830,6 +1802,62 @@ if (live()){
   ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = []);
   Object.values(S.pantry).forEach(p => { p.src = null; p.at = null; });
 }
+/* Property and trail map. Data lives in cabin-map.geojson:
+   a "property" polygon, "trail" lines (name, color, note) and optional
+   "point" markers (name, note). Edit that file to change the map. */
+(function(){
+  const box = $('#pmap'); if (!box) return;
+  let map = null;
+  const miles = cs => { let m = 0; for (let i = 1; i < cs.length; i++){ const [a,b] = cs[i-1], [c,d] = cs[i], R = 3958.8, r = Math.PI/180;
+    const x = Math.sin((d-b)*r/2)**2 + Math.cos(b*r)*Math.cos(d*r)*Math.sin((c-a)*r/2)**2; m += 2*R*Math.asin(Math.sqrt(x)); } return m; };
+  const fmtMi = m => m < 0.1 ? `${Math.round(m*5280/10)*10} ft` : `${m.toFixed(2)} mi`;
+  function init(){
+    if (map || !window.L) return;
+    map = L.map(box, {zoomControl:true, attributionControl:true, maxZoom:20});
+    const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:20, maxNativeZoom:19, attribution:'Imagery &copy; Esri'});
+    const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:20, maxNativeZoom:19, attribution:'&copy; OpenStreetMap contributors'});
+    sat.addTo(map);
+    L.control.layers({'Satellite':sat, 'Map':street}, null, {position:'topright'}).addTo(map);
+    map.setView([45.9989, -89.8885], 17);
+    fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(data => {
+      const key = [];
+      const layer = L.geoJSON(data, {
+        style: f => f.properties.kind === 'property'
+          ? {color:'#E2453C', weight:3, fillColor:'#E2453C', fillOpacity:.06}
+          : {color:f.properties.color || '#7FD1E8', weight:5, opacity:.95, dashArray:f.properties.draft ? '2 9' : null, lineCap:'round'},
+        pointToLayer: (f, ll) => L.circleMarker(ll, {radius:7, color:'#2E1A0D', weight:2, fillColor:f.properties.color || '#F4D35E', fillOpacity:1}),
+        onEachFeature: (f, l) => {
+          const p = f.properties; let html = `<b>${esc(p.name || '')}</b>`;
+          if (p.kind === 'trail'){ const mi = miles(f.geometry.coordinates); html += `${fmtMi(mi)} one way`; key.push({p, l, mi}); }
+          if (p.note) html += `<br>${esc(p.note)}`;
+          if (p.draft) html += `<br><i>Rough sketch until the GPS track is added.</i>`;
+          l.bindPopup(html);
+        }
+      }).addTo(map);
+      map.fitBounds(layer.getBounds(), {padding:[18,18]});
+      $('#trailKey').innerHTML = key.map((k, i) => `<li><button type="button" data-trail="${i}"><span class="sw" style="background:${esc(k.p.color || '#7FD1E8')}"></span>${esc(k.p.name)}<small>${fmtMi(k.mi)}</small></button></li>`).join('');
+      $('#trailKey').onclick = e => { const b = e.target.closest('[data-trail]'); if (!b) return; const k = key[+b.dataset.trail];
+        map.fitBounds(k.l.getBounds(), {padding:[30,30]}); k.l.openPopup(); box.scrollIntoView({behavior:'smooth', block:'center'}); };
+    }).catch(() => { box.insertAdjacentHTML('beforeend', '<p style="position:absolute;inset:auto 0 0;margin:0;padding:8px;background:#fff;z-index:999">The trail data didn\'t load. Check your connection and reopen this section.</p>'); });
+    let dot = null, watch = null;
+    $('#pmapLocate').onclick = () => {
+      if (!navigator.geolocation){ toast('Location isn\'t available on this device'); return; }
+      if (watch !== null){ navigator.geolocation.clearWatch(watch); watch = null; if (dot){ dot.remove(); dot = null; } $('#pmapLocate').lastChild.textContent = 'Show where I am'; return; }
+      $('#pmapLocate').lastChild.textContent = 'Finding you…';
+      let first = true;
+      watch = navigator.geolocation.watchPosition(pos => {
+        const ll = [pos.coords.latitude, pos.coords.longitude];
+        if (!dot) dot = L.marker(ll, {icon:L.divIcon({className:'', html:'<div class="here-dot"></div>', iconSize:[22,22], iconAnchor:[11,11]})}).addTo(map); else dot.setLatLng(ll);
+        if (first){ map.setView(ll, Math.max(map.getZoom(), 17)); first = false; }
+        $('#pmapLocate').lastChild.textContent = 'Stop showing where I am';
+      }, () => { toast('Couldn\'t get your location'); $('#pmapLocate').lastChild.textContent = 'Show where I am'; watch = null; }, {enableHighAccuracy:true, maximumAge:5000});
+    };
+  }
+  const sec = $('#g-maps');
+  const go = () => { if (!sec.open) return; const t = () => window.L ? (init(), setTimeout(() => map && map.invalidateSize(), 60)) : setTimeout(t, 150); t(); };
+  sec.addEventListener('toggle', go); go();
+})();
+
 /* Hunting banner: shown only during Wisconsin's firearm deer seasons.
    Gun season opens the Saturday before Thanksgiving; the muzzleloader and
    December antlerless hunts follow, ending 22 days after the opener.
