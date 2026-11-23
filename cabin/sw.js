@@ -1,5 +1,5 @@
 // The Lund Cabin: offline support.
-const V = 'lund-v1';
+const V = 'lund-v2';
 const CORE = ['./', 'index.html', 'cabin-map.geojson', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png',
   'lake-depth.jpg', 'stove-damper.jpg', 'stove-air.jpg', 'stove-handle.jpg', 'stove-door.jpg', 'stove-ash.jpg',
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css',
@@ -53,7 +53,7 @@ self.addEventListener('fetch', e => {
   if (req.mode === 'navigate' || (u.origin === location.origin && /\/cabin\/(index\.html)?$/.test(u.pathname)))
     return e.respondWith(netFirst(req, V));
   if (u.origin === location.origin && u.pathname.endsWith('.geojson')) return e.respondWith(netFirst(req, V));
-  if (u.hostname.includes('script.google') || u.hostname.includes('googleusercontent') || u.hostname.includes('open-meteo'))
+  if (u.hostname.includes('script.google') || u.hostname.includes('googleusercontent') || u.hostname.includes('open-meteo') || u.hostname.includes('swpc.noaa.gov'))
     return e.respondWith(netFirst(req, 'lund-data', u.hostname.includes('script.google') ? u.origin + u.pathname : req));                            // lists and weather: last known copy offline
   if (u.hostname.includes('arcgisonline') || u.hostname.includes('tile.openstreetmap'))
     return e.respondWith(cacheFirst(req, 'lund-tiles'));

@@ -287,6 +287,21 @@ button.dial{padding:0; border:0; cursor:pointer}
 .wxtv-days div{background:rgba(11,22,80,.55); border:1px solid rgba(247,216,74,.5); border-radius:4px; text-align:center; padding:.8cqw .5cqw; font-size:4.3cqw; line-height:1.25}
 .wxtv-days b{display:block; color:#F7D84A}
 .wxtv-moon{display:flex; align-items:center; gap:1.6cqw; font-size:4.3cqw; font-weight:700}
+.wxtv-moon small{font-size:3.6cqw; font-weight:400; color:#F7D84A}
+.wxslide{display:flex; flex-direction:column; justify-content:center; gap:1.6cqw; flex:1; animation:wxin .35s steps(4)}
+@keyframes wxin{from{opacity:0; transform:translateX(6%)}to{opacity:1; transform:none}}
+.wxdots{display:flex; justify-content:center; gap:1.2cqw}
+.wxdots i{width:1.6cqw; height:1.6cqw; border-radius:50%; background:rgba(247,216,74,.35)}
+.wxdots i.on{background:#F7D84A}
+.wxtv-sun{display:grid; grid-template-columns:1fr 1fr; gap:5px}
+.wxtv-sun div{background:rgba(11,22,80,.55); border:1px solid rgba(247,216,74,.5); border-radius:4px; text-align:center; padding:1.2cqw .5cqw; font-size:6cqw; font-weight:700; line-height:1.15; text-shadow:1px 1px 0 #0B1650}
+.wxtv-sun b{display:block; font-size:3.6cqw; color:#F7D84A; letter-spacing:.06em}
+.wxtv-aurora{display:flex; align-items:center; justify-content:space-between; gap:2cqw; background:rgba(11,22,80,.55); border:1px solid rgba(247,216,74,.5); border-radius:4px; padding:1.6cqw 2.4cqw}
+.wxtv-aurora b{font-size:5.4cqw; line-height:1.1; text-shadow:1px 1px 0 #0B1650}
+.wxtv-aurora.go b{color:#7CF29A} .wxtv-aurora.maybe b{color:#F7D84A}
+.wxtv-aurora .kp{font-size:4.4cqw; font-weight:700; white-space:nowrap}
+.wxtv-note{margin:0; font-size:4.2cqw; line-height:1.3}
+.wxtv-src{margin:0; font-size:3.2cqw; color:#F7D84A; opacity:.8}
 .tv .screen .wxtv-moon svg{width:6.5cqw; height:6.5cqw; flex:none}
 .dial.sm{width:30px; height:30px}
 .dial.sm i{inset:7px; transform:rotate(130deg)}
@@ -638,6 +653,22 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 
 .view{display:none}
 .view.on{display:block}
+.notebook{margin-top:18px; background:#FBF6E6 repeating-linear-gradient(180deg, transparent 0 29px, rgba(31,78,107,.16) 29px 30px); background-position:0 52px; border-radius:6px 14px 14px 6px; box-shadow:0 6px 0 #A88D5C, inset 14px 0 0 #E8DAB8, inset 16px 0 0 rgba(168,35,31,.35); padding:16px 16px 18px 30px; color:var(--ink)}
+.notebook h3{font-family:var(--display); font-weight:400; font-size:1.45rem; margin:0; color:var(--bark)}
+.nb-sub{margin:2px 0 8px; color:var(--ink-soft); font-size:.92rem}
+.nb-list{list-style:none; margin:0 0 10px; padding:0; font-family:var(--hand); font-size:1.18rem; line-height:30px}
+.nb-list li{display:flex; gap:10px}
+.nb-date{flex:none; min-width:52px; color:var(--lake)}
+.nb-text b{font-weight:400; color:var(--bark-dk); text-decoration:underline; text-decoration-color:rgba(210,96,26,.5); text-underline-offset:3px}
+.nb-text i{color:var(--ink-soft)}
+.nb-empty{color:var(--ink-soft)}
+.nb-more{background:none; border:0; color:var(--lake); font:700 .9rem var(--body); padding:0 0 10px; text-decoration:underline}
+.nb-form{display:grid; gap:8px; margin-bottom:6px}
+.nb-form input{font:1rem var(--body); padding:10px 12px; border:2px solid #CDB98E; border-radius:10px; background:#fff; color:var(--ink)}
+.nb-chips{display:flex; flex-wrap:wrap; gap:6px}
+.nb-chips button{border:1.5px solid var(--wood); background:#fff; color:var(--bark); border-radius:999px; padding:5px 11px; font:700 .85rem var(--body)}
+.nb-actions{display:flex; gap:8px}
+.notebook [hidden]{display:none !important}
 .savehome{margin:16px 4px 0; font-size:.9rem; color:var(--cream); opacity:.85; text-align:center}
 @media (display-mode: standalone){ .savehome{display:none} }
 #v-home.on + #v-guide{margin-top:34px; padding-top:22px; border-top:4px double rgba(46,26,13,.35)}
@@ -744,7 +775,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <rect x="222" y="120" width="16" height="24" fill="#3B2210"/><rect x="204" y="114" width="12" height="10" fill="#F6D68C"/><rect x="246" y="114" width="12" height="10" fill="#F6D68C"/>
         <path d="M40 176 L54 150 L68 176z M52 176 L68 140 L84 176z" fill="#24402A"/>
       </svg>
-      <div class="wxtv" id="wxTv" hidden><div class="wxtv-bar">Northwoods Weather</div><div class="wxtv-body" id="wxTvBody"><p class="wxtv-wait">Tuning in…</p></div></div>
+      <div class="wxtv" id="wxTv" hidden><div class="wxtv-bar" id="wxTvBar">Northwoods Weather</div><div class="wxtv-body" id="wxTvBody"><p class="wxtv-wait">Tuning in…</p></div></div>
       <div class="static" id="tvStatic" hidden></div>
       <div class="osd" id="tvOsd">CH 3</div>
     </div>
@@ -817,6 +848,21 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </article>
   </div>
 
+  <article class="notebook" id="sightCard" aria-labelledby="h-sight">
+    <h3 id="h-sight">Seen at the cabin</h3>
+    <p class="nb-sub">A running log of what guests spot. Add yours.</p>
+    <ol class="nb-list" id="sightList"></ol>
+    <button class="nb-more" type="button" id="sightMore" hidden></button>
+    <form class="nb-form" id="sightForm" hidden>
+      <div class="nb-chips" id="sightChips"></div>
+      <input id="sightWhat" maxlength="60" placeholder="What did you see?" autocomplete="off" required>
+      <input id="sightWho" maxlength="40" placeholder="Your name" autocomplete="given-name">
+      <input id="sightNote" maxlength="140" placeholder="Where, or anything else (optional)" autocomplete="off">
+      <div class="nb-actions"><button class="btn sm" type="submit">Add to the log</button><button class="btn ghost sm" type="button" id="sightCancel">Cancel</button></div>
+    </form>
+    <button class="btn sm" type="button" id="sightAdd">Log a sighting</button>
+  </article>
+
   <div class="tiles" style="margin-top:18px;grid-template-columns:1fr">
     <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it in Handyman Corner</span></button>
   </div>
@@ -888,6 +934,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <li><b>Tools:</b> garage pegboard. The full list is on the Garage tab.</li>
         <li><b>First aid kits:</b> in the cabin, the closet across from the bathroom. In the bunkhouse, under the bathroom sink.</li>
         <li><b>Fire extinguisher:</b> on the floor next to the kitchen cabinets, on the wood stove side</li>
+        <li><b>Breaker panels:</b> in the cabin's bunk bed bedroom closet, in the detached garage, and in the bunkhouse garage.</li>
       </ul>
       <p style="margin-top:10px"><button class="btn ghost sm" type="button" data-go="fixit">Open the tool list</button></p>
     </div>
@@ -1187,6 +1234,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <span class="aidrow">Bunkhouse: under the bathroom sink</span></div></div>
       <div class="callrow aid"><div><b>Fire extinguisher</b>
         <span class="aidrow">Cabin: on the floor next to the kitchen cabinets, on the wood stove side</span></div></div>
+      <div class="callrow aid"><div><b>Breaker panels</b>
+        <span class="aidrow">Cabin: bunk bed bedroom closet</span>
+        <span class="aidrow">Detached garage</span>
+        <span class="aidrow">Bunkhouse garage</span></div></div>
       <div class="callrow"><div><b>Hospital, Minocqua</b>Marshfield Medical Center, 9576 Hwy 70. Emergency department.<span class="drive">About 35 min, 17 mi</span></div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Marshfield+Medical+Center+Minocqua,+9576+Highway+70,+Minocqua,+WI+54548">Directions</a></div>
       <div class="callrow"><div><b>Hospital, Woodruff</b>Howard Young Medical Center, 240 Maple St. 715-356-8000<span class="drive">About 30 min, 16 mi</span></div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Howard+Young+Medical+Center,+240+Maple+St,+Woodruff,+WI+54568">Directions</a></div>
       <div class="callrow"><div><b>Urgent care</b>Marshfield, Minocqua. 7 AM to 7 PM, every day.<span class="drive">About 35 min, 17 mi</span></div><a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Marshfield+Medical+Center+Minocqua,+9576+Highway+70,+Minocqua,+WI+54548">Directions</a></div>
@@ -1227,6 +1278,7 @@ const fmt = t => new Date(t).toLocaleDateString('en-US', {month:'short', day:'nu
 const fmtShort = t => new Date(t).toLocaleDateString('en-US', {month:'short', day:'numeric'});
 
 const S = {
+  sightings: [],
   groceries: [
     {id:uid(), text:'Coffee', note:'', checked:false},
     {id:uid(), text:'Eggs', note:'two dozen', checked:false},
@@ -1358,7 +1410,7 @@ async function load(){
   try {
     const j = await (await fetch(API_URL + '?t=' + Date.now())).json();
     if (pending || seq !== writeSeq) return;
-    ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = j[k] || []);
+    ['groceries','maintenance','inventory','checkout','cleared','sightings'].forEach(k => S[k] = j[k] || []);
     Object.entries(j.pantry || {}).forEach(([k,v]) => S.pantry[k] = Object.assign({}, S.pantry[k], v, S.pantry[k] && S.pantry[k].fresh ? {fresh:true} : {}));
     renderAll();
   } catch(e){ /* keep what's on screen; next poll retries */ }
@@ -1602,6 +1654,35 @@ function renderBins(){
   }
 }
 
+/* ---------- Sightings log ---------- */
+const SIGHT_CHIPS = ['Loon', 'Bald eagle', 'Deer', 'Fox', 'Otter', 'Black bear', 'Turkeys', 'Northern lights', 'Shooting star'];
+let sightAll = false;
+function renderSightings(){
+  const list = (S.sightings || []).slice().sort((a, b) => (b.added || 0) - (a.added || 0));
+  const shown = sightAll ? list : list.slice(0, 6);
+  $('#sightList').innerHTML = shown.length ? shown.map(x => `<li><span class="nb-date">${x.added ? new Date(+x.added).toLocaleDateString('en-US', {month:'short', day:'numeric', year: new Date(+x.added).getFullYear() === new Date().getFullYear() ? undefined : 'numeric'}) : ''}</span><span class="nb-text"><b>${esc(x.what)}</b>${x.note ? `, ${esc(x.note)}` : ''}${x.who ? ` <i>— ${esc(x.who)}</i>` : ''}</span></li>`).join('')
+    : '<li class="nb-empty">Nothing logged yet. Be the first.</li>';
+  const more = $('#sightMore');
+  more.hidden = list.length <= 6;
+  more.textContent = sightAll ? 'Show fewer' : `Show all ${list.length}`;
+}
+$('#sightChips').innerHTML = SIGHT_CHIPS.map(c => `<button type="button" data-schip="${esc(c)}">${esc(c)}</button>`).join('');
+$('#sightChips').addEventListener('click', e => { const b = e.target.closest('[data-schip]'); if (!b) return; $('#sightWhat').value = b.dataset.schip; $('#sightWho').focus(); });
+$('#sightAdd').addEventListener('click', () => { $('#sightForm').hidden = false; $('#sightAdd').hidden = true; try { $('#sightWho').value = localStorage.getItem('sightWho') || ''; } catch(e){} $('#sightWhat').focus(); });
+$('#sightCancel').addEventListener('click', () => { $('#sightForm').hidden = true; $('#sightAdd').hidden = false; });
+$('#sightMore').addEventListener('click', () => { sightAll = !sightAll; renderSightings(); });
+$('#sightForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const what = $('#sightWhat').value.trim(); if (!what) return;
+  const item = {id:uid(), what, who:$('#sightWho').value.trim(), note:$('#sightNote').value.trim(), photo:'', added:Date.now()};
+  try { if (item.who) localStorage.setItem('sightWho', item.who); } catch(err){}
+  S.sightings.push(item); renderSightings();
+  $('#sightWhat').value = ''; $('#sightNote').value = '';
+  $('#sightForm').hidden = true; $('#sightAdd').hidden = false;
+  toast('Added to the log. Nice spot!');
+  api({op:'add', list:'sightings', item}).catch(() => { S.sightings = S.sightings.filter(x => x.id !== item.id); renderSightings(); });
+});
+
 function renderCheckout(){
   $('#outList').innerHTML = S.checkout.map(c => `
     <li><label class="chk"><input type="checkbox" data-oid="${c.id}" ${c.checked?'checked':''}><span class="t">${esc(c.text)}</span></label></li>`).join('');
@@ -1615,7 +1696,7 @@ function renderCheckout(){
       </label>`).join('')}</div>`).join('');
 }
 
-function renderAll(){ renderPantry(); renderGroceries(); renderMaintenance(); renderInventory(); renderBins(); renderCheckout(); }
+function renderAll(){ renderSightings(); renderPantry(); renderGroceries(); renderMaintenance(); renderInventory(); renderBins(); renderCheckout(); }
 
 /* ---------- Events ---------- */
 document.addEventListener('change', e => {
@@ -1935,15 +2016,48 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
   }
   async function load(){
     try {
-      const u = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FChicago&forecast_days=4`;
+      const u = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&timezone=America%2FChicago&forecast_days=4`;
       const w = await (await fetch(u)).json();
       const m = moon(Date.now());
-      $('#wxTvBody').innerHTML = `<div class="wxtv-now"><b>${Math.round(w.current.temperature_2m)}°</b><span>${word(w.current.weather_code)}<br>Pokegama Lake</span></div>
-        <div class="wxtv-days">${w.daily.time.slice(1, 4).map((t, k) => `<div><b>${new Date(t + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short'}).toUpperCase()}</b>${Math.round(w.daily.temperature_2m_max[k+1])}° / ${Math.round(w.daily.temperature_2m_min[k+1])}°<br>${short(w.daily.weather_code[k+1])}</div>`).join('')}</div>
-        <div class="wxtv-moon">${m.svg}${m.name}</div>`;
+      const tm = iso => new Date(iso).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+      const rise = w.daily.sunrise[0], set = w.daily.sunset[0];
+      const mins = Math.round((new Date(set) - new Date(rise)) / 60000);
+      SLIDES[0] = {title:'Northwoods Weather', html:`<div class="wxtv-now"><b>${Math.round(w.current.temperature_2m)}°</b><span>${word(w.current.weather_code)}<br>Pokegama Lake</span></div>
+        <div class="wxtv-days">${w.daily.time.slice(1, 4).map((t, k) => `<div><b>${new Date(t + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short'}).toUpperCase()}</b>${Math.round(w.daily.temperature_2m_max[k+1])}° / ${Math.round(w.daily.temperature_2m_min[k+1])}°<br>${short(w.daily.weather_code[k+1])}</div>`).join('')}</div>`};
+      SLIDES[1] = {title:'Sun & Moon', html:`<div class="wxtv-sun"><div><b>SUNRISE</b>${tm(rise)}</div><div><b>SUNSET</b>${tm(set)}</div></div>
+        <div class="wxtv-moon">${m.svg}<span>${m.name}<br><small>${Math.floor(mins/60)} hr ${mins%60} min of daylight</small></span></div>`};
+      show(slide);
     } catch(e){}
   }
+  // Northern lights: NOAA's 3-day planetary K-index forecast. Up here it usually takes Kp 5 or more.
+  async function aurora(){
+    try {
+      const k = await (await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json')).json();
+      const now = Date.now(), end = now + 15*3600e3;
+      const rows = (Array.isArray(k[0]) ? k.slice(1).map(r => ({time_tag:r[0], kp:+r[1]})) : k)
+        .filter(r => { const t = Date.parse(r.time_tag + 'Z'); return t + 3*3600e3 > now && t < end; });
+      if (!rows.length) return;
+      const kp = Math.max(...rows.map(r => +r.kp));
+      const [cls, head, line] = kp >= 6 ? ['go', 'GOOD CHANCE TONIGHT', 'Head to the dock after dark and look north, away from the lights.']
+        : kp >= 5 ? ['maybe', 'POSSIBLE TONIGHT', 'Watch low on the northern horizon from the dock. Clear skies help.']
+        : ['no', 'NOT LIKELY TONIGHT', 'It usually takes a Kp of 5 or more to see them this far south.'];
+      SLIDES[2] = {title:'Northern Lights', html:`<div class="wxtv-aurora ${cls}"><b>${head}</b><span class="kp">Kp ${kp.toFixed(1)}</span></div><p class="wxtv-note">${line}</p><p class="wxtv-src">NOAA Space Weather forecast</p>`};
+      show(slide);
+    } catch(e){}
+  }
+  const SLIDES = [];
+  let slide = 0;
+  function show(i){
+    const list = SLIDES.filter(Boolean); if (!list.length) return;
+    slide = ((i % list.length) + list.length) % list.length;
+    const s = list[slide];
+    $('#wxTvBar').textContent = s.title;
+    $('#wxTvBody').innerHTML = `<div class="wxslide">${s.html}</div><div class="wxdots">${list.map((_, j) => `<i class="${j === slide ? 'on' : ''}"></i>`).join('')}</div>`;
+  }
+  setInterval(() => { if (!$('#wxTv').hidden) show(slide + 1); }, 6000);
+  new MutationObserver(() => { if ($('#wxTv').hidden) show(0); }).observe($('#wxTv'), {attributes:true, attributeFilter:['hidden']});
   load(); setInterval(load, 30*60*1000);
+  aurora(); setInterval(aurora, 30*60*1000);
 })();
 
 /* The big TV knob flips between the Cabin Cam (channel 3) and the weather (channel 5). */
