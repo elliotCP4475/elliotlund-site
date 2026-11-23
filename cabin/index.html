@@ -1866,7 +1866,7 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
 (function(){
   const svg = $('#mapPrev'); if (!svg) return;
   fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(d => {
-    const pts = []; d.features.forEach(f => { const g = f.geometry; (g.type === 'Point' ? [g.coordinates] : g.type === 'LineString' ? g.coordinates : g.coordinates[0]).forEach(c => pts.push(c)); });
+    const pts = []; d.features.filter(f => f.properties.kind !== 'water').forEach(f => { const g = f.geometry; (g.type === 'Point' ? [g.coordinates] : g.type === 'LineString' ? g.coordinates : g.coordinates[0]).forEach(c => pts.push(c)); });
     const lons = pts.map(p => p[0]), lats = pts.map(p => p[1]);
     const k = Math.cos(46 * Math.PI/180), W = 300, H = 170, pad = 16;
     const x0 = Math.min(...lons), x1 = Math.max(...lons), y0 = Math.min(...lats), y1 = Math.max(...lats);
@@ -1874,6 +1874,10 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
     const ox = (W - (x1 - x0) * k * sc) / 2, oy = (H - (y1 - y0) * sc) / 2;
     const P = c => [(ox + (c[0] - x0) * k * sc).toFixed(1), (H - oy - (c[1] - y0) * sc).toFixed(1)];
     let out = '';
+    const ring = rs => rs.map(rg => `M${rg.map(c => P(c).join(' ')).join('L')}Z`).join('');
+    d.features.forEach(f => { const g = f.geometry; if (f.properties.kind !== 'water') return;
+      const polys = g.type === 'MultiPolygon' ? g.coordinates : [g.coordinates];
+      out += `<path d="${polys.map(ring).join('')}" fill="#3E6F86" fill-rule="evenodd" stroke="#6E98AF" stroke-width="1.5" stroke-linejoin="round"/>`; });
     d.features.forEach(f => { const p = f.properties, g = f.geometry;
       if (p.kind === 'property') out += `<path d="M${g.coordinates[0].map(c => P(c).join(' ')).join('L')}Z" fill="rgba(226,69,60,.12)" stroke="#E2453C" stroke-width="2.5" stroke-linejoin="round"/>`; });
     d.features.forEach(f => { const p = f.properties, g = f.geometry;
@@ -1961,6 +1965,7 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
     fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(data => {
       const key = [];
       const layer = L.geoJSON(data, {
+        filter: f => f.properties.kind !== 'water',
         style: f => f.properties.kind === 'point' ? {radius:6, color:'#2E1A0D', weight:3, fillColor:'#FFFFFF', fillOpacity:1}
           : f.properties.kind === 'property'
           ? {color:'#E2453C', weight:3, fillColor:'#E2453C', fillOpacity:.06}
