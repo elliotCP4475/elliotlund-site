@@ -125,8 +125,12 @@ img{max-width:100%; display:block}
 .mapcard-txt{display:block; padding:10px 14px 12px; background:#2E1A0D}
 .mapcard-txt{display:flex !important; align-items:center; gap:10px}
 .mapcard-txt .mt{flex:1; min-width:0}
-.mapcard .mapgo{flex:none; display:grid !important; place-items:center; width:38px; height:38px; background:#F4D35E; color:#2E1A0D; border-radius:50%; box-shadow:0 3px 0 #A8801E; opacity:1 !important}
-.mapcard .mapgo svg{width:20px; height:20px; background:none; margin-left:2px}
+.mapcard{position:relative}
+.mapcard .mapgo{flex:none; display:flex !important; align-items:center; gap:2px; height:36px; padding:0 10px 0 14px; background:#F4D35E; color:#2E1A0D; border-radius:18px; box-shadow:0 3px 0 #A8801E; opacity:1 !important; font-weight:800; font-size:.95rem}
+.mapcard .mapzoom{position:absolute; top:10px; right:10px; display:flex; flex-direction:column; border:2px solid rgba(46,26,13,.7); border-radius:6px; overflow:hidden; box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.mapcard .mapzoom i{display:block; width:24px; height:22px; background:#FFF8E6; color:#2E1A0D; font:800 16px/22px var(--body, sans-serif); text-align:center; font-style:normal}
+.mapcard .mapzoom i+i{border-top:1px solid rgba(46,26,13,.3)}
+.mapcard .mapgo svg{width:18px; height:18px; background:none}
 .mapcard:active .mapgo{transform:translateY(2px); box-shadow:0 1px 0 #A8801E}
 .mapcard-txt b{display:block; font-family:var(--display); font-size:1.25rem; color:#F4D35E}
 .mapcard-txt span{display:block; font-size:.92rem; opacity:.95}
@@ -736,7 +740,8 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 
   <button type="button" class="mapcard" style="margin-bottom:16px" data-go="guide" data-open="g-maps" aria-label="Open the property and trail map">
     <svg id="mapPrev" viewBox="0 0 300 170" aria-hidden="true"></svg>
-    <span class="mapcard-txt"><span class="mt"><b>Property &amp; trail map</b><span>Trails, buildings and the property line</span></span><span class="mapgo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+    <span class="mapzoom" aria-hidden="true"><i>+</i><i>&minus;</i></span>
+    <span class="mapcard-txt"><span class="mt"><b>Property &amp; trail map</b><span>Satellite view, distances and trail notes</span></span><span class="mapgo">Open<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
   </button>
   <div class="plaque">
     <div class="addr">3132 N Artishon Ln<br>Lac du Flambeau, WI 54538</div>
