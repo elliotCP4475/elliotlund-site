@@ -1081,6 +1081,22 @@
      45.998832
     ]
    }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "point",
+    "name": "Dock",
+    "note": "The paddle boat is open to anyone.",
+    "label": "right"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -89.887387,
+     45.999327
+    ]
+   }
   }
  ]
 }
