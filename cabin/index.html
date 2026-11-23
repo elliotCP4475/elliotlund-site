@@ -113,6 +113,8 @@ img{max-width:100%; display:block}
 .huntbar[hidden]{display:none}
 .mapcard{display:block; width:100%; margin:18px 0 0; padding:0; border:3px solid #2E1A0D; border-radius:12px; overflow:hidden; background:#24402A; color:#FCE9B8; text-align:left; cursor:pointer; box-shadow:0 5px 0 rgba(46,26,13,.55), 0 10px 18px rgba(0,0,0,.3); font:inherit}
 .mapcard svg{display:block; width:100%; height:auto; background:radial-gradient(ellipse at 30% 20%, #2F5A3A, #1F3A27)}
+.mapcard .rdl{font:800 9px var(--body, sans-serif); letter-spacing:.06em; text-transform:uppercase; fill:#F4EBD0; stroke:#1F3A27; stroke-width:3px; paint-order:stroke; stroke-linejoin:round}
+.pmap .rlabel{background:rgba(46,26,13,.75); font-size:.72rem; font-weight:700}
 .mapcard-txt{display:block; padding:10px 14px 12px; background:#2E1A0D}
 .mapcard-txt b{display:block; font-family:var(--display); font-size:1.25rem; color:#F4D35E}
 .mapcard-txt span{display:block; font-size:.92rem; opacity:.95}
@@ -686,7 +688,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </header>
   </div>
 
-  <div style="margin-top:16px"></div>
+  <button type="button" class="mapcard" style="margin-bottom:16px" data-go="guide" data-open="g-maps" aria-label="Open the property and trail map">
+    <svg id="mapPrev" viewBox="0 0 300 170" aria-hidden="true"></svg>
+    <span class="mapcard-txt"><b>Property &amp; trail map</b><span>Trails, buildings and the property line</span></span>
+  </button>
   <div class="plaque">
     <div class="addr">3132 N Artishon Ln<br>Lac du Flambeau, WI 54538</div>
     <div class="row">
@@ -761,10 +766,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </div>
   </div>
 
-  <button type="button" class="mapcard" data-go="guide" data-open="g-maps" aria-label="Open the property and trail map">
-    <svg id="mapPrev" viewBox="0 0 300 170" aria-hidden="true"></svg>
-    <span class="mapcard-txt"><b>Property &amp; trail map</b><span>Trails, buildings and the property line</span></span>
-  </button>
   <div class="tiles" style="margin-top:18px">
     <button class="tile" data-go="groceries"><svg style="color:var(--orange)"><use href="#i-basket"/></svg><b>Supplies &amp; groceries</b><span>Pantry photos and shopping lists</span></button>
     <button class="tile" data-go="guide" data-open="g-where"><svg style="color:var(--pine)"><use href="#i-fire"/></svg><b>Wood &amp; tools</b><span>Where things are kept</span></button>
@@ -1866,7 +1867,10 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
 (function(){
   const svg = $('#mapPrev'); if (!svg) return;
   fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(d => {
-    const pts = []; d.features.filter(f => f.properties.kind !== 'water').forEach(f => { const g = f.geometry; (g.type === 'Point' ? [g.coordinates] : g.type === 'LineString' ? g.coordinates : g.coordinates[0]).forEach(c => pts.push(c)); });
+    const lines = g => g.type === 'MultiLineString' ? g.coordinates : [g.coordinates];
+    const pts = []; d.features.filter(f => !['water', 'road'].includes(f.properties.kind)).forEach(f => { const g = f.geometry; (g.type === 'Point' ? [g.coordinates] : g.type === 'LineString' ? g.coordinates : g.coordinates[0]).forEach(c => pts.push(c)); });
+    const ya = Math.min(...pts.map(p => p[1])), yb = Math.max(...pts.map(p => p[1]));
+    d.features.filter(f => f.properties.kind === 'road').forEach(f => lines(f.geometry).flat().forEach(c => { if (c[1] >= ya && c[1] <= yb) pts.push([c[0] - 0.00025, c[1]]); }));
     const lons = pts.map(p => p[0]), lats = pts.map(p => p[1]);
     const k = Math.cos(46 * Math.PI/180), W = 300, H = 170, pad = 16;
     const x0 = Math.min(...lons), x1 = Math.max(...lons), y0 = Math.min(...lats), y1 = Math.max(...lats);
@@ -1878,13 +1882,21 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
     d.features.forEach(f => { const g = f.geometry; if (f.properties.kind !== 'water') return;
       const polys = g.type === 'MultiPolygon' ? g.coordinates : [g.coordinates];
       out += `<path d="${polys.map(ring).join('')}" fill="#3E6F86" fill-rule="evenodd" stroke="#6E98AF" stroke-width="1.5" stroke-linejoin="round"/>`; });
+    let labels = '';
+    d.features.forEach(f => { const p = f.properties; if (p.kind !== 'road') return;
+      const ls = lines(f.geometry).map(l => l.map(P));
+      out += ls.map(l => `<path d="M${l.map(c => c.join(' ')).join('L')}" fill="none" stroke="#CDBB8F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`).join('');
+      const l = ls[0].map(c => c.map(Number)), vert = Math.abs(l[l.length-1][1] - l[0][1]) > Math.abs(l[l.length-1][0] - l[0][0]);
+      const at = vert ? l.reduce((a, c) => Math.abs(c[1] - H*0.42) < Math.abs(a[1] - H*0.42) ? c : a) : l[Math.floor(l.length * 0.35)];
+      labels += vert ? `<text x="${at[0] - 9}" y="${at[1]}" transform="rotate(-90 ${at[0] - 9} ${at[1]})" text-anchor="middle" class="rdl">${esc(p.name)}</text>`
+                     : `<text x="${at[0]}" y="${at[1] - 9}" text-anchor="middle" class="rdl">${esc(p.name)}</text>`; });
     d.features.forEach(f => { const p = f.properties, g = f.geometry;
       if (p.kind === 'property') out += `<path d="M${g.coordinates[0].map(c => P(c).join(' ')).join('L')}Z" fill="rgba(226,69,60,.12)" stroke="#E2453C" stroke-width="2.5" stroke-linejoin="round"/>`; });
     d.features.forEach(f => { const p = f.properties, g = f.geometry;
       if (p.kind === 'trail') out += `<path d="M${g.coordinates.map(c => P(c).join(' ')).join('L')}" fill="none" stroke="${esc(p.color || '#7FD1E8')}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`; });
     d.features.forEach(f => { const p = f.properties, g = f.geometry;
       if (p.kind === 'point'){ const [x, y] = P(g.coordinates); out += `<circle cx="${x}" cy="${y}" r="4" fill="#fff" stroke="#2E1A0D" stroke-width="2"/>`; } });
-    svg.innerHTML = out;
+    svg.innerHTML = out + labels;
   }).catch(() => {});
 })();
 
@@ -1963,16 +1975,22 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
     L.control.layers({'Satellite':sat, 'Map':street}, null, {position:'topright'}).addTo(map);
     map.setView([45.9989, -89.8885], 17);
     fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(data => {
-      const key = [];
+      const key = [], fit = [];
       const layer = L.geoJSON(data, {
         filter: f => f.properties.kind !== 'water',
-        style: f => f.properties.kind === 'point' ? {radius:6, color:'#2E1A0D', weight:3, fillColor:'#FFFFFF', fillOpacity:1}
+        style: f => f.properties.kind === 'road' ? {color:'#F4EBD0', weight:3, opacity:.75, lineCap:'round'}
+          : f.properties.kind === 'point' ? {radius:6, color:'#2E1A0D', weight:3, fillColor:'#FFFFFF', fillOpacity:1}
           : f.properties.kind === 'property'
           ? {color:'#E2453C', weight:3, fillColor:'#E2453C', fillOpacity:.06}
           : {color:f.properties.color || '#7FD1E8', weight:5, opacity:.95, dashArray:f.properties.draft ? '2 9' : null, lineCap:'round'},
         pointToLayer: (f, ll) => L.circleMarker(ll, {radius:6, color:'#2E1A0D', weight:3, fillColor:f.properties.color || '#FFFFFF', fillOpacity:1}),
         onEachFeature: (f, l) => {
           const p = f.properties; let html = `<b>${esc(p.name || '')}</b>`;
+          if (p.kind === 'road'){ const g = f.geometry, c = g.type === 'MultiLineString' ? g.coordinates[0] : g.coordinates;
+            const v = Math.abs(c[c.length-1][1] - c[0][1]) > Math.abs(c[c.length-1][0] - c[0][0]);
+            const at = v ? c.reduce((a, x) => Math.abs(x[1] - 45.9995) < Math.abs(a[1] - 45.9995) ? x : a) : c[Math.floor(c.length * 0.3)];
+            L.tooltip({permanent:true, direction:v ? 'right' : 'bottom', offset:v ? [6, 0] : [0, 8], className:'plabel rlabel'}).setLatLng([at[1], at[0]]).setContent(esc(p.name)).addTo(map); return; }
+          else fit.push(l);
           if (p.kind === 'point') l.bindTooltip(esc(p.name || ''), {permanent:true, direction:p.label === 'left' ? 'left' : 'right', offset:[p.label === 'left' ? -8 : 8, 0], className:'plabel'});
           if (p.kind === 'trail'){ const mi = miles(f.geometry.coordinates); html += `${fmtMi(mi)} one way`; key.push({p, l, mi}); }
           if (p.note) html += `<br>${esc(p.note)}`;
@@ -1980,7 +1998,7 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
           l.bindPopup(html);
         }
       }).addTo(map);
-      map.fitBounds(layer.getBounds(), {padding:[18,18]});
+      map.fitBounds(L.featureGroup(fit).getBounds(), {padding:[18,18]});
       $('#trailKey').innerHTML = key.map((k, i) => `<li><button type="button" data-trail="${i}"><span class="sw" style="background:${esc(k.p.color || '#7FD1E8')}"></span>${esc(k.p.name)}<small>${fmtMi(k.mi)}</small></button></li>`).join('');
       $('#trailKey').onclick = e => { const b = e.target.closest('[data-trail]'); if (!b) return; const k = key[+b.dataset.trail];
         map.fitBounds(k.l.getBounds(), {padding:[30,30]}); k.l.openPopup(); box.scrollIntoView({behavior:'smooth', block:'center'}); };
