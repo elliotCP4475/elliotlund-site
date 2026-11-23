@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#4A2C17">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lund Cabin">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>The Lund Cabin</title>
 <meta name="description" content="Everything for guests at the Lund Cabin on Pokegama Lake: codes, WiFi, groceries, the garage, maps, fishing and checkout.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -631,6 +638,8 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 
 .view{display:none}
 .view.on{display:block}
+.savehome{margin:16px 4px 0; font-size:.9rem; color:var(--cream); opacity:.85; text-align:center}
+@media (display-mode: standalone){ .savehome{display:none} }
 #v-home.on + #v-guide{margin-top:34px; padding-top:22px; border-top:4px double rgba(46,26,13,.35)}
 .mock-banner{font-family:var(--hand); text-align:center; color:var(--cream); font-size:1.05rem; margin:10px 0 0; opacity:.9}
 .mock-banner .tbd{color:var(--gold); border-color:var(--gold)}
@@ -811,6 +820,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   <div class="tiles" style="margin-top:18px;grid-template-columns:1fr">
     <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it in Handyman Corner</span></button>
   </div>
+  <p class="savehome" id="saveHome">Signal comes and goes up here. Save this to your home screen and the guide, maps and codes still open without it. On iPhone, tap Share, then <b>Add to Home Screen</b>.</p>
 </section>
 
 <!-- ================= SUPPLIES ================= -->
@@ -2054,6 +2064,10 @@ renderAll();
 load();
 setInterval(() => { if (!document.hidden) load(); }, 30000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+</script>
+<script>
+if (navigator.standalone) document.getElementById('saveHome')?.remove();
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
 </html>
