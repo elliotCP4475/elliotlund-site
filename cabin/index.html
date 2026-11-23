@@ -653,22 +653,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 
 .view{display:none}
 .view.on{display:block}
-.notebook{margin-top:18px; background:#FBF6E6 repeating-linear-gradient(180deg, transparent 0 29px, rgba(31,78,107,.16) 29px 30px); background-position:0 52px; border-radius:6px 14px 14px 6px; box-shadow:0 6px 0 #A88D5C, inset 14px 0 0 #E8DAB8, inset 16px 0 0 rgba(168,35,31,.35); padding:16px 16px 18px 30px; color:var(--ink)}
-.notebook h3{font-family:var(--display); font-weight:400; font-size:1.45rem; margin:0; color:var(--bark)}
-.nb-sub{margin:2px 0 8px; color:var(--ink-soft); font-size:.92rem}
-.nb-list{list-style:none; margin:0 0 10px; padding:0; font-family:var(--hand); font-size:1.18rem; line-height:30px}
-.nb-list li{display:flex; gap:10px}
-.nb-date{flex:none; min-width:52px; color:var(--lake)}
-.nb-text b{font-weight:400; color:var(--bark-dk); text-decoration:underline; text-decoration-color:rgba(210,96,26,.5); text-underline-offset:3px}
-.nb-text i{color:var(--ink-soft)}
-.nb-empty{color:var(--ink-soft)}
-.nb-more{background:none; border:0; color:var(--lake); font:700 .9rem var(--body); padding:0 0 10px; text-decoration:underline}
-.nb-form{display:grid; gap:8px; margin-bottom:6px}
-.nb-form input{font:1rem var(--body); padding:10px 12px; border:2px solid #CDB98E; border-radius:10px; background:#fff; color:var(--ink)}
-.nb-chips{display:flex; flex-wrap:wrap; gap:6px}
-.nb-chips button{border:1.5px solid var(--wood); background:#fff; color:var(--bark); border-radius:999px; padding:5px 11px; font:700 .85rem var(--body)}
-.nb-actions{display:flex; gap:8px}
-.notebook [hidden]{display:none !important}
 .savehome{margin:16px 4px 0; font-size:.9rem; color:var(--cream); opacity:.85; text-align:center}
 @media (display-mode: standalone){ .savehome{display:none} }
 #v-home.on + #v-guide{margin-top:34px; padding-top:22px; border-top:4px double rgba(46,26,13,.35)}
@@ -847,21 +831,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       </ul>
     </article>
   </div>
-
-  <article class="notebook" id="sightCard" aria-labelledby="h-sight">
-    <h3 id="h-sight">Seen at the cabin</h3>
-    <p class="nb-sub">A running log of what guests spot. Add yours.</p>
-    <ol class="nb-list" id="sightList"></ol>
-    <button class="nb-more" type="button" id="sightMore" hidden></button>
-    <form class="nb-form" id="sightForm" hidden>
-      <div class="nb-chips" id="sightChips"></div>
-      <input id="sightWhat" maxlength="60" placeholder="What did you see?" autocomplete="off" required>
-      <input id="sightWho" maxlength="40" placeholder="Your name" autocomplete="given-name">
-      <input id="sightNote" maxlength="140" placeholder="Where, or anything else (optional)" autocomplete="off">
-      <div class="nb-actions"><button class="btn sm" type="submit">Add to the log</button><button class="btn ghost sm" type="button" id="sightCancel">Cancel</button></div>
-    </form>
-    <button class="btn sm" type="button" id="sightAdd">Log a sighting</button>
-  </article>
 
   <div class="tiles" style="margin-top:18px;grid-template-columns:1fr">
     <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it in Handyman Corner</span></button>
@@ -1278,7 +1247,6 @@ const fmt = t => new Date(t).toLocaleDateString('en-US', {month:'short', day:'nu
 const fmtShort = t => new Date(t).toLocaleDateString('en-US', {month:'short', day:'numeric'});
 
 const S = {
-  sightings: [],
   groceries: [
     {id:uid(), text:'Coffee', note:'', checked:false},
     {id:uid(), text:'Eggs', note:'two dozen', checked:false},
@@ -1410,7 +1378,7 @@ async function load(){
   try {
     const j = await (await fetch(API_URL + '?t=' + Date.now())).json();
     if (pending || seq !== writeSeq) return;
-    ['groceries','maintenance','inventory','checkout','cleared','sightings'].forEach(k => S[k] = j[k] || []);
+    ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = j[k] || []);
     Object.entries(j.pantry || {}).forEach(([k,v]) => S.pantry[k] = Object.assign({}, S.pantry[k], v, S.pantry[k] && S.pantry[k].fresh ? {fresh:true} : {}));
     renderAll();
   } catch(e){ /* keep what's on screen; next poll retries */ }
@@ -1654,35 +1622,6 @@ function renderBins(){
   }
 }
 
-/* ---------- Sightings log ---------- */
-const SIGHT_CHIPS = ['Loon', 'Bald eagle', 'Deer', 'Fox', 'Otter', 'Black bear', 'Turkeys', 'Northern lights', 'Shooting star'];
-let sightAll = false;
-function renderSightings(){
-  const list = (S.sightings || []).slice().sort((a, b) => (b.added || 0) - (a.added || 0));
-  const shown = sightAll ? list : list.slice(0, 6);
-  $('#sightList').innerHTML = shown.length ? shown.map(x => `<li><span class="nb-date">${x.added ? new Date(+x.added).toLocaleDateString('en-US', {month:'short', day:'numeric', year: new Date(+x.added).getFullYear() === new Date().getFullYear() ? undefined : 'numeric'}) : ''}</span><span class="nb-text"><b>${esc(x.what)}</b>${x.note ? `, ${esc(x.note)}` : ''}${x.who ? ` <i>— ${esc(x.who)}</i>` : ''}</span></li>`).join('')
-    : '<li class="nb-empty">Nothing logged yet. Be the first.</li>';
-  const more = $('#sightMore');
-  more.hidden = list.length <= 6;
-  more.textContent = sightAll ? 'Show fewer' : `Show all ${list.length}`;
-}
-$('#sightChips').innerHTML = SIGHT_CHIPS.map(c => `<button type="button" data-schip="${esc(c)}">${esc(c)}</button>`).join('');
-$('#sightChips').addEventListener('click', e => { const b = e.target.closest('[data-schip]'); if (!b) return; $('#sightWhat').value = b.dataset.schip; $('#sightWho').focus(); });
-$('#sightAdd').addEventListener('click', () => { $('#sightForm').hidden = false; $('#sightAdd').hidden = true; try { $('#sightWho').value = localStorage.getItem('sightWho') || ''; } catch(e){} $('#sightWhat').focus(); });
-$('#sightCancel').addEventListener('click', () => { $('#sightForm').hidden = true; $('#sightAdd').hidden = false; });
-$('#sightMore').addEventListener('click', () => { sightAll = !sightAll; renderSightings(); });
-$('#sightForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const what = $('#sightWhat').value.trim(); if (!what) return;
-  const item = {id:uid(), what, who:$('#sightWho').value.trim(), note:$('#sightNote').value.trim(), photo:'', added:Date.now()};
-  try { if (item.who) localStorage.setItem('sightWho', item.who); } catch(err){}
-  S.sightings.push(item); renderSightings();
-  $('#sightWhat').value = ''; $('#sightNote').value = '';
-  $('#sightForm').hidden = true; $('#sightAdd').hidden = false;
-  toast('Added to the log. Nice spot!');
-  api({op:'add', list:'sightings', item}).catch(() => { S.sightings = S.sightings.filter(x => x.id !== item.id); renderSightings(); });
-});
-
 function renderCheckout(){
   $('#outList').innerHTML = S.checkout.map(c => `
     <li><label class="chk"><input type="checkbox" data-oid="${c.id}" ${c.checked?'checked':''}><span class="t">${esc(c.text)}</span></label></li>`).join('');
@@ -1696,7 +1635,7 @@ function renderCheckout(){
       </label>`).join('')}</div>`).join('');
 }
 
-function renderAll(){ renderSightings(); renderPantry(); renderGroceries(); renderMaintenance(); renderInventory(); renderBins(); renderCheckout(); }
+function renderAll(){ renderPantry(); renderGroceries(); renderMaintenance(); renderInventory(); renderBins(); renderCheckout(); }
 
 /* ---------- Events ---------- */
 document.addEventListener('change', e => {
