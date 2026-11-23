@@ -123,6 +123,8 @@ img{max-width:100%; display:block}
 .trailkey small{margin-left:auto; color:#7A5C3E; font-weight:700; white-space:nowrap}
 .pmap .leaflet-popup-content{font-family:var(--body, inherit); font-size:.95rem; line-height:1.4}
 .pmap .leaflet-popup-content b{display:block; font-size:1.05rem}
+.pmap .plabel{background:#2E1A0D; color:#FCE9B8; border:0; border-radius:4px; padding:1px 6px; font-weight:800; font-size:.8rem; box-shadow:none}
+.pmap .plabel::before{display:none}
 .here-dot{width:16px; height:16px; border-radius:50%; background:#1E88E5; border:3px solid #fff; box-shadow:0 0 0 6px rgba(30,136,229,.25)}
 .tbd{border-bottom:2px dashed var(--orange); color:var(--orange); font-weight:700}
 .verify{display:inline-block; font-family:var(--hand); font-size:.95rem; color:#fff; background:var(--orange); border-radius:4px; padding:0 6px; margin-left:4px; transform:rotate(-2deg)}
@@ -1822,12 +1824,14 @@ if (live()){
     fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(data => {
       const key = [];
       const layer = L.geoJSON(data, {
-        style: f => f.properties.kind === 'property'
+        style: f => f.properties.kind === 'point' ? {radius:6, color:'#2E1A0D', weight:3, fillColor:'#FFFFFF', fillOpacity:1}
+          : f.properties.kind === 'property'
           ? {color:'#E2453C', weight:3, fillColor:'#E2453C', fillOpacity:.06}
           : {color:f.properties.color || '#7FD1E8', weight:5, opacity:.95, dashArray:f.properties.draft ? '2 9' : null, lineCap:'round'},
-        pointToLayer: (f, ll) => L.circleMarker(ll, {radius:7, color:'#2E1A0D', weight:2, fillColor:f.properties.color || '#F4D35E', fillOpacity:1}),
+        pointToLayer: (f, ll) => L.circleMarker(ll, {radius:6, color:'#2E1A0D', weight:3, fillColor:f.properties.color || '#FFFFFF', fillOpacity:1}),
         onEachFeature: (f, l) => {
           const p = f.properties; let html = `<b>${esc(p.name || '')}</b>`;
+          if (p.kind === 'point') l.bindTooltip(esc(p.name || ''), {permanent:true, direction:p.label === 'left' ? 'left' : 'right', offset:[p.label === 'left' ? -8 : 8, 0], className:'plabel'});
           if (p.kind === 'trail'){ const mi = miles(f.geometry.coordinates); html += `${fmtMi(mi)} one way`; key.push({p, l, mi}); }
           if (p.note) html += `<br>${esc(p.note)}`;
           if (p.draft) html += `<br><i>Rough sketch until the GPS track is added.</i>`;

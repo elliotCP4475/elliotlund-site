@@ -1033,6 +1033,54 @@
      ]
     ]
    }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "point",
+    "name": "Bunkhouse",
+    "note": "Sleeps the most: 2 queens and a twin bunk, plus a futon in the mudroom.",
+    "label": "left"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -89.887884,
+     45.998373
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "point",
+    "name": "Cabin",
+    "note": "Gas fireplace and wood stove inside. Firewood is on the east side. Keys hang just inside the bunkhouse door.",
+    "label": "left"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -89.887368,
+     45.999017
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "point",
+    "name": "Garage",
+    "note": "Fish cleaning station and chest freezer in the back room. Tools and yard games.",
+    "label": "right"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -89.88721,
+     45.998832
+    ]
+   }
   }
  ]
 }
