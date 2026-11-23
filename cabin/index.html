@@ -109,9 +109,25 @@ img{max-width:100%; display:block}
 .paper h3{margin:0 0 6px; font-size:1.15rem; font-weight:800}
 .paper p{margin:0 0 8px}
 .paper p:last-child{margin-bottom:0}
-.huntpill{position:absolute; top:calc(10px + env(safe-area-inset-top)); left:10px; z-index:40; background:#F26B1D; color:#fff; border:2px solid #fff; border-radius:999px; padding:7px 12px; font:inherit; font-weight:800; font-size:.85rem; box-shadow:0 3px 0 #8a3a0c, 0 6px 14px rgba(0,0,0,.35); cursor:pointer}
-.huntpill[hidden]{display:none}
-@media (max-width:360px){ .hp-long{display:none} }
+.huntbar{margin:0 0 12px; padding:5px 10px; border-radius:6px; background:#F26B1D; color:#fff; font-weight:700; font-size:.85rem; border:2px solid #2E1A0D; box-shadow:0 3px 0 rgba(46,26,13,.5)}
+.huntbar[hidden]{display:none}
+.mapcard{display:block; width:100%; margin:18px 0 0; padding:0; border:3px solid #2E1A0D; border-radius:12px; overflow:hidden; background:#24402A; color:#FCE9B8; text-align:left; cursor:pointer; box-shadow:0 5px 0 rgba(46,26,13,.55), 0 10px 18px rgba(0,0,0,.3); font:inherit}
+.mapcard svg{display:block; width:100%; height:auto; background:radial-gradient(ellipse at 30% 20%, #2F5A3A, #1F3A27)}
+.mapcard-txt{display:block; padding:10px 14px 12px; background:#2E1A0D}
+.mapcard-txt b{display:block; font-family:var(--display); font-size:1.25rem; color:#F4D35E}
+.mapcard-txt span{display:block; font-size:.92rem; opacity:.95}
+.pmap{height:420px; border:3px solid #2E1A0D; border-radius:8px; overflow:hidden; background:#2b3a2b; box-shadow:0 4px 0 rgba(46,26,13,.35)}
+.pmapbar{display:flex; gap:8px; margin:10px 0 4px}
+.trailkey{list-style:none; padding:0; margin:6px 0 0}
+.trailkey li{margin:0}
+.trailkey button{display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:transparent; border:0; border-bottom:1px dashed #C9B58A; padding:9px 2px; font:inherit; color:inherit; cursor:pointer}
+.trailkey .sw{width:26px; height:6px; border-radius:3px; flex:none}
+.trailkey small{margin-left:auto; color:#7A5C3E; font-weight:700; white-space:nowrap}
+.pmap .leaflet-popup-content{font-family:var(--body, inherit); font-size:.95rem; line-height:1.4}
+.pmap .leaflet-popup-content b{display:block; font-size:1.05rem}
+.pmap .plabel{background:#2E1A0D; color:#FCE9B8; border:0; border-radius:4px; padding:1px 6px; font-weight:800; font-size:.8rem; box-shadow:none}
+.pmap .plabel::before{display:none}
+.here-dot{width:16px; height:16px; border-radius:50%; background:#1E88E5; border:3px solid #fff; box-shadow:0 0 0 6px rgba(30,136,229,.25)}
 .tbd{border-bottom:2px dashed var(--orange); color:var(--orange); font-weight:700}
 .verify{display:inline-block; font-family:var(--hand); font-size:.95rem; color:#fff; background:var(--orange); border-radius:4px; padding:0 6px; margin-left:4px; transform:rotate(-2deg)}
 .muted{color:var(--ink-soft); font-size:.92rem}
@@ -655,7 +671,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   </defs>
 </svg>
 
-<button class="huntpill" type="button" id="huntBanner" hidden><span class="hp-long">Deer season: </span>wear orange</button>
 <button class="sos" type="button" id="sosBtn" aria-haspopup="dialog">Emergency Info</button>
 
 <!-- ================= HOME ================= -->
@@ -910,11 +925,11 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 <!-- ================= GUIDE ================= -->
 <section class="view" id="v-guide" aria-labelledby="h-guide">
   <h2 class="sign" id="h-guide"><svg><use href="#i-pine"/></svg>Cabin guide</h2>
+  <div class="huntbar" id="huntBanner" hidden></div>
 
   <details class="guide" id="g-maps">
     <summary><svg class="ic"><use href="#i-map"/></svg>Maps<svg class="chev"><use href="#i-chev"/></svg></summary>
     <div class="guide-body">
-      <h4>The property and trails</h4>
       <div class="pmap" id="pmap" aria-label="Map of the property and trails"></div>
       <div class="pmapbar">
         <button type="button" class="btn ghost sm" id="pmapLocate"><svg><use href="#i-pin"/></svg>Show where I am</button>
@@ -924,7 +939,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <h4>Trails nearby</h4>
       <ul>
         <li><b>Bearskin State Trail</b>, Minocqua. Flat, crushed-stone rail trail for walking and biking.</li>
-        <li><b>On the property:</b> see the map above.</li>
         <li><b>Walking the road?</b> Turn right (north) on Artishon Ln. Dogs often roam loose along the stretch to the left.</li>
       </ul>
     </div>
@@ -2001,8 +2015,8 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
   const preview = /[?&]season=1/.test(location.search);
   if (!(preview || (now >= open && now <= close))) return;
   const fmt = d => d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
-  const pill = $('#huntBanner'); pill.hidden = false;
-  pill.onclick = () => toast(`Deer season runs through ${fmt(close)}. Wear some blaze orange outside.`);
+  const bar = $('#huntBanner'); bar.hidden = false;
+  bar.textContent = `Deer season through ${fmt(close)}: wear blaze orange outside.`;
 })();
 
 renderAll();
