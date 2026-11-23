@@ -216,14 +216,50 @@ a{color:var(--lake); font-weight:700}
 .wifi .net b{display:block}
 
 /* ---------- Postcard / TV live view ---------- */
-.tv{
-  margin-top:16px; border-radius:26px; padding:14px 14px 12px; position:relative;
-  background:linear-gradient(180deg,#8B5A2B,#5E3816); border:3px solid #2A1708;
-  box-shadow:inset 0 2px 0 rgba(255,220,170,.25), 0 8px 18px rgba(0,0,0,.4);
-}
-.tv .screen{border-radius:22px/18px; overflow:hidden; border:6px solid #1B1B1B; background:#111; position:relative; aspect-ratio:16/10}
+.tvset{position:relative; margin-top:44px}
+.tvset .ant{position:absolute; left:50%; top:-44px; width:150px; height:66px; transform:translateX(-50%); z-index:0}
+.tvset .legs{display:block; width:100%; height:20px; margin-top:-2px}
+.tv{position:relative; z-index:1; border-radius:16px; padding:12px; border:3px solid #2A1708;
+  background:repeating-linear-gradient(92deg, rgba(40,20,5,.10) 0 2px, transparent 2px 7px, rgba(255,220,170,.05) 7px 8px, transparent 8px 15px), linear-gradient(180deg,#A0683A,#6E4220);
+  box-shadow:inset 0 2px 0 rgba(255,220,170,.3), inset 0 -3px 0 rgba(0,0,0,.25), 0 10px 20px rgba(0,0,0,.45)}
+.tvface{display:grid; grid-template-columns:1fr 54px; gap:10px; padding:10px; border-radius:12px; background:linear-gradient(180deg,#2E2219,#1E1610); box-shadow:inset 0 2px 6px rgba(0,0,0,.6), 0 1px 0 rgba(255,220,170,.2)}
+.tv .screen{border-radius:24px/20px; overflow:hidden; border:5px solid #0E0E0E; background:#111; position:relative; aspect-ratio:4/3; box-shadow:0 0 0 2px #4A3A2C}
+.tv .screen img{filter:contrast(1.05) saturate(.9)}
 .tv .screen svg{width:100%;height:100%;display:block}
-.tv .screen::after{content:""; position:absolute; inset:0; background:radial-gradient(ellipse at center, transparent 65%, rgba(0,0,0,.3)); pointer-events:none}
+.tv .screen::before{content:""; position:absolute; inset:0; z-index:3; pointer-events:none; background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px)}
+.tv .screen::after{content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:inherit;
+  background:linear-gradient(140deg, rgba(255,255,255,.16), rgba(255,255,255,0) 38%), radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55)); box-shadow:inset 0 0 26px rgba(0,0,0,.75)}
+.tvpanel{display:flex; flex-direction:column; align-items:center; gap:10px; padding:6px 0; border-radius:8px; background:linear-gradient(180deg,#C9B48A,#8E7A55); box-shadow:inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 3px rgba(0,0,0,.3)}
+.dial{position:relative; width:38px; height:38px; border-radius:50%; background:repeating-conic-gradient(#2A2018 0 6deg, #3E3226 6deg 12deg); box-shadow:0 2px 3px rgba(0,0,0,.5), inset 0 0 0 3px #1A140F}
+.dial i{position:absolute; inset:9px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #6A5A4A, #1E1712)}
+.dial i::after{content:""; position:absolute; left:50%; top:1px; width:2px; height:8px; margin-left:-1px; background:#E8DCC4; border-radius:1px}
+button.dial{padding:0; border:0; cursor:pointer}
+.dial i{transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.dial.ch5 i{transform:rotate(72deg)}
+.osd{position:absolute; right:14px; bottom:12px; z-index:4; font:700 1.25rem/1 "Courier New", monospace; color:#7CFF7C; text-shadow:0 0 6px rgba(124,255,124,.8), 2px 2px 0 #000; opacity:0; transition:opacity .4s; pointer-events:none}
+.osd.on{opacity:1}
+.static{position:absolute; inset:0; z-index:4; pointer-events:none; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 2.2 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23222'/%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/160px 120px, #333; animation:snow .1s steps(3) infinite}
+.static[hidden]{display:none}
+@keyframes snow{0%{background-position:0 0}33%{background-position:-53px 21px}66%{background-position:37px -44px}100%{background-position:-11px 67px}}
+.wxtv{container-type:inline-size; position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; background:linear-gradient(180deg,#1B2F8F,#3D63D6); color:#fff; font-family:Arial, Helvetica, sans-serif}
+.wxtv[hidden]{display:none}
+.wxtv-bar{background:linear-gradient(180deg,#0B1650,#22348F); color:#F7D84A; font-weight:900; text-transform:uppercase; letter-spacing:.06em; font-size:4cqw; white-space:nowrap; padding:1.6cqw 3cqw 1.4cqw; border-bottom:2px solid #F7D84A; text-align:right}
+.wxtv-body{flex:1; display:flex; flex-direction:column; justify-content:center; gap:1.6cqw; padding:1cqw 4cqw 3.5cqw}
+.wxtv-wait{margin:0; text-align:center; color:#F7D84A; font-weight:700}
+.wxtv-now{display:flex; align-items:baseline; gap:10px}
+.wxtv-now b{font-size:13cqw; line-height:1; text-shadow:2px 2px 0 #0B1650}
+.wxtv-now span{font-size:5cqw; line-height:1.2; font-weight:700; color:#F7D84A; text-shadow:1px 1px 0 #0B1650}
+.wxtv-days{display:grid; grid-template-columns:repeat(3,1fr); gap:5px}
+.wxtv-days div{background:rgba(11,22,80,.55); border:1px solid rgba(247,216,74,.5); border-radius:4px; text-align:center; padding:.8cqw .5cqw; font-size:4.3cqw; line-height:1.25}
+.wxtv-days b{display:block; color:#F7D84A}
+.wxtv-moon{display:flex; align-items:center; gap:1.6cqw; font-size:4.3cqw; font-weight:700}
+.tv .screen .wxtv-moon svg{width:4.5cqw; height:4.5cqw; flex:none}
+.dial.sm{width:30px; height:30px}
+.dial.sm i{inset:7px; transform:rotate(130deg)}
+.grille{flex:1; width:32px; min-height:30px; border-radius:4px; background:repeating-linear-gradient(0deg, #3A2E22 0 2px, #A8936A 2px 5px)}
+.tv .controls{display:flex; justify-content:center; margin-top:10px}
+.tv .live{padding:3px 12px; border-radius:4px; background:linear-gradient(180deg,#E6C67A,#B8913E); color:#2E1A0D; font-weight:900; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 1px 2px rgba(0,0,0,.4)}
+.tv .live i{box-shadow:0 0 6px #53d36a}
 .tv .postcard{position:absolute; left:10px; top:10px; z-index:2; font-family:var(--display); color:#FCE9B8; font-size:1.05rem; line-height:1.05; text-shadow:0 2px 0 var(--orange), 0 3px 4px rgba(0,0,0,.6)}
 .tv .postcard span{display:block; font-size:1.5rem}
 .wxnow{position:absolute; top:10px; right:10px; z-index:2; display:flex; align-items:center; gap:8px; padding:5px 10px; border-radius:999px; background:rgba(20,14,8,.55); color:#FCE9B8; font-weight:800; font-size:.95rem; backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px)}
@@ -236,7 +272,6 @@ a{color:var(--lake); font-weight:700}
 .wxday span{display:block; font-weight:800; font-size:.95rem; margin-top:2px}
 .wxday small{display:block; font-size:.72rem; opacity:.85; margin-top:1px}
 .wxday svg{display:block; width:22px; height:22px; margin:2px auto 0}
-.tv .controls{display:flex; align-items:center; justify-content:space-between; margin-top:10px; color:var(--cream); font-size:.9rem}
 .knobs{display:flex; gap:8px}
 .knob{width:26px;height:26px;border-radius:50%; background:radial-gradient(circle at 35% 30%,#e9d3a8,#6b4a22 70%); border:2px solid #2A1708}
 .live{display:inline-flex; align-items:center; gap:6px; font-weight:700}
@@ -658,7 +693,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </div>
   </div>
 
-  <div class="tv" style="margin-top:18px" role="figure" aria-label="Cabin Cam: latest snapshot of the yard">
+  <div class="tvset">
+  <svg class="ant" viewBox="0 0 160 70" aria-hidden="true"><path d="M80 62 L34 6 M80 62 L128 10" stroke="#B8B2A4" stroke-width="3" stroke-linecap="round"/><circle cx="34" cy="6" r="4" fill="#D9D2C2"/><circle cx="128" cy="10" r="4" fill="#D9D2C2"/><path d="M58 70 Q80 48 102 70Z" fill="#2B2118"/></svg>
+  <div class="tv" role="figure" aria-label="Cabin Cam: latest snapshot of the yard">
+    <div class="tvface">
     <div class="screen">
       <img id="camImg" alt="Cabin Cam snapshot of the yard" hidden style="width:100%;height:100%;object-fit:cover;display:block">
       <svg id="camArt" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -678,12 +716,22 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <path d="M40 176 L54 150 L68 176z M52 176 L68 140 L84 176z" fill="#24402A"/>
       </svg>
       <div class="wxnow" id="wxNow" hidden></div>
+      <div class="wxtv" id="wxTv" hidden><div class="wxtv-bar">Northwoods Weather</div><div class="wxtv-body" id="wxTvBody"><p class="wxtv-wait">Tuning in…</p></div></div>
+      <div class="static" id="tvStatic" hidden></div>
+      <div class="osd" id="tvOsd">CH 3</div>
+    </div>
+    <div class="tvpanel" aria-hidden="true">
+      <button type="button" class="dial" id="chDial" aria-label="Turn the dial to change channels"><i></i></button>
+      <span class="dial sm"><i></i></span>
+      <span class="grille"></span>
+    </div>
     </div>
     <div class="controls">
       <span class="live"><i id="camDot"></i> <span id="camTxt">Cabin Cam</span></span>
-      <span class="knobs" aria-hidden="true"><span class="knob"></span><span class="knob"></span></span>
     </div>
     <div class="wxrow" id="wxRow"></div>
+  </div>
+  <svg class="legs" viewBox="0 0 300 22" preserveAspectRatio="none" aria-hidden="true"><path d="M40 0 L58 0 L52 22 L46 22Z M242 0 L260 0 L254 22 L248 22Z" fill="#3A2412"/></svg>
   </div>
 
   <div class="flannel" style="margin-top:18px">
@@ -695,7 +743,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <button class="code" type="button" data-unlock style="grid-column:1/-1"><div class="k">Main cabin</div><div class="keysnote locked" data-secret="keys" data-mask="Tap to view">Tap to view</div></button>
       </div>
       <p class="muted lockhint" data-lockhint>Tap a code to view it.</p>
-      <p class="doortip"><b>Cabin front door:</b> to lock it from inside, push it firmly shut as you turn the deadbolt.</p>
     </div>
     <div class="paper" style="margin-top:10px">
       <h3>WiFi</h3>
@@ -1871,9 +1918,33 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
       }).join('');
       const m = moon(Date.now());
       $('#wxRow').innerHTML = days + `<div class="wxday" title="${m.name}"><b>Moon</b>${m.svg}<small>${m.name.replace(' moon','')}</small></div>`;
+      $('#wxTvBody').innerHTML = `<div class="wxtv-now"><b>${Math.round(w.current.temperature_2m)}°</b><span>${word(w.current.weather_code)}<br>Pokegama Lake</span></div>
+        <div class="wxtv-days">${w.daily.time.slice(1, 4).map((t, k) => `<div><b>${new Date(t + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short'}).toUpperCase()}</b>${Math.round(w.daily.temperature_2m_max[k+1])}° / ${Math.round(w.daily.temperature_2m_min[k+1])}°<br>${short(w.daily.weather_code[k+1])}</div>`).join('')}</div>
+        <div class="wxtv-moon">${m.svg}${m.name}</div>`;
     } catch(e){}
   }
   load(); setInterval(load, 30*60*1000);
+})();
+
+/* The big TV knob flips between the Cabin Cam (channel 3) and the weather (channel 5). */
+(function(){
+  const dial = $('#chDial'); if (!dial) return;
+  let ch = 3, t1, t2;
+  const osd = $('#tvOsd'), stat = $('#tvStatic');
+  const flash = () => { osd.textContent = `CH ${ch}`; osd.classList.add('on'); clearTimeout(t2); t2 = setTimeout(() => osd.classList.remove('on'), 1800); };
+  dial.onclick = () => {
+    ch = ch === 3 ? 5 : 3;
+    dial.classList.toggle('ch5', ch === 5);
+    dial.setAttribute('aria-label', ch === 5 ? 'Weather on. Turn the dial back to the Cabin Cam' : 'Turn the dial to the weather');
+    stat.hidden = false; clearTimeout(t1);
+    t1 = setTimeout(() => {
+      stat.hidden = true;
+      $('#wxTv').hidden = ch !== 5;
+      $('#wxNow').style.visibility = ch === 5 ? 'hidden' : '';
+      $('#camTxt').textContent = ch === 5 ? 'Weather' : 'Cabin Cam';
+      flash();
+    }, 380);
+  };
 })();
 
 /* Property and trail map. Data lives in cabin-map.geojson:
