@@ -1,5 +1,5 @@
 // The Lund Cabin: offline support.
-const V = 'lund-v2';
+const V = 'lund-v3';
 const CORE = ['./', 'index.html', 'cabin-map.geojson', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png',
   'lake-depth.jpg', 'stove-damper.jpg', 'stove-air.jpg', 'stove-handle.jpg', 'stove-door.jpg', 'stove-ash.jpg',
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css',

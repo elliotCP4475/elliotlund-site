@@ -2044,9 +2044,7 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
     if (map || !window.L) return;
     map = L.map(box, {zoomControl:true, attributionControl:true, maxZoom:20});
     const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:20, maxNativeZoom:19, attribution:'Imagery &copy; Esri'});
-    const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:20, maxNativeZoom:19, attribution:'&copy; OpenStreetMap contributors'});
     sat.addTo(map);
-    L.control.layers({'Satellite':sat, 'Map':street}, null, {position:'topright'}).addTo(map);
     map.setView([45.9989, -89.8885], 17);
     fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(data => {
       const key = [], fit = [];
