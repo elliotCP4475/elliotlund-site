@@ -109,17 +109,11 @@ img{max-width:100%; display:block}
 .paper h3{margin:0 0 6px; font-size:1.15rem; font-weight:800}
 .paper p{margin:0 0 8px}
 .paper p:last-child{margin-bottom:0}
-.hunt{margin:0 0 16px; background:#F26B1D; color:#fff; border:3px solid #2E1A0D; border-radius:10px; box-shadow:0 4px 0 rgba(46,26,13,.55), 0 10px 18px rgba(0,0,0,.3); background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 12px, transparent 12px 24px)}
-.hunt summary{list-style:none; display:flex; align-items:center; gap:12px; padding:12px 14px; cursor:pointer}
-.hunt summary::-webkit-details-marker{display:none}
-.hunt summary b{display:block; font-family:var(--display); font-size:1.25rem; line-height:1.1; text-shadow:0 2px 0 rgba(46,26,13,.45)}
-.hunt summary small{display:block; font-weight:700; opacity:.95; margin-top:2px}
-.hunt summary > span:nth-child(2){flex:1}
-.hunt .chev{width:22px; height:22px; flex:none; transition:transform .2s}
-.hunt[open] .chev{transform:rotate(180deg)}
-.huntflag{width:34px; height:34px; flex:none; border-radius:50%; background:#fff; box-shadow:inset 0 0 0 8px #FFB347}
-.hunt ul{margin:0; padding:2px 16px 14px 34px; background:rgba(46,26,13,.12)}
-.hunt li{margin:8px 0; line-height:1.4}
+.hunt{display:flex; align-items:center; gap:12px; margin:0 0 16px; padding:10px 14px; background:#F26B1D; color:#fff; border:3px solid #2E1A0D; border-radius:10px; box-shadow:0 4px 0 rgba(46,26,13,.55)}
+.hunt[hidden]{display:none}
+.hunt p{margin:0; line-height:1.35}
+.hunt b{display:block; font-family:var(--display); font-size:1.1rem; text-shadow:0 2px 0 rgba(46,26,13,.4)}
+.huntflag{width:26px; height:26px; flex:none; border-radius:50%; background:#fff; box-shadow:inset 0 0 0 6px #FFB347}
 .tbd{border-bottom:2px dashed var(--orange); color:var(--orange); font-weight:700}
 .verify{display:inline-block; font-family:var(--hand); font-size:.95rem; color:#fff; background:var(--orange); border-radius:4px; padding:0 6px; margin-left:4px; transform:rotate(-2deg)}
 .muted{color:var(--ink-soft); font-size:.92rem}
@@ -630,19 +624,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   </div>
 
   <div style="margin-top:16px"></div>
-  <details class="hunt" id="huntBanner" hidden open>
-    <summary><span class="huntflag" aria-hidden="true"></span><span><b>It's deer hunting season</b><small id="huntDates"></small></span><svg class="chev"><use href="#i-chev"/></svg></summary>
-    <ul>
-      <li><b>Wear blaze orange or pink whenever you're outside.</b> A hat plus a vest or jacket, even for a quick walk down the drive.</li>
-      <li><b>Dogs wear orange too.</b> A vest or collar, and keep them close.</li>
-      <li><b>Skip white or brown outer layers,</b> including white hats and gloves. They can look like a deer's tail.</li>
-      <li><b>Stay out of the woods at dawn and dusk,</b> when hunters are most active. Stick to the driveway, the roads and the open yard.</li>
-      <li><b>The land east and south of the cabin may be hunted,</b> including on dates outside the state season.</li>
-      <li><b>No off-trail ATV or dirt bike riding</b> this time of year. Make some noise when you're near the trees.</li>
-      <li><b>Gunshots nearby are normal.</b> If shots ever seem aimed toward the buildings, go inside and call Elliot. If anyone is hurt, call 911.</li>
-      <li><b>Want to hunt?</b> Ask Elliot first. The cabin is inside the Lac du Flambeau Reservation, so a tribal license is required.</li>
-    </ul>
-  </details>
+  <div class="hunt" id="huntBanner" hidden>
+    <span class="huntflag" aria-hidden="true"></span>
+    <p><b>Deer season<span id="huntDates"></span></b>Wear some blaze orange outside, and put a little on the dog.</p>
+  </div>
   <div class="plaque">
     <div class="addr">3132 N Artishon Ln<br>Lac du Flambeau, WI 54538</div>
     <div class="row">
@@ -1827,10 +1812,8 @@ if (live()){
   const preview = /[?&]season=1/.test(location.search);
   if (!(preview || (now >= open && now <= close))) return;
   const fmt = d => d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
-  $('#huntDates').textContent = `Gun seasons run ${fmt(open)} to ${fmt(close)}. Tap to hide or show.`;
-  const el = $('#huntBanner'); el.hidden = false;
-  try { if (localStorage.getItem('lundHunt' + y) === 'closed') el.open = false; } catch(e){}
-  el.addEventListener('toggle', () => { try { localStorage.setItem('lundHunt' + y, el.open ? 'open' : 'closed'); } catch(e){} });
+  $('#huntDates').textContent = ` through ${fmt(close)}`;
+  $('#huntBanner').hidden = false;
 })();
 
 renderAll();
