@@ -255,10 +255,7 @@ button.dial{padding:0; border:0; cursor:pointer}
 .dial.ch5 i{transform:rotate(40deg)}
 .chlbl{display:flex; gap:6px; margin-bottom:-6px; font:900 .62rem/1 Arial, sans-serif; letter-spacing:.04em; color:#5A4630}
 .chlbl b.on{color:#1E1712; text-decoration:underline; text-underline-offset:2px}
-#chDial{animation:nudge 2.4s ease-in-out 1.2s 2}
 @keyframes nudge{0%,100%{transform:rotate(0)}10%{transform:rotate(-14deg)}20%{transform:rotate(10deg)}30%{transform:rotate(0)}}
-.tunehint{margin-left:10px; padding:3px 10px; border-radius:999px; border:1px dashed rgba(252,233,184,.7); background:transparent; color:#FCE9B8; font:inherit; font-size:.78rem; font-weight:700; cursor:pointer}
-.tunehint[hidden]{display:none}
 .osd{position:absolute; right:14px; bottom:12px; z-index:4; font:700 1.25rem/1 "Courier New", monospace; color:#7CFF7C; text-shadow:0 0 6px rgba(124,255,124,.8), 2px 2px 0 #000; opacity:0; transition:opacity .4s; pointer-events:none}
 .osd.on{opacity:1}
 .static{position:absolute; inset:0; z-index:4; pointer-events:none; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 2.2 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23222'/%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/160px 120px, #333; animation:snow .1s steps(3) infinite}
@@ -740,7 +737,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </div>
     <div class="controls">
       <span class="live"><i id="camDot"></i> <span id="camTxt">Cabin Cam</span></span>
-      <button type="button" class="tunehint" id="tuneHint">Turn the knob for weather</button>
     </div>
   </div>
   <svg class="legs" viewBox="0 0 300 22" preserveAspectRatio="none" aria-hidden="true"><path d="M40 0 L58 0 L52 22 L46 22Z M242 0 L260 0 L254 22 L248 22Z" fill="#3A2412"/></svg>
@@ -1919,13 +1915,12 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
   let ch = 3, t1, t2;
   const osd = $('#tvOsd'), stat = $('#tvStatic');
   const flash = () => { osd.textContent = `CH ${ch}`; osd.classList.add('on'); clearTimeout(t2); t2 = setTimeout(() => osd.classList.remove('on'), 1800); };
-  $('#tuneHint').onclick = () => dial.click();
-  dial.onclick = () => {
+  let touched = false, demoed = false;
+  const turn = () => {
     ch = ch === 3 ? 5 : 3;
     dial.classList.toggle('ch5', ch === 5);
     dial.setAttribute('aria-label', ch === 5 ? 'Weather on. Turn the dial back to the Cabin Cam' : 'Turn the dial to the weather');
     $('#lblCam').classList.toggle('on', ch === 3); $('#lblWx').classList.toggle('on', ch === 5);
-    $('#tuneHint').textContent = ch === 5 ? 'Turn back to the Cabin Cam' : 'Turn the knob for weather';
     stat.hidden = false; clearTimeout(t1);
     t1 = setTimeout(() => {
       stat.hidden = true;
@@ -1934,6 +1929,16 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
       flash();
     }, 380);
   };
+  dial.addEventListener('click', () => { touched = true; turn(); });
+  // Show it off once: flip to the weather when the TV reaches mid-screen, then back.
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.intersectionRatio < 0.6 || demoed || touched) return;
+      demoed = true; io.disconnect();
+      setTimeout(() => { if (touched) return; turn(); setTimeout(() => { if (!touched && ch === 5) turn(); }, 4000); }, 400);
+    }), {threshold:0.6});
+    io.observe($('.tvset'));
+  }
 })();
 
 /* Property and trail map. Data lives in cabin-map.geojson:
