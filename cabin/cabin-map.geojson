@@ -6,7 +6,7 @@
    "properties": {
     "kind": "property",
     "name": "The Lund Cabin",
-    "note": "About 5.09 acres. Outline from the Wisconsin statewide parcel map (county records); not a survey."
+    "note": "About 5 acres."
    },
    "geometry": {
     "type": "Polygon",
