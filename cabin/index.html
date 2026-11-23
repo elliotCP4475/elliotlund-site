@@ -631,6 +631,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 
 .view{display:none}
 .view.on{display:block}
+#v-home.on + #v-guide{margin-top:34px; padding-top:22px; border-top:4px double rgba(46,26,13,.35)}
 .mock-banner{font-family:var(--hand); text-align:center; color:var(--cream); font-size:1.05rem; margin:10px 0 0; opacity:.9}
 .mock-banner .tbd{color:var(--gold); border-color:var(--gold)}
 
@@ -813,117 +814,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 </section>
 
 <!-- ================= SUPPLIES ================= -->
-<section class="view" id="v-groceries" aria-labelledby="h-groc">
-  <h2 class="sign" id="h-groc"><svg><use href="#i-basket"/></svg>Pantry</h2>
-  <div class="cork">
-    <div id="polas"></div>
-    <p class="corkhint">Tap a photo to see it full size.</p>
-  </div>
-
-  <div class="fridge">
-    <div class="magnet" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-pine"/></svg></div>
-    <div class="notepad">
-      <h3>Grocery list</h3>
-      <p class="muted" style="margin:0 0 8px">Ran out of something in the pantry? Add it here.</p>
-      <form class="addrow" id="grocForm" autocomplete="off">
-        <label class="sr" for="grocIn" style="position:absolute;left:-9999px">Add an item</label>
-        <input id="grocIn" placeholder="Add an item" enterkeyhint="done">
-        <button class="btn pine" type="submit" aria-label="Add item"><svg><use href="#i-plus"/></svg></button>
-      </form>
-      <ul class="list" id="grocList"></ul>
-      <div class="listfoot">
-        <span class="muted" id="grocCount"></span>
-        <button class="btn ghost sm" type="button" id="grocClear">Clear checked</button>
-      </div>
-    </div>
-  </div>
-  <h2 class="sign"><svg><use href="#i-basket"/></svg>Supplies</h2>
-  <div class="peg shelf">
-    <div class="invbar">
-      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="supQ" placeholder="Search supplies" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search supplies</span></label>
-      <div class="chips" id="supChips" role="toolbar" aria-label="Filter by category"></div>
-    </div>
-    <div class="invpaper" id="supList"></div>
-    <div class="actions"><button class="btn ghost" type="button" id="supAddBtn"><svg><use href="#i-plus"/></svg>Add an item</button></div>
-    <form class="formcard" id="supForm" hidden style="margin-top:12px" autocomplete="off">
-      <label class="field"><span>Item</span><input type="text" id="supItem" required placeholder="Paper towels"></label>
-      <label class="field"><span>Where it's kept</span><input type="text" id="supWhere" required placeholder="Bunkhouse pantry"></label>
-      <label class="field"><span>Category</span><select id="supCat"></select></label>
-      <div style="display:flex;gap:8px"><button class="btn pine" type="submit" style="flex:1">Add item</button><button class="btn ghost" type="button" id="supCancel">Cancel</button></div>
-    </form>
-  </div>
-  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Tap the label to mark something Low or Out. Those items move to the top.</p>
-  <details class="bin" id="bin-sup"></details>
-
-  <div class="paper store" style="margin-top:22px">
-    <h3>Stocking up</h3>
-    <p><b>Trig's</b>, 9750 Hwy 70, Minocqua. Full grocery and pharmacy, on the way in. About 35 minutes, 17 miles.</p>
-    <div class="row">
-      <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Trig's,+9750+Hwy+70,+Minocqua,+WI">Directions</a>
-      <a class="btn ghost sm" href="tel:17153569456">715-356-9456</a>
-    </div>
-    <h3 style="margin-top:16px">Nearest store</h3>
-    <p><b>Ojibwe Market</b>, 501 Old Abe Rd, Lac du Flambeau. About 10 minutes, 4 miles.<br><span class="muted">Groceries, beer, gas and hot food to go.</span></p>
-    <div class="row">
-      <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Ojibwe+Market,+501+Old+Abe+Rd,+Lac+du+Flambeau,+WI+54538">Directions</a>
-      <a class="btn ghost sm" href="tel:17155883447">715-588-3447</a>
-    </div>
-  </div>
-  <details class="bin" id="bin-groceries"></details>
-</section>
-
-<!-- ================= GARAGE ================= -->
-<section class="view" id="v-fixit" aria-labelledby="h-fix">
-  <h2 class="sign" id="h-fix"><svg><use href="#i-wrench"/></svg>Handyman Corner</h2>
-  <figure class="handygif"><img src="https://media.tenor.com/aNPLcM1RS2oAAAAM/red-green-steve-smith.gif" alt="Red Green reaching for the Handyman's Secret Weapon" loading="lazy"></figure>
-  <div class="clipboard">
-    <div class="clip" aria-hidden="true"></div>
-    <details class="formcard" id="woDetails">
-      <summary class="btn wide" style="list-style:none"><svg><use href="#i-plus"/></svg>Report something</summary>
-      <form id="woForm" style="margin-top:14px" autocomplete="off">
-        <label class="field"><span>What happened?</span><input type="text" id="woWhat" required placeholder="The screen door won't latch"></label>
-        <label class="field"><span>Where?</span>
-          <select id="woWhere">
-            <option>Cabin</option><option>Kitchen</option><option>Bathroom</option><option>Bunkhouse</option><option>Garage</option><option>Dock &amp; boat</option><option>Yard &amp; peninsula</option>
-          </select>
-        </label>
-        <div class="field"><span>How urgent?</span>
-          <div class="seg" role="radiogroup">
-            <label><input type="radio" name="urg" value="low"><span>Whenever</span></label>
-            <label><input type="radio" name="urg" value="med" checked><span>Soon</span></label>
-            <label><input type="radio" name="urg" value="high"><span>Now</span></label>
-          </div>
-        </div>
-        <label class="field"><span>Details</span><textarea id="woNote" placeholder="Anything that helps whoever fixes it"></textarea></label>
-        <label class="photo-pick"><svg><use href="#i-cam"/></svg><span id="woPhotoLbl">Add a photo</span><input type="file" accept="image/*" id="woPhoto"><img id="woPrev" alt="" hidden></label>
-        <button class="btn pine wide" type="submit" style="margin-top:12px">Add to Handyman Corner</button>
-      </form>
-    </details>
-    <div id="woList"></div>
-  </div>
-  <details class="bin" id="bin-maintenance"></details>
-
-  <h2 class="sign"><svg><use href="#i-wrench"/></svg>Tools &amp; supplies</h2>
-  <div class="peg">
-    <div class="invbar">
-      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="toolsQ" placeholder="Search the garage" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search the garage</span></label>
-      <div class="chips" id="toolsChips" role="toolbar" aria-label="Filter by category"></div>
-    </div>
-    <div class="invpaper" id="toolsList"></div>
-    <div class="actions"><button class="btn ghost" type="button" id="toolsAddBtn"><svg><use href="#i-plus"/></svg>Add an item</button></div>
-    <form class="formcard" id="toolsForm" hidden style="margin-top:12px" autocomplete="off">
-      <label class="field"><span>Item</span><input type="text" id="toolsItem" required placeholder="Shop vac"></label>
-      <label class="field"><span>Where it's kept</span><input type="text" id="toolsWhere" required placeholder="Main garage, left wall"></label>
-      <label class="field"><span>Category</span><select id="toolsCat"></select></label>
-      <div style="display:flex;gap:8px"><button class="btn pine" type="submit" style="flex:1">Add item</button><button class="btn ghost" type="button" id="toolsCancel">Cancel</button></div>
-    </form>
-  </div>
-  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Star a tool to keep it at the top. Garage supplies marked Low or Out also show on the Supplies list. Something broken? Add it to Handyman Corner.</p>
-  <details class="bin" id="bin-tools"></details>
-</section>
-
-<!-- ================= GUIDE ================= -->
-<section class="view" id="v-guide" aria-labelledby="h-guide">
+<section class="view on" id="v-guide" aria-labelledby="h-guide">
   <h2 class="sign" id="h-guide"><svg><use href="#i-pine"/></svg>Cabin guide</h2>
   <div class="huntbar" id="huntBanner" hidden></div>
 
@@ -936,11 +827,8 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       </div>
       <ul class="trailkey" id="trailKey"></ul>
       <p class="muted" style="margin-top:6px">The red outline is the property line. Tap a trail for details.</p>
-      <h4>Trails nearby</h4>
-      <ul>
-        <li><b>Walking the road?</b> Turn right (north) on Artishon Ln. Dogs often roam loose along the stretch to the left.</li>
-        <li><b>Bearskin State Trail</b>, Minocqua. Flat, crushed-stone rail trail for walking and biking.</li>
-      </ul>
+      <p><b>Walking the road?</b> Turn right (north) on Artishon Ln. Dogs often roam loose along the stretch to the left.</p>
+      <p><button class="btn ghost sm" type="button" data-go="guide" data-open="g-area">Other trails nearby</button></p>
     </div>
   </details>
 
@@ -1117,15 +1005,122 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <p>Bring a Wisconsin fishing license and follow Wisconsin's seasons and bag limits.</p>
       <p>Pokegama is one of 19 reservation lakes where the Lac du Flambeau Band voted in April 2026 to stop non-members from keeping walleye and musky. A federal court has blocked that rule while the case goes on, so for now the state rules apply. The Band asks anglers not to keep or target walleye and musky. Check for updates before keeping either one.</p>
       <p>Some boat landings on tribal land require a launch permit for non-members.</p>
-      <h4>Our spots</h4>
-      <p><span class="tbd">Add a lake map with depth lines and favorite spots</span></p>
-      <h4>Gear at the cabin</h4>
-      <p><span class="tbd">Rods, tackle box, net</span>. See the tool list on the Garage tab.</p>
       <h4>Cleaning fish</h4>
       <p>The fish cleaning station is in the back room of the detached garage, with a chest freezer for your catch and scraps. Fish waste goes in the woods, at least 100 yards from the house.</p>
     </div>
   </details>
 </section>
+
+<section class="view" id="v-groceries" aria-labelledby="h-groc">
+  <h2 class="sign" id="h-groc"><svg><use href="#i-basket"/></svg>Pantry</h2>
+  <div class="cork">
+    <div id="polas"></div>
+    <p class="corkhint">Tap a photo to see it full size.</p>
+  </div>
+
+  <div class="fridge">
+    <div class="magnet" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-pine"/></svg></div>
+    <div class="notepad">
+      <h3>Grocery list</h3>
+      <p class="muted" style="margin:0 0 8px">Ran out of something in the pantry? Add it here.</p>
+      <form class="addrow" id="grocForm" autocomplete="off">
+        <label class="sr" for="grocIn" style="position:absolute;left:-9999px">Add an item</label>
+        <input id="grocIn" placeholder="Add an item" enterkeyhint="done">
+        <button class="btn pine" type="submit" aria-label="Add item"><svg><use href="#i-plus"/></svg></button>
+      </form>
+      <ul class="list" id="grocList"></ul>
+      <div class="listfoot">
+        <span class="muted" id="grocCount"></span>
+        <button class="btn ghost sm" type="button" id="grocClear">Clear checked</button>
+      </div>
+    </div>
+  </div>
+  <h2 class="sign"><svg><use href="#i-basket"/></svg>Supplies</h2>
+  <div class="peg shelf">
+    <div class="invbar">
+      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="supQ" placeholder="Search supplies" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search supplies</span></label>
+      <div class="chips" id="supChips" role="toolbar" aria-label="Filter by category"></div>
+    </div>
+    <div class="invpaper" id="supList"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="supAddBtn"><svg><use href="#i-plus"/></svg>Add an item</button></div>
+    <form class="formcard" id="supForm" hidden style="margin-top:12px" autocomplete="off">
+      <label class="field"><span>Item</span><input type="text" id="supItem" required placeholder="Paper towels"></label>
+      <label class="field"><span>Where it's kept</span><input type="text" id="supWhere" required placeholder="Bunkhouse pantry"></label>
+      <label class="field"><span>Category</span><select id="supCat"></select></label>
+      <div style="display:flex;gap:8px"><button class="btn pine" type="submit" style="flex:1">Add item</button><button class="btn ghost" type="button" id="supCancel">Cancel</button></div>
+    </form>
+  </div>
+  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Tap the label to mark something Low or Out. Those items move to the top.</p>
+  <details class="bin" id="bin-sup"></details>
+
+  <div class="paper store" style="margin-top:22px">
+    <h3>Stocking up</h3>
+    <p><b>Trig's</b>, 9750 Hwy 70, Minocqua. Full grocery and pharmacy, on the way in. About 35 minutes, 17 miles.</p>
+    <div class="row">
+      <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Trig's,+9750+Hwy+70,+Minocqua,+WI">Directions</a>
+      <a class="btn ghost sm" href="tel:17153569456">715-356-9456</a>
+    </div>
+    <h3 style="margin-top:16px">Nearest store</h3>
+    <p><b>Ojibwe Market</b>, 501 Old Abe Rd, Lac du Flambeau. About 10 minutes, 4 miles.<br><span class="muted">Groceries, beer, gas and hot food to go.</span></p>
+    <div class="row">
+      <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=Ojibwe+Market,+501+Old+Abe+Rd,+Lac+du+Flambeau,+WI+54538">Directions</a>
+      <a class="btn ghost sm" href="tel:17155883447">715-588-3447</a>
+    </div>
+  </div>
+  <details class="bin" id="bin-groceries"></details>
+</section>
+
+<!-- ================= GARAGE ================= -->
+<section class="view" id="v-fixit" aria-labelledby="h-fix">
+  <h2 class="sign" id="h-fix"><svg><use href="#i-wrench"/></svg>Handyman Corner</h2>
+  <figure class="handygif"><img src="https://media.tenor.com/aNPLcM1RS2oAAAAM/red-green-steve-smith.gif" alt="Red Green reaching for the Handyman's Secret Weapon" loading="lazy"></figure>
+  <div class="clipboard">
+    <div class="clip" aria-hidden="true"></div>
+    <details class="formcard" id="woDetails">
+      <summary class="btn wide" style="list-style:none"><svg><use href="#i-plus"/></svg>Report something</summary>
+      <form id="woForm" style="margin-top:14px" autocomplete="off">
+        <label class="field"><span>What happened?</span><input type="text" id="woWhat" required placeholder="The screen door won't latch"></label>
+        <label class="field"><span>Where?</span>
+          <select id="woWhere">
+            <option>Cabin</option><option>Kitchen</option><option>Bathroom</option><option>Bunkhouse</option><option>Garage</option><option>Dock &amp; boat</option><option>Yard &amp; peninsula</option>
+          </select>
+        </label>
+        <div class="field"><span>How urgent?</span>
+          <div class="seg" role="radiogroup">
+            <label><input type="radio" name="urg" value="low"><span>Whenever</span></label>
+            <label><input type="radio" name="urg" value="med" checked><span>Soon</span></label>
+            <label><input type="radio" name="urg" value="high"><span>Now</span></label>
+          </div>
+        </div>
+        <label class="field"><span>Details</span><textarea id="woNote" placeholder="Anything that helps whoever fixes it"></textarea></label>
+        <label class="photo-pick"><svg><use href="#i-cam"/></svg><span id="woPhotoLbl">Add a photo</span><input type="file" accept="image/*" id="woPhoto"><img id="woPrev" alt="" hidden></label>
+        <button class="btn pine wide" type="submit" style="margin-top:12px">Add to Handyman Corner</button>
+      </form>
+    </details>
+    <div id="woList"></div>
+  </div>
+  <details class="bin" id="bin-maintenance"></details>
+
+  <h2 class="sign"><svg><use href="#i-wrench"/></svg>Tools &amp; supplies</h2>
+  <div class="peg">
+    <div class="invbar">
+      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="toolsQ" placeholder="Search the garage" autocomplete="off" enterkeyhint="search"><span class="sr" style="position:absolute;left:-9999px">Search the garage</span></label>
+      <div class="chips" id="toolsChips" role="toolbar" aria-label="Filter by category"></div>
+    </div>
+    <div class="invpaper" id="toolsList"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="toolsAddBtn"><svg><use href="#i-plus"/></svg>Add an item</button></div>
+    <form class="formcard" id="toolsForm" hidden style="margin-top:12px" autocomplete="off">
+      <label class="field"><span>Item</span><input type="text" id="toolsItem" required placeholder="Shop vac"></label>
+      <label class="field"><span>Where it's kept</span><input type="text" id="toolsWhere" required placeholder="Main garage, left wall"></label>
+      <label class="field"><span>Category</span><select id="toolsCat"></select></label>
+      <div style="display:flex;gap:8px"><button class="btn pine" type="submit" style="flex:1">Add item</button><button class="btn ghost" type="button" id="toolsCancel">Cancel</button></div>
+    </form>
+  </div>
+  <p class="muted" style="color:var(--cream);margin:8px 2px 0">Star a tool to keep it at the top. Garage supplies marked Low or Out also show on the Supplies list. Something broken? Add it to Handyman Corner.</p>
+  <details class="bin" id="bin-tools"></details>
+</section>
+
+<!-- ================= GUIDE ================= -->
 
 <!-- ================= CHECKOUT ================= -->
 <section class="view" id="v-checkout" aria-labelledby="h-out">
@@ -1160,9 +1155,9 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 <!-- ================= NAV ================= -->
 <nav class="tabs" aria-label="Sections">
   <button data-tab="home" aria-current="page"><svg><use href="#i-home"/></svg>Home</button>
+  <button data-tab="guide"><svg><use href="#i-pine"/></svg>Guide</button>
   <button data-tab="groceries"><svg><use href="#i-basket"/></svg>Supplies</button>
   <button data-tab="fixit"><svg><use href="#i-wrench"/></svg>Garage</button>
-  <button data-tab="guide"><svg><use href="#i-pine"/></svg>Guide</button>
   <button data-tab="checkout"><svg><use href="#i-door"/></svg>Checkout</button>
 </nav>
 
@@ -1720,12 +1715,20 @@ document.addEventListener('submit', e => {
 });
 
 /* ---------- Tabs ---------- */
+/* Home and Guide are one continuous page: scrolling past Home runs straight into the Guide. */
+const FLOW = ['home', 'guide'];
+function markTab(tab){ document.querySelectorAll('nav.tabs button').forEach(b => b.dataset.tab === tab ? b.setAttribute('aria-current','page') : b.removeAttribute('aria-current')); }
 function go(tab, openId){
-  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + tab));
-  document.querySelectorAll('nav.tabs button').forEach(b => b.dataset.tab === tab ? b.setAttribute('aria-current','page') : b.removeAttribute('aria-current'));
+  const flow = FLOW.includes(tab);
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', flow ? FLOW.includes(v.id.slice(2)) : v.id === 'v-' + tab));
+  markTab(tab);
   if (openId){ const el = document.getElementById(openId); if (el){ el.open = true; setTimeout(() => el.scrollIntoView({behavior:'smooth', block:'start'}), 30); return; } }
-  window.scrollTo({top:0});
+  if (tab === 'guide') $('#v-guide').scrollIntoView({block:'start'}); else window.scrollTo({top:0});
 }
+window.addEventListener('scroll', () => {
+  const g = $('#v-guide'); if (!g.classList.contains('on')) return;
+  markTab(g.getBoundingClientRect().top < innerHeight * 0.45 ? 'guide' : 'home');
+}, {passive:true});
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => go(b.dataset.tab)));
 
 /* ---------- Emergency ---------- */
