@@ -114,6 +114,11 @@ img{max-width:100%; display:block}
 .hunt p{margin:0; line-height:1.35}
 .hunt b{display:block; font-family:var(--display); font-size:1.1rem; text-shadow:0 2px 0 rgba(46,26,13,.4)}
 .huntflag{width:26px; height:26px; flex:none; border-radius:50%; background:#fff; box-shadow:inset 0 0 0 6px #FFB347}
+.mapcard{display:block; width:100%; margin:18px 0 0; padding:0; border:3px solid #2E1A0D; border-radius:12px; overflow:hidden; background:#24402A; color:#FCE9B8; text-align:left; cursor:pointer; box-shadow:0 5px 0 rgba(46,26,13,.55), 0 10px 18px rgba(0,0,0,.3); font:inherit}
+.mapcard svg{display:block; width:100%; height:auto; background:radial-gradient(ellipse at 30% 20%, #2F5A3A, #1F3A27)}
+.mapcard-txt{display:block; padding:10px 14px 12px; background:#2E1A0D}
+.mapcard-txt b{display:block; font-family:var(--display); font-size:1.25rem; color:#F4D35E}
+.mapcard-txt span{display:block; font-size:.92rem; opacity:.95}
 .pmap{height:420px; border:3px solid #2E1A0D; border-radius:8px; overflow:hidden; background:#2b3a2b; box-shadow:0 4px 0 rgba(46,26,13,.35)}
 .pmapbar{display:flex; gap:8px; margin:10px 0 4px}
 .trailkey{list-style:none; padding:0; margin:6px 0 0}
@@ -458,6 +463,14 @@ details.guide[open] > summary .chev{transform:rotate(180deg)}
 .guide-body ul{margin:0; padding-left:20px}
 .guide-body li{margin-bottom:8px}
 .guide-body li:last-child{margin-bottom:0}
+.ctls{display:grid; gap:10px; margin:8px 0 14px}
+.ctl{display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:start}
+.ctl b{display:block}
+.ctlpic{padding:0; border:2px solid #2E1A0D; border-radius:6px; overflow:hidden; background:#2E1A0D; cursor:zoom-in; aspect-ratio:3/4}
+.ctlpic img{display:block; width:100%; height:100%; object-fit:cover}
+.ctl.big{grid-template-columns:1fr}
+.ctl.big .ctlpic{cursor:zoom-out; aspect-ratio:auto}
+.ctl.big .ctlpic img{height:auto}
 .guidepic{display:block; width:100%; height:auto; margin:8px 0 10px; border-radius:6px; border:2px solid #2E1A0D}
 .guide-body h4{margin:12px 0 4px; font-size:1rem}
 .guide-body h4:first-child{margin-top:0}
@@ -657,6 +670,10 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </div>
   </div>
 
+  <button type="button" class="mapcard" data-go="guide" data-open="g-maps" aria-label="Open the property and trail map">
+    <svg id="mapPrev" viewBox="0 0 300 170" aria-hidden="true"></svg>
+    <span class="mapcard-txt"><b>Property &amp; trail map</b><span>Trails, buildings and the property line, plus a dot for where you are</span></span>
+  </button>
   <div class="tiles" style="margin-top:18px">
     <button class="tile" data-go="groceries"><svg style="color:var(--orange)"><use href="#i-basket"/></svg><b>Supplies &amp; groceries</b><span>Pantry photos, the grocery list, and what's running low</span></button>
     <button class="tile" data-go="guide" data-open="g-where"><svg style="color:var(--pine)"><use href="#i-fire"/></svg><b>Wood &amp; tools</b><span>Where things are kept</span></button>
@@ -855,6 +872,24 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 <section class="view" id="v-guide" aria-labelledby="h-guide">
   <h2 class="sign" id="h-guide"><svg><use href="#i-pine"/></svg>Cabin guide</h2>
 
+  <details class="guide" id="g-maps">
+    <summary><svg class="ic"><use href="#i-map"/></svg>Maps<svg class="chev"><use href="#i-chev"/></svg></summary>
+    <div class="guide-body">
+      <h4>The property and trails</h4>
+      <div class="pmap" id="pmap" aria-label="Map of the property and trails"></div>
+      <div class="pmapbar">
+        <button type="button" class="btn ghost sm" id="pmapLocate"><svg><use href="#i-pin"/></svg>Show where I am</button>
+      </div>
+      <ul class="trailkey" id="trailKey"></ul>
+      <p class="muted" style="margin-top:6px">The red outline is the property, about 5.09 acres, from county parcel records. Trails are GPS tracks. Tap one for details.</p>
+      <h4>Trails nearby</h4>
+      <ul>
+        <li><b>Bearskin State Trail</b>, Minocqua. Flat, crushed-stone rail trail for walking and biking.</li>
+        <li><b>On the property:</b> see the map above.</li>
+      </ul>
+    </div>
+  </details>
+
   <details class="guide" id="g-rules">
     <summary><svg class="ic"><use href="#i-rules"/></svg>House guidelines<svg class="chev"><use href="#i-chev"/></svg></summary>
     <div class="guide-body">
@@ -918,9 +953,15 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     <summary><svg class="ic"><use href="#i-fire"/></svg>Wood stove &amp; gas fireplace<svg class="chev"><use href="#i-chev"/></svg></summary>
     <div class="guide-body">
       <h4>Wood stove (the red one)</h4>
-      <p><b>Two controls:</b> the <b>damper handle</b> on the left side is either fully open (pointing back) or fully closed (pointing down), never in between. The <b>air lever</b> on the right sets the heat: forward for hotter, back for a slower burn.</p>
+      <div class="ctls">
+        <div class="ctl"><button type="button" class="ctlpic" aria-label="Enlarge photo: Hand on the damper handle on the left side of the stove"><img src="stove-damper.jpg" alt="Hand on the damper handle on the left side of the stove" loading="lazy"></button><div><b>Damper handle</b>Left side, toward the back. Pointing back is open, pointing down is closed. Always all the way one or the other.</div></div>
+        <div class="ctl"><button type="button" class="ctlpic" aria-label="Enlarge photo: Hand on the air lever on the right side of the stove"><img src="stove-air.jpg" alt="Hand on the air lever on the right side of the stove" loading="lazy"></button><div><b>Air lever</b>Right side. Forward for a hotter fire, back for a slower, longer burn.</div></div>
+        <div class="ctl"><button type="button" class="ctlpic" aria-label="Enlarge photo: The removable door handle next to its holder by the front leg"><img src="stove-handle.jpg" alt="The removable door handle next to its holder by the front leg" loading="lazy"></button><div><b>Door handle</b>The removable handle lives in a holder by the front leg.</div></div>
+        <div class="ctl"><button type="button" class="ctlpic" aria-label="Enlarge photo: The handle on the front door latch"><img src="stove-door.jpg" alt="The handle on the front door latch" loading="lazy"></button><div><b>Front doors</b>Slide the handle onto the door latch and turn it clockwise to open.</div></div>
+        <div class="ctl"><button type="button" class="ctlpic" aria-label="Enlarge photo: The ash door latch under the front of the stove"><img src="stove-ash.jpg" alt="The ash door latch under the front of the stove" loading="lazy"></button><div><b>Ash door</b>Keep it latched shut whenever there's a fire. Left open, the stove overheats.</div></div>
+      </div>
       <ol>
-        <li><b>Light it.</b> Damper open, air all the way forward. Fire starter, kindling and a few small splits, then light it and close the doors.</li>
+        <li><b>Light it.</b> Damper open, air all the way forward. Newspaper, kindling and a few small splits, then light it. To get it going faster, leave the front door cracked for a minute or two and stay with it until the kindling catches, then close the doors.</li>
         <li><b>Build it up.</b> Add bigger wood as it catches. Once it's roaring and there's a bed of glowing coals, close the damper.</li>
         <li><b>Set the heat</b> with the air lever. Keep the dial on the stovepipe in its middle zone.</li>
         <li><b>To add wood,</b> open the damper first, then open the door slowly so smoke doesn't roll out. Load it, shut the door, close the damper.</li>
@@ -933,23 +974,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
     </div>
   </details>
 
-  <details class="guide" id="g-maps">
-    <summary><svg class="ic"><use href="#i-map"/></svg>Maps<svg class="chev"><use href="#i-chev"/></svg></summary>
-    <div class="guide-body">
-      <h4>The property and trails</h4>
-      <div class="pmap" id="pmap" aria-label="Map of the property and trails"></div>
-      <div class="pmapbar">
-        <button type="button" class="btn ghost sm" id="pmapLocate"><svg><use href="#i-pin"/></svg>Show where I am</button>
-      </div>
-      <ul class="trailkey" id="trailKey"></ul>
-      <p class="muted" style="margin-top:6px">The red outline is the property, about 5.09 acres, from county parcel records. Trails are GPS tracks. Tap one for details.</p>
-      <h4>Trails nearby</h4>
-      <ul>
-        <li><b>Bearskin State Trail</b>, Minocqua. Flat, crushed-stone rail trail for walking and biking.</li>
-        <li><b>On the property:</b> see the map above.</li>
-      </ul>
-    </div>
-  </details>
 
   <details class="guide" id="g-area">
     <summary><svg class="ic"><use href="#i-pin"/></svg>Around the area<svg class="chev"><use href="#i-chev"/></svg></summary>
@@ -1804,6 +1828,30 @@ if (live()){
   ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = []);
   Object.values(S.pantry).forEach(p => { p.src = null; p.at = null; });
 }
+document.addEventListener('click', e => { const b = e.target.closest('.ctlpic'); if (b) b.parentElement.classList.toggle('big'); });
+
+/* Home page map preview, drawn from cabin-map.geojson so it always matches the real map. */
+(function(){
+  const svg = $('#mapPrev'); if (!svg) return;
+  fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(d => {
+    const pts = []; d.features.forEach(f => { const g = f.geometry; (g.type === 'Point' ? [g.coordinates] : g.type === 'LineString' ? g.coordinates : g.coordinates[0]).forEach(c => pts.push(c)); });
+    const lons = pts.map(p => p[0]), lats = pts.map(p => p[1]);
+    const k = Math.cos(46 * Math.PI/180), W = 300, H = 170, pad = 16;
+    const x0 = Math.min(...lons), x1 = Math.max(...lons), y0 = Math.min(...lats), y1 = Math.max(...lats);
+    const sc = Math.min((W - 2*pad) / ((x1 - x0) * k), (H - 2*pad) / (y1 - y0));
+    const ox = (W - (x1 - x0) * k * sc) / 2, oy = (H - (y1 - y0) * sc) / 2;
+    const P = c => [(ox + (c[0] - x0) * k * sc).toFixed(1), (H - oy - (c[1] - y0) * sc).toFixed(1)];
+    let out = '';
+    d.features.forEach(f => { const p = f.properties, g = f.geometry;
+      if (p.kind === 'property') out += `<path d="M${g.coordinates[0].map(c => P(c).join(' ')).join('L')}Z" fill="rgba(226,69,60,.12)" stroke="#E2453C" stroke-width="2.5" stroke-linejoin="round"/>`; });
+    d.features.forEach(f => { const p = f.properties, g = f.geometry;
+      if (p.kind === 'trail') out += `<path d="M${g.coordinates.map(c => P(c).join(' ')).join('L')}" fill="none" stroke="${esc(p.color || '#7FD1E8')}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`; });
+    d.features.forEach(f => { const p = f.properties, g = f.geometry;
+      if (p.kind === 'point'){ const [x, y] = P(g.coordinates); out += `<circle cx="${x}" cy="${y}" r="4" fill="#fff" stroke="#2E1A0D" stroke-width="2"/>`; } });
+    svg.innerHTML = out;
+  }).catch(() => {});
+})();
+
 /* Property and trail map. Data lives in cabin-map.geojson:
    a "property" polygon, "trail" lines (name, color, note) and optional
    "point" markers (name, note). Edit that file to change the map. */
