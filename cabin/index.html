@@ -1616,20 +1616,34 @@ $('#grocClear').onclick = () => {
   toast(`Cleared ${done.length} item${done.length>1?'s':''}`, clearTo('groceries', done));
 };
 
-let woPhoto = null;
+/* Each report gets its own photo. A photo still being prepared when the
+   report is sent stays with that report and never carries over to the next. */
+let woPhoto = null, woPhotoJob = null, woSeq = 0;
+function clearWoPhoto(){
+  woSeq++; woPhoto = null; woPhotoJob = null;
+  const prev = $('#woPrev'); prev.hidden = true; prev.removeAttribute('src');
+  $('#woPhoto').value = ''; $('#woPhotoLbl').textContent = 'Add a photo';
+}
 $('#woPhoto').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
-  shrink(f).then(d => { woPhoto = d; $('#woPrev').src = woPhoto; $('#woPrev').hidden = false; $('#woPhotoLbl').textContent = 'Photo added'; });
+  const mine = ++woSeq;
+  $('#woPhotoLbl').textContent = 'Adding photo…';
+  woPhotoJob = shrink(f).then(d => {
+    if (mine === woSeq){ woPhoto = d; $('#woPrev').src = d; $('#woPrev').hidden = false; $('#woPhotoLbl').textContent = 'Photo added'; }
+    return d;
+  });
 });
 $('#woForm').addEventListener('submit', e => {
   e.preventDefault();
   const item = {id:uid(), what:$('#woWhat').value.trim(), where:$('#woWhere').value, urg:document.querySelector('input[name=urg]:checked').value, note:$('#woNote').value.trim(), photo:woPhoto, added:Date.now()};
-  const photo = woPhoto;
+  const job = woPhoto ? null : woPhotoJob;
   S.maintenance.push(item);
-  e.target.reset(); woPhoto = null; $('#woPrev').hidden = true; $('#woPhotoLbl').textContent = 'Add a photo';
+  e.target.reset(); clearWoPhoto();
   $('#woDetails').open = false; renderMaintenance(); toast('Added to Handyman Corner');
   (async () => {
-    if (photo && live()){ const r = await api({op:'photo', dataUrl:photo}); item.photo = r.src; }
+    if (job){ const d = await job.catch(() => null); if (d){ item.photo = d; renderMaintenance(); } }
+    const photo = item.photo;
+    if (photo && photo.startsWith('data:') && live()){ const r = await api({op:'photo', dataUrl:photo}); item.photo = r.src; }
     await api({op:'add', list:'maintenance', item:Object.assign({}, item, {photo:item.photo || ''})});
   })().catch(()=>{});
 });
