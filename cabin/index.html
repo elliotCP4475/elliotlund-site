@@ -901,7 +901,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
       <h4>Bunkhouse</h4>
       <p>About 100 yards from the cabin. The door code is on the home screen.</p>
       <h4>Kitchen</h4>
-      <p>Pots, pans and the basics are stocked. Check the pantry photos before you shop. Trig's in Minocqua is the big store on the way in; the Ojibwe Market in Lac du Flambeau is 10 minutes away for quick runs. Directions are on the Supplies tab.</p>
+      <p>Pots, pans and the basics are stocked. Check the <a href="#v-groceries" data-go="groceries">pantry photos</a> before you shop. Trig's in Minocqua is the big store on the way in; the Ojibwe Market in Lac du Flambeau is 10 minutes away for quick runs. Directions are on the Supplies tab.</p>
       <h4>ATV and dirt bikes</h4>
       <p>Please ask before using them.</p>
       <h4>Games and gear</h4>
@@ -1680,7 +1680,7 @@ document.addEventListener('change', e => {
 document.addEventListener('click', e => {
   const b = e.target.closest('button, [data-go]'); if (!b) return;
   const d = b.dataset;
-  if (d.go){ go(d.go, d.open); return; }
+  if (d.go){ if (b.tagName === 'A') e.preventDefault(); go(d.go, d.open); return; }
   if (d.gdel){ const g = S.groceries.find(x => x.id === d.gdel); toast(`Removed ${g.text}`, clearTo('groceries', [g])); }
   if (d.wfix){ const w = S.maintenance.find(x => x.id === d.wfix); toast('Marked fixed', clearTo('maintenance', [w])); }
   if (d.wdel){ const w = S.maintenance.find(x => x.id === d.wdel); toast('Removed from Handyman Corner', clearTo('maintenance', [w])); }
