@@ -297,34 +297,76 @@ button.dial{padding:0; border:0; cursor:pointer}
 .static{position:absolute; inset:0; z-index:4; pointer-events:none; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 2.2 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23222'/%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/160px 120px, #333; animation:snow .1s steps(3) infinite}
 .static[hidden]{display:none}
 @keyframes snow{0%{background-position:0 0}33%{background-position:-53px 21px}66%{background-position:37px -44px}100%{background-position:-11px 67px}}
-.wxtv{container-type:inline-size; position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; background:linear-gradient(180deg,#1B2F8F,#3D63D6); color:#fff; font-family:Arial, Helvetica, sans-serif}
+/* Channel 5: an 80s cable weather crawl. Hard cuts, a character generator painting rows in, outlined type, a ticking clock and a crawl along the bottom. */
+.wxtv{container-type:inline-size; position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; color:#fff; font-family:Arial, Helvetica, sans-serif; overflow:hidden;
+  background:repeating-linear-gradient(180deg, rgba(255,255,255,.035) 0 2px, transparent 2px 6px), linear-gradient(180deg,#0C1F7A 0%,#2443B8 60%,#3B5FD6 100%)}
 .wxtv[hidden]{display:none}
-.wxtv-bar{background:linear-gradient(180deg,#0B1650,#22348F); color:#F7D84A; font-weight:900; text-transform:uppercase; letter-spacing:.06em; font-size:4cqw; white-space:nowrap; padding:1.6cqw 3cqw 1.4cqw; border-bottom:2px solid #F7D84A; text-align:right}
-.wxtv-body{flex:1; display:flex; flex-direction:column; justify-content:center; gap:1.6cqw; padding:1cqw 4cqw 3.5cqw}
-.wxtv-wait{margin:0; text-align:center; color:#F7D84A; font-weight:700}
-.wxtv-now{display:flex; align-items:baseline; gap:10px}
-.wxtv-now b{font-size:13cqw; line-height:1; text-shadow:2px 2px 0 #0B1650}
-.wxtv-now span{font-size:5cqw; line-height:1.2; font-weight:700; color:#F7D84A; text-shadow:1px 1px 0 #0B1650}
-.wxtv-days{display:grid; grid-template-columns:repeat(3,1fr); gap:5px}
-.wxtv-days div{background:rgba(11,22,80,.55); border:1px solid rgba(247,216,74,.5); border-radius:4px; text-align:center; padding:.8cqw .5cqw; font-size:4.3cqw; line-height:1.25}
-.wxtv-days b{display:block; color:#F7D84A}
-.wxtv-moon{display:flex; align-items:center; gap:1.6cqw; font-size:4.3cqw; font-weight:700}
-.wxtv-moon small{font-size:3.6cqw; font-weight:400; color:#F7D84A}
-.wxslide{display:flex; flex-direction:column; justify-content:center; gap:1.6cqw; flex:1; animation:wxin .35s steps(4)}
-@keyframes wxin{from{opacity:0; transform:translateX(6%)}to{opacity:1; transform:none}}
-.wxdots{display:flex; justify-content:center; gap:1.2cqw}
-.wxdots i{width:1.6cqw; height:1.6cqw; border-radius:50%; background:rgba(247,216,74,.35)}
-.wxdots i.on{background:#F7D84A}
-.wxtv-sun{display:grid; grid-template-columns:1fr 1fr; gap:5px}
-.wxtv-sun div{background:rgba(11,22,80,.55); border:1px solid rgba(247,216,74,.5); border-radius:4px; text-align:center; padding:1.2cqw .5cqw; font-size:6cqw; font-weight:700; line-height:1.15; text-shadow:1px 1px 0 #0B1650}
-.wxtv-sun b{display:block; font-size:3.6cqw; color:#F7D84A; letter-spacing:.06em}
-.wxtv-aurora{display:flex; align-items:center; justify-content:space-between; gap:2cqw; background:rgba(11,22,80,.55); border:1px solid rgba(247,216,74,.5); border-radius:4px; padding:1.6cqw 2.4cqw}
-.wxtv-aurora b{font-size:5.4cqw; line-height:1.1; text-shadow:1px 1px 0 #0B1650}
-.wxtv-aurora.go b{color:#7CF29A} .wxtv-aurora.maybe b{color:#F7D84A}
-.wxtv-aurora .kp{font-size:4.4cqw; font-weight:700; white-space:nowrap}
-.wxtv-note{margin:0; font-size:4.2cqw; line-height:1.3}
-.wxtv-src{margin:0; font-size:3.2cqw; color:#F7D84A; opacity:.8}
-.tv .screen .wxtv-moon svg{width:6.5cqw; height:6.5cqw; flex:none}
+.wxtv .ol{text-shadow:2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000}
+.wxtv-bar{display:flex; align-items:center; gap:2cqw; padding:1.4cqw 2.4cqw; background:linear-gradient(90deg,#120A5C 0%,#2B37A6 48%,#B4581A 82%,#E08A2A 100%); border-bottom:.6cqw solid #E9C23B; box-shadow:0 .6cqw 0 rgba(0,0,0,.35)}
+.wxlogo{flex:none; display:grid; place-items:center; width:10cqw; height:8cqw; border-radius:1cqw; background:linear-gradient(180deg,#F5D24A,#D9901E); color:#120A5C; font:900 3.4cqw/1 Arial, sans-serif; letter-spacing:-.02em; box-shadow:inset 0 -.5cqw 0 rgba(0,0,0,.25), .3cqw .3cqw 0 #000}
+.wxlogo small{display:block; font-size:2.3cqw; letter-spacing:.08em}
+.wxtv-title{flex:1; min-width:0; font-weight:900; font-size:4.6cqw; line-height:1.05; color:#F7D84A; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; overflow:hidden}
+.wxtv-title small{display:block; font-size:2.7cqw; color:#fff; letter-spacing:.12em}
+.wxclock{flex:none; text-align:right; font-weight:900; font-size:3.9cqw; line-height:1.05; font-variant-numeric:tabular-nums}
+.wxclock small{display:block; font-size:2.7cqw; letter-spacing:.06em; color:#F7D84A}
+.wxtv-body{flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:1.8cqw; padding:2cqw 4cqw 1.6cqw}
+.wxtv-wait{margin:0; text-align:center; color:#F7D84A; font-weight:900; font-size:4.6cqw; text-transform:uppercase; letter-spacing:.08em}
+.wxtv-wait i{font-style:normal; animation:wxblink 1s steps(1) infinite}
+.wxslide{display:flex; flex-direction:column; justify-content:center; gap:1.8cqw; flex:1}
+.wxslide > *{animation:wxpaint .42s steps(6) both}
+.wxslide > *:nth-child(2){animation-delay:.22s} .wxslide > *:nth-child(3){animation-delay:.44s} .wxslide > *:nth-child(4){animation-delay:.66s}
+@keyframes wxpaint{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.wxtv.cut .wxtv-body{animation:wxroll .28s steps(3)}
+@keyframes wxroll{0%{transform:translateY(-6%); filter:brightness(1.6)}50%{transform:translateY(3%)}100%{transform:none; filter:none}}
+.wxtv.cut .wxtv-title{animation:wxblink .3s steps(2) 1}
+@keyframes wxblink{50%{opacity:0}}
+.wxpanel{background:linear-gradient(180deg,rgba(26,46,150,.92),rgba(14,28,110,.92)); border:.45cqw solid #7FA2FF; border-bottom-color:#0A1450; border-right-color:#0A1450; box-shadow:.6cqw .6cqw 0 rgba(0,0,0,.45)}
+.wxtv-now{display:flex; align-items:center; gap:3cqw; padding:1.4cqw 3cqw}
+.tv .screen .wxtv-now .wxic{width:15cqw; height:15cqw; flex:none}
+.wxtv-now b{font-size:15cqw; line-height:.95; font-weight:900}
+.wxtv-now span{font-size:4.6cqw; line-height:1.2; font-weight:900; color:#F7D84A; text-transform:uppercase}
+.wxtv-now span small{display:block; color:#fff; font-size:3.3cqw; letter-spacing:.06em}
+.wxtv-days{display:grid; grid-template-columns:repeat(3,1fr); gap:1.6cqw}
+.wxtv-days > div{text-align:center; padding:1cqw .6cqw 1.2cqw; font-size:4cqw; font-weight:700; line-height:1.15}
+.wxtv-days b{display:block; color:#F7D84A; font-weight:900; letter-spacing:.06em}
+.tv .screen .wxtv-days .wxic{width:10cqw; height:10cqw; display:block; margin:.4cqw auto}
+.wxtv-days .hl{font-size:4.6cqw; font-weight:900}
+.wxtv-days .hl i{font-style:normal; color:#9FC2FF}
+.wxtv-days small{display:block; font-size:3.2cqw; text-transform:uppercase; color:#DDE6FF}
+.wxtv-sun{display:grid; grid-template-columns:1fr 1fr; gap:1.6cqw}
+.wxtv-sun > div{text-align:center; padding:1.4cqw .5cqw; font-size:6.4cqw; font-weight:900; line-height:1.15}
+.wxtv-sun b{display:block; font-size:3.4cqw; color:#F7D84A; letter-spacing:.1em}
+.wxtv-moon{display:flex; align-items:center; gap:2.4cqw; padding:1.4cqw 3cqw; font-size:4.6cqw; font-weight:900; text-transform:uppercase}
+.wxtv-moon small{display:block; font-size:3.3cqw; font-weight:700; color:#F7D84A; text-transform:none}
+.tv .screen .wxtv-moon svg{width:9cqw; height:9cqw; flex:none}
+.wxtv-aurora{display:flex; align-items:center; justify-content:space-between; gap:2cqw; padding:1.8cqw 2.8cqw}
+.wxtv-aurora b{font-size:5.6cqw; line-height:1.1; font-weight:900}
+.wxtv-aurora.go b{color:#7CF29A; animation:wxblink .8s steps(1) .9s 4} .wxtv-aurora.maybe b{color:#F7D84A}
+.wxtv-aurora .kp{font-size:4.6cqw; font-weight:900; white-space:nowrap; color:#F7D84A}
+.wxtv-note{margin:0; font-size:4.3cqw; line-height:1.3; font-weight:700}
+.wxtv-src{margin:0; font-size:3.1cqw; color:#F7D84A; letter-spacing:.06em; text-transform:uppercase}
+.wxbars{display:flex; align-items:flex-end; gap:.8cqw; height:13cqw; padding:0 1cqw}
+.wxbars i{flex:1; background:linear-gradient(180deg,#7CF29A,#2E9E55); border:.3cqw solid #000; transform-origin:bottom; animation:wxgrow .5s steps(5) both}
+.wxbars i.hi{background:linear-gradient(180deg,#F7D84A,#C8781E)} .wxbars i.top{background:linear-gradient(180deg,#FF7A6B,#B3261E)}
+@keyframes wxgrow{from{transform:scaleY(0)}}
+.wxldl{flex:none; display:flex; align-items:center; height:7.4cqw; background:linear-gradient(180deg,#0A1450,#1B2A86); border-top:.5cqw solid #E9C23B; overflow:hidden; white-space:nowrap}
+.wxldl b{flex:none; height:100%; display:grid; place-items:center; padding:0 2cqw; background:#E9C23B; color:#120A5C; font-weight:900; font-size:3.3cqw; letter-spacing:.08em; position:relative; z-index:1}
+.wxldl span{display:inline-block; padding-left:100%; font-weight:900; font-size:3.9cqw; color:#fff; animation:wxcrawl var(--crawl,30s) linear infinite}
+@keyframes wxcrawl{to{transform:translateX(-100%)}}
+/* Weather icons, animated in steps like the old character generators. */
+.wxic{overflow:visible}
+.wxic .rays{transform-origin:12px 12px; animation:wxspin 3.2s steps(8) infinite}
+.wxic .drift{animation:wxdrift 2.4s steps(4) infinite alternate}
+.wxic .fall{animation:wxfall 1.2s steps(4) infinite}
+.wxic .fall2{animation:wxfall 1.2s steps(4) infinite; animation-delay:-.6s}
+.wxic .zap{animation:wxblink 1.4s steps(1) infinite}
+@keyframes wxspin{to{transform:rotate(45deg)}}
+@keyframes wxdrift{to{transform:translateX(1.6px)}}
+@keyframes wxfall{from{transform:translateY(-3px); opacity:1}to{transform:translateY(5px); opacity:.2}}
+@media (prefers-reduced-motion: reduce){
+  .wxslide > *, .wxtv.cut .wxtv-body, .wxtv.cut .wxtv-title, .wxic *, .wxbars i, .wxtv-aurora.go b, .wxtv-wait i{animation:none!important}
+  .wxldl span{animation:none; padding-left:2cqw}
+}
 .dial.sm{width:30px; height:30px}
 .dial.sm i{inset:7px; transform:rotate(130deg)}
 .grille{flex:1; width:32px; min-height:30px; border-radius:4px; background:repeating-linear-gradient(0deg, #3A2E22 0 2px, #A8936A 2px 5px)}
@@ -788,7 +830,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
         <rect x="222" y="120" width="16" height="24" fill="#3B2210"/><rect x="204" y="114" width="12" height="10" fill="#F6D68C"/><rect x="246" y="114" width="12" height="10" fill="#F6D68C"/>
         <path d="M40 176 L54 150 L68 176z M52 176 L68 140 L84 176z" fill="#24402A"/>
       </svg>
-      <div class="wxtv" id="wxTv" hidden><div class="wxtv-bar" id="wxTvBar">Northwoods Weather</div><div class="wxtv-body" id="wxTvBody"><p class="wxtv-wait">Tuning in…</p></div></div>
+      <div class="wxtv" id="wxTv" hidden><div class="wxtv-bar"><span class="wxlogo">WX<small>CH 5</small></span><span class="wxtv-title ol" id="wxTvBar">Northwoods Weather<small>Pokegama Lake</small></span><span class="wxclock ol" id="wxClock"></span></div><div class="wxtv-body" id="wxTvBody"><p class="wxtv-wait ol">Stand by<i>…</i></p></div><div class="wxldl"><b>LOCAL</b><span class="ol" id="wxCrawl">Pokegama Lake · Lac du Flambeau, Wisconsin · Stay tuned for your Northwoods forecast</span></div></div>
       <div class="static" id="tvStatic" hidden></div>
       <div class="osd" id="tvOsd">CH 3</div>
     </div>
@@ -1985,26 +2027,55 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
   const LAT = 45.999, LON = -89.8874;
   const word = c => c === 0 ? 'Clear' : c <= 2 ? 'Partly cloudy' : c === 3 ? 'Cloudy' : c <= 48 ? 'Fog' : c <= 57 ? 'Drizzle' : c <= 67 ? 'Rain' : c <= 77 ? 'Snow' : c <= 82 ? 'Showers' : c <= 86 ? 'Snow showers' : 'Storms';
   const short = c => ({'Partly cloudy':'Some sun', 'Snow showers':'Snow'})[word(c)] || word(c);
+  // Blocky icons with stepped animation.
+  function icon(c, night){
+    const sun = `<g class="rays" stroke="#F7D84A" stroke-width="2.2" stroke-linecap="square"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></g><circle cx="12" cy="12" r="5" fill="#F7D84A" stroke="#000" stroke-width="1"/>`;
+    const moonG = `<path d="M15 3.5a8.5 8.5 0 1 0 5.5 14.9A7 7 0 0 1 15 3.5z" fill="#F4EAD5" stroke="#000" stroke-width="1"/>`;
+    const cloud = (x=0, y=0, f='#F2F4FF') => `<path transform="translate(${x} ${y})" d="M6 19h12.5a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6-1.4A4.6 4.6 0 0 0 6 19z" fill="${f}" stroke="#000" stroke-width="1"/>`;
+    const drops = col => `<g class="fall" stroke="${col}" stroke-width="1.8" stroke-linecap="square"><path d="M8 20.5v2M14 20.5v2"/></g><g class="fall2" stroke="${col}" stroke-width="1.8" stroke-linecap="square"><path d="M11 21v2M17 21v2"/></g>`;
+    const flakes = `<g class="fall" fill="#fff" stroke="#000" stroke-width=".6"><rect x="7" y="20" width="2.4" height="2.4"/><rect x="14" y="20" width="2.4" height="2.4"/></g><g class="fall2" fill="#fff" stroke="#000" stroke-width=".6"><rect x="10.5" y="21" width="2.4" height="2.4"/><rect x="17.5" y="21" width="2.4" height="2.4"/></g>`;
+    let g;
+    if (c === 0) g = night ? moonG : sun;
+    else if (c <= 2) g = `<g transform="translate(-3 -4) scale(.8)">${night ? moonG : sun}</g><g class="drift">${cloud(1,1)}</g>`;
+    else if (c === 3) g = `<g class="drift">${cloud(-3,-3,'#B9C2DE')}</g>${cloud(1,1)}`;
+    else if (c <= 48) g = `<g class="drift" stroke="#DDE6FF" stroke-width="2" stroke-linecap="square"><path d="M3 8h16M5 12h16M3 16h16M6 20h12"/></g>`;
+    else if (c <= 67 || (c >= 80 && c <= 82)) g = `<g class="drift">${cloud(0,-3)}</g>${drops('#7FD1FF')}`;
+    else if (c <= 77 || c <= 86) g = `<g class="drift">${cloud(0,-3)}</g>${flakes}`;
+    else g = `<g class="drift">${cloud(0,-4,'#8E98B8')}</g><path class="zap" d="M12 14l-3 5h3l-2 4 5-6h-3l2-3z" fill="#F7D84A" stroke="#000" stroke-width=".8"/>`;
+    return `<svg class="wxic" viewBox="0 0 24 24" aria-hidden="true">${g}</svg>`;
+  }
   function moon(d){
     const p = (((d - Date.UTC(2000,0,6,18,14)) / 864e5 / 29.530588853) % 1 + 1) % 1;
     const name = p < .03 || p > .97 ? 'New moon' : p < .22 ? 'Waxing crescent' : p < .28 ? 'First quarter' : p < .47 ? 'Waxing gibbous' : p < .53 ? 'Full moon' : p < .72 ? 'Waning gibbous' : p < .78 ? 'Last quarter' : 'Waning crescent';
     const r = 10, c = 11, rx = Math.abs(Math.cos(2*Math.PI*p)) * r, wax = p < .5, cres = p < .25 || p > .75;
     const lit = p < .03 || p > .97 ? '' : `<path d="M${c} ${c-r} A${r} ${r} 0 0 ${wax ? 1 : 0} ${c} ${c+r} A${rx.toFixed(2)} ${r} 0 0 ${wax ? (cres ? 0 : 1) : (cres ? 1 : 0)} ${c} ${c-r}Z" fill="#F4EAD5"/>`;
-    return {name, svg:`<svg viewBox="0 0 22 22" aria-hidden="true"><circle cx="${c}" cy="${c}" r="${r}" fill="#3a3a3a"/>${lit}<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="#F4EAD5" stroke-opacity=".5"/></svg>`};
+    return {name, svg:`<svg viewBox="0 0 22 22" aria-hidden="true"><circle cx="${c}" cy="${c}" r="${r}" fill="#3a3a3a" stroke="#000"/>${lit}<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="#F4EAD5" stroke-opacity=".5"/></svg>`};
+  }
+  const CRAWL = {};
+  function crawl(){
+    const parts = [CRAWL.now, CRAWL.tonight, CRAWL.sun, CRAWL.aurora].filter(Boolean);
+    if (!parts.length) return;
+    const t = ['Pokegama Lake · Lac du Flambeau, Wisconsin', ...parts].join('   ·   ');
+    const el = $('#wxCrawl'); if (el.textContent === t) return;
+    el.textContent = t; el.style.setProperty('--crawl', Math.max(18, Math.round(t.length / 6)) + 's');
   }
   async function load(){
     try {
-      const u = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&timezone=America%2FChicago&forecast_days=4`;
+      const u = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&timezone=America%2FChicago&forecast_days=4`;
       const w = await (await fetch(u)).json();
       const m = moon(Date.now());
       const tm = iso => new Date(iso).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
       const rise = w.daily.sunrise[0], set = w.daily.sunset[0];
       const mins = Math.round((new Date(set) - new Date(rise)) / 60000);
-      SLIDES[0] = {title:'Northwoods Weather', html:`<div class="wxtv-now"><b>${Math.round(w.current.temperature_2m)}°</b><span>${word(w.current.weather_code)}<br>Pokegama Lake</span></div>
-        <div class="wxtv-days">${w.daily.time.slice(1, 4).map((t, k) => `<div><b>${new Date(t + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short'}).toUpperCase()}</b>${Math.round(w.daily.temperature_2m_max[k+1])}° / ${Math.round(w.daily.temperature_2m_min[k+1])}°<br>${short(w.daily.weather_code[k+1])}</div>`).join('')}</div>`};
-      SLIDES[1] = {title:'Sun & Moon', html:`<div class="wxtv-sun"><div><b>SUNRISE</b>${tm(rise)}</div><div><b>SUNSET</b>${tm(set)}</div></div>
-        <div class="wxtv-moon">${m.svg}<span>${m.name}<br><small>${Math.floor(mins/60)} hr ${mins%60} min of daylight</small></span></div>`};
-      show(slide);
+      const now = Math.round(w.current.temperature_2m), cc = w.current.weather_code;
+      SLIDES[0] = {title:'Northwoods Weather', sub:'Current conditions', html:`<div class="wxpanel wxtv-now">${icon(cc, w.current.is_day === 0)}<b class="ol">${now}°</b><span class="ol">${word(cc)}<small>Pokegama Lake</small></span></div>
+        <div class="wxtv-days">${w.daily.time.slice(1, 4).map((t, k) => `<div class="wxpanel ol"><b>${new Date(t + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short'}).toUpperCase()}</b>${icon(w.daily.weather_code[k+1])}<span class="hl">${Math.round(w.daily.temperature_2m_max[k+1])}° <i>${Math.round(w.daily.temperature_2m_min[k+1])}°</i></span><small>${short(w.daily.weather_code[k+1])}</small></div>`).join('')}</div>`};
+      SLIDES[1] = {title:'Sun & Moon', sub:'Almanac', html:`<div class="wxtv-sun"><div class="wxpanel ol"><b>SUNRISE</b>${tm(rise)}</div><div class="wxpanel ol"><b>SUNSET</b>${tm(set)}</div></div>
+        <div class="wxpanel wxtv-moon ol">${m.svg}<span>${m.name}<small>${Math.floor(mins/60)} hr ${mins%60} min of daylight</small></span></div>`};
+      CRAWL.now = `Now ${now}° and ${word(cc).toLowerCase()}`;
+      CRAWL.tonight = `Tonight's low ${Math.round(w.daily.temperature_2m_min[1])}°, tomorrow's high ${Math.round(w.daily.temperature_2m_max[1])}°`;
+      CRAWL.sun = `Sunset ${tm(set)}`;
+      crawl(); show(slide, true);
     } catch(e){}
   }
   // Northern lights: NOAA's 3-day planetary K-index forecast. Up here it usually takes Kp 5 or more.
@@ -2019,21 +2090,30 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
       const [cls, head, line] = kp >= 6 ? ['go', 'GOOD CHANCE TONIGHT', 'Head to the dock after dark and look north, away from the lights.']
         : kp >= 5 ? ['maybe', 'POSSIBLE TONIGHT', 'Watch low on the northern horizon from the dock. Clear skies help.']
         : ['no', 'NOT LIKELY TONIGHT', 'It usually takes a Kp of 5 or more to see them this far south.'];
-      SLIDES[2] = {title:'Northern Lights', html:`<div class="wxtv-aurora ${cls}"><b>${head}</b><span class="kp">Kp ${kp.toFixed(1)}</span></div><p class="wxtv-note">${line}</p><p class="wxtv-src">NOAA Space Weather forecast</p>`};
-      show(slide);
+      const bars = rows.slice(0, 6).map((r, j) => `<i class="${+r.kp >= 6 ? 'top' : +r.kp >= 5 ? 'hi' : ''}" style="height:${Math.max(8, Math.min(100, +r.kp / 9 * 100))}%; animation-delay:${.5 + j*.08}s"></i>`).join('');
+      SLIDES[2] = {title:'Northern Lights', sub:'Next 15 hours', html:`<div class="wxpanel wxtv-aurora ${cls} ol"><b>${head}</b><span class="kp">Kp ${kp.toFixed(1)}</span></div><div class="wxbars" aria-hidden="true">${bars}</div><p class="wxtv-note ol">${line}</p><p class="wxtv-src ol">NOAA Space Weather forecast</p>`};
+      CRAWL.aurora = `Northern lights ${head.toLowerCase()}`;
+      crawl(); show(slide, true);
     } catch(e){}
   }
   const SLIDES = [];
   let slide = 0;
-  function show(i){
+  function show(i, quiet){
     const list = SLIDES.filter(Boolean); if (!list.length) return;
     slide = ((i % list.length) + list.length) % list.length;
-    const s = list[slide];
-    $('#wxTvBar').textContent = s.title;
-    $('#wxTvBody').innerHTML = `<div class="wxslide">${s.html}</div><div class="wxdots">${list.map((_, j) => `<i class="${j === slide ? 'on' : ''}"></i>`).join('')}</div>`;
+    const s = list[slide], tv = $('#wxTv');
+    $('#wxTvBar').innerHTML = `${s.title}<small>${s.sub}</small>`;
+    $('#wxTvBody').innerHTML = `<div class="wxslide">${s.html}</div>`;
+    if (!quiet){ tv.classList.remove('cut'); void tv.offsetWidth; tv.classList.add('cut'); }
   }
-  setInterval(() => { if (!$('#wxTv').hidden) show(slide + 1); }, 6000);
-  new MutationObserver(() => { if ($('#wxTv').hidden) show(0); }).observe($('#wxTv'), {attributes:true, attributeFilter:['hidden']});
+  function clock(){
+    if ($('#wxTv').hidden) return;
+    const d = new Date();
+    $('#wxClock').innerHTML = `${d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', second:'2-digit'})}<small>${d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}).toUpperCase().replace(',', '')}</small>`;
+  }
+  setInterval(clock, 1000);
+  setInterval(() => { if (!$('#wxTv').hidden) show(slide + 1); }, 8000);
+  new MutationObserver(() => { if ($('#wxTv').hidden) show(0, true); else { clock(); show(slide); } }).observe($('#wxTv'), {attributes:true, attributeFilter:['hidden']});
   load(); setInterval(load, 30*60*1000);
   aurora(); setInterval(aurora, 30*60*1000);
 })();
