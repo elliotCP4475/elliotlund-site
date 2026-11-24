@@ -857,7 +857,6 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   <div class="tiles" style="margin-top:18px;grid-template-columns:1fr">
     <button class="tile" data-go="fixit"><svg style="color:var(--red)"><use href="#i-wrench"/></svg><b>Something broke</b><span>Report it in Handyman Corner</span></button>
   </div>
-  <p class="savehome" id="saveHome">Signal comes and goes up here. Save this to your home screen and the guide, maps and codes still open without it. On iPhone, tap Share, then <b>Add to Home Screen</b>.</p>
 </section>
 
 <!-- ================= SUPPLIES ================= -->
@@ -2146,7 +2145,6 @@ setInterval(() => { if (!document.hidden) load(); }, 30000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
 </script>
 <script>
-if (navigator.standalone) document.getElementById('saveHome')?.remove();
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 </body>
