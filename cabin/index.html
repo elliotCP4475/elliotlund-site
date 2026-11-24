@@ -659,7 +659,7 @@ nav.tabs{
     repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 5px, rgba(0,0,0,.08) 5px 9px),
     linear-gradient(180deg,#5B3519,var(--bark-dk));
   border-top:3px solid #2A1708; box-shadow:0 -4px 14px rgba(0,0,0,.35);
-  display:grid; grid-template-columns:repeat(4,1fr); gap:4px;
+  display:grid; grid-template-columns:repeat(5,1fr); gap:3px;
 }
 nav.tabs button{
   border:0; background:transparent; color:var(--cream); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
@@ -775,7 +775,8 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
   background:repeating-linear-gradient(90deg, rgba(30,12,2,.32) 0 2px, rgba(255,230,190,.08) 2px 3px, transparent 3px 92px), linear-gradient(180deg, rgba(255,210,150,.12), rgba(0,0,0,.18)), var(--wood)}
 .sheet-b.pp{background:var(--paper)}
 .sheet-b > .sign:first-child{margin-top:2px}
-.sheet .pmap{height:min(56vh, 460px)}
+#v-map .pmap{height:min(56vh, 460px)}
+.oncream .linklike{color:var(--gold)}
 .sheet .invbar{top:-8px}
 @media (prefers-reduced-motion: reduce){ .sheet, .sheet-card{animation:none} }
 .mock-banner{font-family:var(--hand); text-align:center; color:var(--cream); font-size:1.05rem; margin:10px 0 0; opacity:.9}
@@ -843,11 +844,6 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
   </div>
 
   <h2 class="sign" id="h-arrive"><svg><use href="#i-pin"/></svg>Getting here</h2>
-  <button type="button" class="mapcard" style="margin-bottom:16px" data-sheet="map" aria-label="Open the property and trail map">
-    <svg id="mapPrev" viewBox="0 0 300 170" aria-hidden="true"></svg>
-    <span class="mapzoom" aria-hidden="true"><i>+</i><i>&minus;</i></span>
-    <span class="mapcard-txt"><span class="mt"><b>Property &amp; trail map</b><span>Satellite view, distances and trail notes</span></span><span class="mapgo">Open<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
-  </button>
   <div class="plaque">
     <div class="addr">3132 N Artishon Ln<br>Lac du Flambeau, WI 54538</div>
     <div class="gps">GPS <span>45.99902, -89.88737</span></div>
@@ -863,6 +859,12 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
       <p>The mailbox is on Artishon Lane, but to get to the cabin take a right down Baylis Ln and hang a left after you've gone a good little bit.</p>
     </div>
   </div>
+
+  <h2 class="sign sub"><svg><use href="#i-basket"/></svg>On the way in</h2>
+  <div class="rows">
+    <button type="button" class="rowlink" data-sheet="stores"><svg class="ic" aria-hidden="true"><use href="#i-basket"/></svg><span class="rt"><b>Stores</b><small>Trig's in Minocqua, Ojibwe Market nearby</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
+  </div>
+  <p class="oncream" style="margin:12px 2px 20px">Before you shop, check the pantry photos in <button type="button" class="linklike" data-sheet="supplies">Supplies &amp; groceries</button>.</p>
 
   <div class="tvset">
   <svg class="ant" viewBox="0 0 160 70" aria-hidden="true"><path d="M80 62 L34 6 M80 62 L128 10" stroke="#B8B2A4" stroke-width="3" stroke-linecap="round"/><circle cx="34" cy="6" r="4" fill="#D9D2C2"/><circle cx="128" cy="10" r="4" fill="#D9D2C2"/><path d="M58 70 Q80 48 102 70Z" fill="#2B2118"/></svg>
@@ -958,23 +960,16 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
       </ul>
     </article>
   </div>
-
-  <h2 class="sign sub"><svg><use href="#i-basket"/></svg>On the way in</h2>
-  <div class="rows">
-    <button type="button" class="rowlink" data-sheet="stores"><svg class="ic" aria-hidden="true"><use href="#i-basket"/></svg><span class="rt"><b>Stores on the way in</b><small>Trig's in Minocqua, Ojibwe Market nearby</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
-    <button type="button" class="rowlink" data-sheet="supplies"><svg class="ic" aria-hidden="true"><use href="#i-cam"/></svg><span class="rt"><b>Pantry photos</b><small>See what's here before you shop</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
-  </div>
 </section>
 
 <section class="view" id="v-cabin" aria-labelledby="h-cabin">
   <h2 class="sign" id="h-cabin"><svg><use href="#i-home"/></svg>At the cabin</h2>
   <div class="huntbar" hidden></div>
   <div class="rows">
-    <button type="button" class="rowlink" data-sheet="heat"><svg class="ic" aria-hidden="true"><use href="#i-fire"/></svg><span class="rt"><b>Wood stove &amp; fireplace</b><small>How to light it and set the heat</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
+    <button type="button" class="rowlink" data-sheet="heat"><svg class="ic" aria-hidden="true"><use href="#i-fire"/></svg><span class="rt"><b>Wood stove &amp; gas fireplace</b><small>How to light it and set the heat</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
     <button type="button" class="rowlink" data-sheet="supplies"><svg class="ic" aria-hidden="true"><use href="#i-basket"/></svg><span class="rt"><b>Supplies &amp; groceries</b><small>Pantry photos, grocery list, what's running low</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
-    <button type="button" class="rowlink" data-sheet="tools"><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><span class="rt"><b>Tools</b><small>What's in the garage and where it's kept</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
-    <button type="button" class="rowlink" data-sheet="map"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg><span class="rt"><b>Property &amp; trail map</b><small>Buildings, trails and the property line</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
-    <button type="button" class="rowlink" data-sheet="fixit"><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><span class="rt"><b>Something broke?</b><small>Report it in Handyman Corner</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
+    <button type="button" class="rowlink" data-sheet="tools"><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><span class="rt"><b>Garage tools &amp; supplies</b><small>What's there and where it's kept</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
+    <button type="button" class="rowlink" data-sheet="fixit"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg><span class="rt"><b>Handyman Corner</b><small>Report something that broke</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
   </div>
 
   <h2 class="sign sub"><svg><use href="#i-search"/></svg>Where things are</h2>
@@ -990,8 +985,26 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
   <h2 class="sign sub"><svg><use href="#i-pot"/></svg>Kitchen</h2>
   <div class="paper gt">
       <p>We've got the basics. Pots, pans, utensils and serving stuff are stocked, along with mugs, a coffee grinder, etc. There's a full knife set that cost us less than one actual good chef's knife, but we figured that's part of the charm.</p>
-      <p>Check the pantry photos before you shop.</p>
-      <p class="btnrow"><button class="btn ghost sm" type="button" data-sheet="supplies">Pantry photos</button><button class="btn ghost sm" type="button" data-sheet="stores">Stores nearby</button></p>
+      <p>Check the pantry photos in <button type="button" class="linklike" data-sheet="supplies">Supplies &amp; groceries</button> before you shop. The closest stores are in <button type="button" class="linklike" data-sheet="stores">Stores</button>.</p>
+  </div>
+</section>
+
+<section class="view" id="v-map" aria-labelledby="h-map">
+  <h2 class="sign" id="h-map"><svg><use href="#i-map"/></svg>Property &amp; trail map</h2>
+  <div class="huntbar" hidden></div>
+      <div class="pmap" id="pmap" aria-label="Map of the property and trails"></div>
+      <div class="pmapinfo" id="pmapInfo" role="status" hidden><button type="button" class="x" aria-label="Close">&times;</button><div></div></div>
+      <div class="pmapbar">
+        <button type="button" class="btn ghost sm" id="pmapLocate"><svg><use href="#i-pin"/></svg>Show where I am</button>
+      </div>
+  <div class="paper gt" style="margin-top:12px">
+      <ul class="trailkey" id="trailKey"></ul>
+      <p class="muted" style="margin-top:6px">The red outline is the property line. Tap a trail for details.</p>
+      <p>Past our east property line, Baylis Ln continues to a private, abandoned home on reservation land. Please steer clear of that stretch.</p>
+      <p><b>Walking the road?</b> Turn right (north) on Artishon Ln. Dogs often roam loose along the stretch to the left.</p>
+      <h4>Peninsula</h4>
+      <p>A boardwalk across the wetland is in the works. Until it's done, wear boots or take the Peninsula Trail.</p>
+      <p>More trails nearby are in <button type="button" class="linklike" data-sheet="hike">Hike and bike</button>.</p>
   </div>
 </section>
 
@@ -999,7 +1012,7 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
   <h2 class="sign" id="h-do"><svg><use href="#i-pine"/></svg>Things to do</h2>
   <div class="huntbar" hidden></div>
 
-  <h2 class="sign sub first"><svg><use href="#i-home"/></svg>At the cabin</h2>
+  <h2 class="sign sub first"><svg><use href="#i-pine"/></svg>On the property</h2>
   <div class="paper gt">
       <h4>Games and gear</h4>
       <p>Board games are in the large hallway closet in the cabin. Cards and cribbage are in the cabin living room. Yard games, including Jarts, are in the cabin garage.</p>
@@ -1007,9 +1020,8 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
       <p>There's a ninja warrior obstacle set and a mini zip line. The zip line is easier to reach with the stepladder from the garage. Directions to the ER are under <button type="button" class="linklike" data-sos>Emergency Info</button>, just in case.</p>
       <h4>ATV and dirt bikes</h4>
       <p>Please ask before using them.</p>
-  </div>
-  <div class="rows" style="margin-top:12px">
-    <button type="button" class="rowlink" data-sheet="map"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg><span class="rt"><b>Trails and the peninsula</b><small>Property map with trail distances</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
+      <h4>Trails</h4>
+      <p>The trails and the peninsula are on the Map tab, with distances.</p>
   </div>
 
   <h2 class="sign sub"><svg><use href="#i-fish"/></svg>On the water</h2>
@@ -1025,7 +1037,6 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
     <button type="button" class="rowlink" data-sheet="eat"><svg class="ic" aria-hidden="true"><use href="#i-pot"/></svg><span class="rt"><b>Eat and drink</b><small>Supper clubs, fish fry and coffee</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
     <button type="button" class="rowlink" data-sheet="hike"><svg class="ic" aria-hidden="true"><use href="#i-pine"/></svg><span class="rt"><b>Hike and bike</b><small>Trails from 1 to 25 miles</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
     <button type="button" class="rowlink" data-sheet="sights"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg><span class="rt"><b>Shops and things to do</b><small>Museums, shows and rainy-day picks</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
-    <button type="button" class="rowlink" data-sheet="stores"><svg class="ic" aria-hidden="true"><use href="#i-basket"/></svg><span class="rt"><b>Groceries and gas</b><small>Trig's in Minocqua, Ojibwe Market nearby</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
   </div>
 </section>
 
@@ -1062,31 +1073,12 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
 <nav class="tabs" aria-label="Sections">
   <button data-tab="arrive" aria-current="page"><svg><use href="#i-pin"/></svg>Getting here</button>
   <button data-tab="cabin"><svg><use href="#i-home"/></svg>At the cabin</button>
+  <button data-tab="map"><svg><use href="#i-map"/></svg>Map</button>
   <button data-tab="do"><svg><use href="#i-fish"/></svg>Things to do</button>
   <button data-tab="leave"><svg><use href="#i-door"/></svg>Heading home</button>
 </nav>
 
 <!-- ================= PANELS ================= -->
-<div class="sheet" id="s-map" role="dialog" aria-modal="true" aria-labelledby="st-map" hidden>
-  <div class="sheet-card">
-    <header class="sheet-h"><h2 id="st-map" tabindex="-1">Property &amp; trail map</h2><button type="button" class="sheet-x" data-close>Close<span aria-hidden="true">&times;</span></button></header>
-    <div class="sheet-b pp gt">
-      <div class="huntbar" hidden></div>
-      <div class="pmap" id="pmap" aria-label="Map of the property and trails"></div>
-      <div class="pmapinfo" id="pmapInfo" role="status" hidden><button type="button" class="x" aria-label="Close">&times;</button><div></div></div>
-      <div class="pmapbar">
-        <button type="button" class="btn ghost sm" id="pmapLocate"><svg><use href="#i-pin"/></svg>Show where I am</button>
-      </div>
-      <ul class="trailkey" id="trailKey"></ul>
-      <p class="muted" style="margin-top:6px">The red outline is the property line. Tap a trail for details.</p>
-      <p>Past our east property line, Baylis Ln continues to a private, abandoned home on reservation land. Please steer clear of that stretch.</p>
-      <p><b>Walking the road?</b> Turn right (north) on Artishon Ln. Dogs often roam loose along the stretch to the left.</p>
-      <h4>Peninsula</h4>
-      <p>A boardwalk across the wetland is in the works. Until it's done, wear boots or take the Peninsula Trail.</p>
-      <p class="btnrow"><button class="btn ghost sm" type="button" data-sheet="hike">Other trails nearby</button></p>
-    </div>
-  </div>
-</div>
 <div class="sheet" id="s-heat" role="dialog" aria-modal="true" aria-labelledby="st-heat" hidden>
   <div class="sheet-card">
     <header class="sheet-h"><h2 id="st-heat" tabindex="-1">Wood stove &amp; gas fireplace</h2><button type="button" class="sheet-x" data-close>Close<span aria-hidden="true">&times;</span></button></header>
@@ -1140,7 +1132,7 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
       </div>
     </div>
   </div>
-  <p class="btnrow" style="justify-content:center; margin-top:16px"><button class="btn ghost sm" type="button" data-sheet="stores">Stores nearby</button></p>
+  <p class="btnrow" style="justify-content:center; margin-top:16px"><button class="btn ghost sm" type="button" data-sheet="stores">Stores</button></p>
   <h2 class="sign"><svg><use href="#i-basket"/></svg>Supplies</h2>
   <div class="peg shelf">
     <div class="invbar">
@@ -1186,7 +1178,7 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
 </div>
 <div class="sheet" id="s-tools" role="dialog" aria-modal="true" aria-labelledby="st-tools" hidden>
   <div class="sheet-card">
-    <header class="sheet-h"><h2 id="st-tools" tabindex="-1">Tools &amp; supplies</h2><button type="button" class="sheet-x" data-close>Close<span aria-hidden="true">&times;</span></button></header>
+    <header class="sheet-h"><h2 id="st-tools" tabindex="-1">Garage tools &amp; supplies</h2><button type="button" class="sheet-x" data-close>Close<span aria-hidden="true">&times;</span></button></header>
     <div class="sheet-b">
   <div class="peg">
     <div class="invbar">
@@ -1989,8 +1981,8 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && layers.length && layers[layers.length - 1].sheet){ e.preventDefault(); dismiss(); } });
 
 /* ---------- Tabs ----------
-   Four fixed places. Only a tap on the bar changes tabs, and each tab keeps its own scroll position. */
-const TABS = ['arrive', 'cabin', 'do', 'leave'];
+   Five fixed places. Only a tap on the bar changes tabs, and each tab keeps its own scroll position. */
+const TABS = ['arrive', 'cabin', 'map', 'do', 'leave'];
 let curTab = 'arrive';
 const tabY = {};
 function markTab(tab){ document.querySelectorAll('nav.tabs button').forEach(b => b.dataset.tab === tab ? b.setAttribute('aria-current','page') : b.removeAttribute('aria-current')); }
@@ -2002,6 +1994,7 @@ function go(tab){
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + tab));
   markTab(tab);
   window.scrollTo(0, tabY[tab] || 0);
+  window.dispatchEvent(new CustomEvent('tabshow', {detail:tab}));
   try { localStorage.setItem('lundTab', JSON.stringify({tab, at:Date.now()})); } catch(_){}
 }
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => go(b.dataset.tab)));
@@ -2161,43 +2154,6 @@ if (live()){
   Object.values(S.pantry).forEach(p => { p.src = null; p.at = null; });
 }
 document.addEventListener('click', e => { const b = e.target.closest('.ctlpic'); if (b) b.parentElement.classList.toggle('big'); });
-
-/* Map preview on the Getting here tab, drawn from cabin-map.geojson so it always matches the real map. */
-(function(){
-  const svg = $('#mapPrev'); if (!svg) return;
-  fetch('cabin-map.geojson', {cache:'no-cache'}).then(r => r.json()).then(d => {
-    const lines = g => g.type === 'MultiLineString' ? g.coordinates : [g.coordinates];
-    const pts = []; d.features.filter(f => !['water', 'road'].includes(f.properties.kind)).forEach(f => { const g = f.geometry; (g.type === 'Point' ? [g.coordinates] : g.type === 'LineString' ? g.coordinates : g.coordinates[0]).forEach(c => pts.push(c)); });
-    const ya = Math.min(...pts.map(p => p[1])), yb = Math.max(...pts.map(p => p[1]));
-    d.features.filter(f => f.properties.kind === 'road').forEach(f => lines(f.geometry).flat().forEach(c => { if (c[1] >= ya && c[1] <= yb) pts.push([c[0] - 0.00025, c[1]]); }));
-    const lons = pts.map(p => p[0]), lats = pts.map(p => p[1]);
-    const k = Math.cos(46 * Math.PI/180), W = 300, H = 170, pad = 16;
-    const x0 = Math.min(...lons), x1 = Math.max(...lons), y0 = Math.min(...lats), y1 = Math.max(...lats);
-    const sc = Math.min((W - 2*pad) / ((x1 - x0) * k), (H - 2*pad) / (y1 - y0));
-    const ox = (W - (x1 - x0) * k * sc) / 2, oy = (H - (y1 - y0) * sc) / 2;
-    const P = c => [(ox + (c[0] - x0) * k * sc).toFixed(1), (H - oy - (c[1] - y0) * sc).toFixed(1)];
-    let out = '';
-    const ring = rs => rs.map(rg => `M${rg.map(c => P(c).join(' ')).join('L')}Z`).join('');
-    d.features.forEach(f => { const g = f.geometry; if (f.properties.kind !== 'water') return;
-      const polys = g.type === 'MultiPolygon' ? g.coordinates : [g.coordinates];
-      out += `<path d="${polys.map(ring).join('')}" fill="#3E6F86" fill-rule="evenodd" stroke="#6E98AF" stroke-width="1.5" stroke-linejoin="round"/>`; });
-    let labels = '';
-    d.features.forEach(f => { const p = f.properties; if (p.kind !== 'road') return;
-      const ls = lines(f.geometry).map(l => l.map(P));
-      out += ls.map(l => `<path d="M${l.map(c => c.join(' ')).join('L')}" fill="none" stroke="#CDBB8F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`).join('');
-      const l = ls[0].map(c => c.map(Number)), vert = Math.abs(l[l.length-1][1] - l[0][1]) > Math.abs(l[l.length-1][0] - l[0][0]);
-      const at = vert ? l.reduce((a, c) => Math.abs(c[1] - H*0.42) < Math.abs(a[1] - H*0.42) ? c : a) : l[Math.floor(l.length * 0.35)];
-      labels += vert ? `<text x="${at[0] - 9}" y="${at[1]}" transform="rotate(-90 ${at[0] - 9} ${at[1]})" text-anchor="middle" class="rdl">${esc(p.name)}</text>`
-                     : `<text x="${at[0]}" y="${at[1] - 9}" text-anchor="middle" class="rdl">${esc(p.name)}</text>`; });
-    d.features.forEach(f => { const p = f.properties, g = f.geometry;
-      if (p.kind === 'property') out += `<path d="M${g.coordinates[0].map(c => P(c).join(' ')).join('L')}Z" fill="rgba(226,69,60,.12)" stroke="#E2453C" stroke-width="2.5" stroke-linejoin="round"/>`; });
-    d.features.forEach(f => { const p = f.properties, g = f.geometry;
-      if (p.kind === 'trail') out += `<path d="M${g.coordinates.map(c => P(c).join(' ')).join('L')}" fill="none" stroke="${esc(p.color || '#7FD1E8')}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`; });
-    d.features.forEach(f => { const p = f.properties, g = f.geometry;
-      if (p.kind === 'point'){ const [x, y] = P(g.coordinates); out += `<circle cx="${x}" cy="${y}" r="4" fill="#fff" stroke="#2E1A0D" stroke-width="2"/>`; } });
-    svg.innerHTML = out + labels;
-  }).catch(() => {});
-})();
 
 /* Weather (Open-Meteo, free, no key) and moon phase, under the Cabin Cam. */
 (function(){
@@ -2392,9 +2348,10 @@ document.addEventListener('click', e => { const b = e.target.closest('.ctlpic');
       }, () => { toast('Couldn\'t get your location'); $('#pmapLocate').lastChild.textContent = 'Show where I am'; watch = null; }, {enableHighAccuracy:true, maximumAge:5000});
     };
   }
-  /* The map is built the first time its panel opens, and re-measured each time after that. */
-  window.addEventListener('sheetopen', e => { if (e.detail !== 'map') return;
-    const t = () => window.L ? (init(), [60, 340].forEach(ms => setTimeout(() => map && map.invalidateSize(), ms))) : setTimeout(t, 150); t(); });
+  /* The map is built the first time the Map tab is shown, and re-measured each time after that. */
+  const show = () => { const t = () => window.L ? (init(), setTimeout(() => map && map.invalidateSize(), 60)) : setTimeout(t, 150); t(); };
+  window.addEventListener('tabshow', e => { if (e.detail === 'map') show(); });
+  if (curTab === 'map') show();
 })();
 
 /* Hunting banner: shown only during Wisconsin's firearm deer seasons.
