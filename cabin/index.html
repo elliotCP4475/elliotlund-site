@@ -163,7 +163,9 @@ a{color:var(--lake); font-weight:700}
 }
 .plaque::before,.plaque::after{content:""; position:absolute; top:10px; width:9px; height:9px; border-radius:50%; background:radial-gradient(circle at 35% 35%,#fff6d0,#8A5D12 70%)}
 .plaque::before{left:10px}.plaque::after{right:10px}
-.plaque .addr{font-weight:800; font-size:1.25rem; line-height:1.25; margin:2px 0 10px}
+.plaque .addr{font-weight:800; font-size:1.25rem; line-height:1.25; margin:2px 0 4px}
+.plaque .gps{font-size:.9rem; font-weight:700; color:var(--ink-soft); margin:0 0 10px}
+.plaque .gps span{font-family:ui-monospace, Menlo, monospace; color:var(--ink); user-select:all; -webkit-user-select:all}
 .plaque .row{display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
 
 /* ---------- Hanging oval sign ---------- */
@@ -750,6 +752,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
   </button>
   <div class="plaque">
     <div class="addr">3132 N Artishon Ln<br>Lac du Flambeau, WI 54538</div>
+    <div class="gps">GPS <span>45.99902, -89.88737</span></div>
     <div class="row">
       <a class="btn lake sm" href="https://maps.apple.com/?daddr=3132+N+Artishon+Ln,+Lac+du+Flambeau,+WI+54538">Apple Maps</a>
       <a class="btn lake sm" href="https://www.google.com/maps/dir/?api=1&destination=3132+N+Artishon+Ln,+Lac+du+Flambeau,+WI+54538">Google Maps</a>
