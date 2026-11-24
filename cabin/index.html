@@ -275,11 +275,11 @@ a{color:var(--lake); font-weight:700}
   background:repeating-linear-gradient(92deg, rgba(40,20,5,.10) 0 2px, transparent 2px 7px, rgba(255,220,170,.05) 7px 8px, transparent 8px 15px), linear-gradient(180deg,#A0683A,#6E4220);
   box-shadow:inset 0 2px 0 rgba(255,220,170,.3), inset 0 -3px 0 rgba(0,0,0,.25), 0 10px 20px rgba(0,0,0,.45)}
 .tvface{display:grid; grid-template-columns:1fr 60px; gap:10px; padding:10px; border-radius:12px; background:linear-gradient(180deg,#2E2219,#1E1610); box-shadow:inset 0 2px 6px rgba(0,0,0,.6), 0 1px 0 rgba(255,220,170,.2)}
-.tv .screen{border-radius:24px/20px; overflow:hidden; isolation:isolate; border:5px solid #0E0E0E; background:#111; position:relative; aspect-ratio:4/3; box-shadow:0 0 0 2px #4A3A2C}
+.tv .screen{--glass:19px/15px; border-radius:24px/20px; overflow:hidden; isolation:isolate; border:5px solid #0E0E0E; background:#111; position:relative; aspect-ratio:4/3; box-shadow:0 0 0 2px #4A3A2C}
 .tv .screen img{filter:contrast(1.05) saturate(.9)}
 .tv .screen svg{width:100%;height:100%;display:block}
-.tv .screen::before{content:""; position:absolute; inset:0; z-index:3; pointer-events:none; background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px)}
-.tv .screen::after{content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:inherit;
+.tv .screen::before{content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:var(--glass); background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px)}
+.tv .screen::after{content:""; position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:var(--glass);
   background:linear-gradient(140deg, rgba(255,255,255,.16), rgba(255,255,255,0) 38%), radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55)); box-shadow:inset 0 0 26px rgba(0,0,0,.75)}
 .tvpanel{display:flex; flex-direction:column; align-items:center; gap:10px; padding:6px 0; border-radius:8px; background:linear-gradient(180deg,#C9B48A,#8E7A55); box-shadow:inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 3px rgba(0,0,0,.3)}
 .dial{position:relative; width:38px; height:38px; border-radius:50%; background:repeating-conic-gradient(#2A2018 0 6deg, #3E3226 6deg 12deg); box-shadow:0 2px 3px rgba(0,0,0,.5), inset 0 0 0 3px #1A140F}
@@ -302,7 +302,7 @@ button.dial{padding:0; border:0; cursor:pointer}
   background:repeating-linear-gradient(180deg, rgba(255,255,255,.035) 0 2px, transparent 2px 6px), linear-gradient(180deg,#0C1F7A 0%,#2443B8 60%,#3B5FD6 100%)}
 .wxtv[hidden]{display:none}
 /* The weather and static layers carry the glass's own rounded corners and clip themselves, so nothing squares off past the bezel (Safari lets animated layers slip past a parent's rounded clip). */
-.wxtv, .static{border-radius:19px/15px; -webkit-mask-image:-webkit-radial-gradient(white, black); mask-image:radial-gradient(white, black)}
+.tv .screen > img, .tv .screen > svg, .wxtv, .static{border-radius:var(--glass); -webkit-mask-image:-webkit-radial-gradient(white, black); mask-image:radial-gradient(white, black)}
 .tv .screen.wxon > img, .tv .screen.wxon > svg{visibility:hidden}
 .wxtv .ol{text-shadow:2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000}
 .wxtv-bar{display:flex; align-items:center; gap:2cqw; padding:1.4cqw 2.4cqw; background:linear-gradient(90deg,#120A5C 0%,#2B37A6 48%,#B4581A 82%,#E08A2A 100%); border-bottom:.6cqw solid #E9C23B; box-shadow:0 .6cqw 0 rgba(0,0,0,.35)}
