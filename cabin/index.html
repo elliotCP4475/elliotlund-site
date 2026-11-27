@@ -1877,7 +1877,7 @@ function renderAll(){ renderPantry(); renderGroceries(); renderMaintenance(); re
    the passcode is checked by the Apps Script backend, never stored in this file. */
 const PLACE = {cabin:'Cabin', bunkhouse:'Bunkhouse'};
 const PLIST = {amen:'amenities', bring:'bring'};
-let amenFilter = 'all', packEd = null, signingIn = false;
+let amenFilter = 'all', packEd = null, signingIn = false, changingKey = false;
 let ownerKey = ''; try { ownerKey = localStorage.getItem('lundOwnerKey') || ''; } catch(_){}
 const placeTags = p => (p === 'both' ? ['cabin','bunkhouse'] : [p]).filter(x => PLACE[x]).map(x => `<span class="ptag ${x}">${PLACE[x]}</span>`).join('');
 function packForm(list, x){
@@ -1906,7 +1906,9 @@ function renderPacking(){
     el.innerHTML = !ownerKey ? '' : packEd && packEd.list === l && !packEd.id ? packForm(l) : `<p style="margin:12px 0 0"><button class="linklike" type="button" data-padd="${l}" style="color:var(--ink-soft); font-weight:600; font-size:.9rem">+ Add an item</button></p>`;
   });
   document.querySelectorAll('[data-ownerbar]').forEach(el => {
-    el.innerHTML = ownerKey ? `<span class="muted">Signed in to edit · </span><button type="button" class="linklike" data-osignout>Sign out</button>`
+    el.innerHTML = ownerKey ? (changingKey
+        ? `<form data-okey><input type="password" name="nk" autocomplete="new-password" placeholder="New passcode" aria-label="New passcode" required minlength="4"><button class="btn lake sm" type="submit">Save</button><button class="btn ghost sm" type="button" data-okeycancel>Cancel</button></form><p class="muted" data-omsg style="margin:6px 0 0"></p>`
+        : `<span class="muted">Signed in to edit · </span><button type="button" class="linklike" data-okeychange>Change passcode</button><span class="muted"> · </span><button type="button" class="linklike" data-osignout>Sign out</button>`)
       : signingIn ? `<form data-osign><input type="password" name="key" autocomplete="current-password" placeholder="Owner passcode" aria-label="Owner passcode" required><button class="btn lake sm" type="submit">Sign in</button><button class="btn ghost sm" type="button" data-ocancel>Cancel</button></form><p class="muted" data-omsg style="margin:6px 0 0"></p>`
       : `<button type="button" class="linklike" data-osignin style="color:var(--ink-soft); font-weight:600">Owner sign-in</button>`;
   });
@@ -1916,7 +1918,7 @@ function packSave(body){
   return api(Object.assign({key: ownerKey}, body)).catch(e => { if (/passcode|not set up/i.test(e.message)) signOut('Signed out. Sign in again to keep packEd.'); load(); });
 }
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-amenf],[data-pedit],[data-pcancel],[data-pdel],[data-padd],[data-osignin],[data-osignout],[data-ocancel]');
+  const t = e.target.closest('[data-amenf],[data-pedit],[data-pcancel],[data-pdel],[data-padd],[data-osignin],[data-osignout],[data-ocancel],[data-okeychange],[data-okeycancel]');
   if (!t) return;
   const d = t.dataset;
   if (d.amenf){ amenFilter = d.amenf; packEd = null; }
@@ -1933,6 +1935,8 @@ document.addEventListener('click', e => {
   }
   else if (t.hasAttribute('data-osignin')) signingIn = true;
   else if (t.hasAttribute('data-ocancel')) signingIn = false;
+  else if (t.hasAttribute('data-okeychange')) changingKey = true;
+  else if (t.hasAttribute('data-okeycancel')) changingKey = false;
   else if (t.hasAttribute('data-osignout')) return signOut('Signed out');
   renderPacking();
   const f = document.querySelector('[data-pform] input[name=item], [data-osign] input');
@@ -1940,6 +1944,18 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('submit', async e => {
   const f = e.target;
+  if (f.matches('[data-okey]')){
+    e.preventDefault();
+    const nk = f.nk.value.trim(), msg = f.parentNode.querySelector('[data-omsg]');
+    msg.textContent = 'Saving…';
+    try {
+      const j = await (await fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({op:'setkey', key:ownerKey, newKey:nk})})).json();
+      if (!j.ok) throw new Error(j.error);
+      ownerKey = nk; changingKey = false; try { localStorage.setItem('lundOwnerKey', nk); } catch(_){}
+      renderPacking(); toast('Passcode changed. Share the new one with Grace.');
+    } catch(err){ msg.textContent = /passcode/i.test(err.message) ? 'Sign in again first.' : /4 characters/.test(err.message) ? 'Use at least 4 characters.' : "Couldn't save. Check the connection."; }
+    return;
+  }
   if (f.matches('[data-osign]')){
     e.preventDefault();
     const key = f.key.value.trim(), msg = f.parentNode.querySelector('[data-omsg]'), btn = f.querySelector('button[type=submit]');

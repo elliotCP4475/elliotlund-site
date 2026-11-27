@@ -104,10 +104,16 @@ function doPost(e) {
 
 function handle_(r) {
   const now = Date.now();
-  if (r.op === 'signin' || OWNER_LISTS.indexOf(r.list) >= 0) owner_(r.key);
+  if (r.op === 'signin' || r.op === 'setkey' || OWNER_LISTS.indexOf(r.list) >= 0) owner_(r.key);
   switch (r.op) {
     case 'signin':
       return {};
+    case 'setkey': {
+      const k = String(r.newKey || '').trim();
+      if (k.length < 4) throw new Error('Use at least 4 characters');
+      PropertiesService.getScriptProperties().setProperty('EDIT_KEY', k);
+      return {};
+    }
     case 'remove': {
       if (OWNER_LISTS.indexOf(r.list) < 0) throw new Error('Not allowed');
       const sh = tab_(r.list), ids = sh.getRange(1, 1, sh.getLastRow(), 1).getValues();
