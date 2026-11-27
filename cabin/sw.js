@@ -1,5 +1,5 @@
 // The Lund Cabin: offline support.
-const V = 'lund-v9';
+const V = 'lund-v10';
 const CORE = ['./', 'index.html', 'cabin-map.geojson', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png',
   'lake-depth.jpg', 'stove-damper.jpg', 'stove-air.jpg', 'stove-handle.jpg', 'stove-door.jpg', 'stove-ash.jpg', 'fish-video.jpg',
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css',
@@ -23,13 +23,19 @@ self.addEventListener('activate', e => {
 });
 
 // Network first, fall back to the last copy we saved.
-async function netFirst(req, cacheName, key){
+// With a wait (ms), a slow connection gets the saved copy after that long, while the
+// network keeps going in the background and refreshes the copy for next time.
+async function netFirst(req, cacheName, key, wait){
   const c = await caches.open(cacheName);
   key = key || req;
+  const net = fetch(req).then(r => { if (r && (r.ok || r.type === 'opaque')) c.put(key, r.clone()); return r; });
   try {
-    const r = await fetch(req);
-    if (r && (r.ok || r.type === 'opaque')) c.put(key, r.clone());
-    return r;
+    if (!wait) return await net;
+    const slow = new Promise(res => setTimeout(() => res('slow'), wait));
+    const first = await Promise.race([net, slow]);
+    if (first !== 'slow') return first;
+    const hit = await c.match(key);
+    return hit || await net;
   } catch(err){
     const hit = await c.match(key, {ignoreSearch: req.mode === 'navigate'});
     if (hit) return hit;
@@ -45,6 +51,18 @@ async function cacheFirst(req, cacheName){
   return hit || (await net) || Response.error();
 }
 
+// Photos: saved copy first. Fetched with CORS so a failed load is never saved.
+async function photo(req){
+  const c = await caches.open('lund-photos');
+  const hit = await c.match(req.url);
+  if (hit) return hit;
+  try {
+    const r = await fetch(req.url, {mode:'cors', credentials:'omit'});
+    if (r.ok) c.put(req.url, r.clone());
+    return r;
+  } catch(_){ return fetch(req); }
+}
+
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
@@ -53,8 +71,10 @@ self.addEventListener('fetch', e => {
   if (req.mode === 'navigate' || (u.origin === location.origin && /\/cabin\/(index\.html)?$/.test(u.pathname)))
     return e.respondWith(netFirst(req, V));
   if (u.origin === location.origin && u.pathname.endsWith('.geojson')) return e.respondWith(netFirst(req, V));
+  if (u.hostname === 'lh3.googleusercontent.com')                                  // pantry photos: a new photo gets a new address, so a saved copy never goes stale
+    return e.respondWith(photo(req));
   if (u.hostname.includes('script.google') || u.hostname.includes('googleusercontent') || u.hostname.includes('open-meteo') || u.hostname.includes('swpc.noaa.gov'))
-    return e.respondWith(netFirst(req, 'lund-data', u.hostname.includes('script.google') ? u.origin + u.pathname : req));                            // lists and weather: last known copy offline
+    return e.respondWith(netFirst(req, 'lund-data', u.hostname.includes('script.google') ? u.origin + u.pathname : req, req.method === 'GET' ? 5000 : 0));                            // lists and weather: last known copy offline
   if (u.hostname.includes('arcgisonline') || u.hostname.includes('tile.openstreetmap'))
     return e.respondWith(cacheFirst(req, 'lund-tiles'));
   if (u.origin === location.origin || u.hostname.includes('cdnjs') || u.hostname.includes('fonts.g') || u.hostname.includes('drive.google'))

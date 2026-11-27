@@ -1055,7 +1055,7 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
       <div class="stephead"><i>3</i>Anything broken?</div>
       <p style="margin:0 0 10px"><button class="btn ghost sm" type="button" data-sheet="fixit">Report it in Handyman Corner</button></p>
 
-      <h4 id="trashdrop" style="margin:18px 0 4px">Taking the trash with you</h4>
+      <h4 id="trashdrop" style="margin:18px 0 4px">Trash collection site</h4>
       <p class="muted" style="margin:0 0 8px">Lakeland Disposal, the drive-thru behind Trig's in Minocqua. Winter hours (mid-November through April): Mon, Wed and Fri 9 AM to 4 PM, Sat 9 AM to noon. Closed on major holidays. $5 a kitchen bag, $10 a 33-gallon bag. Sorted recycling is free.</p>
       <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
         <a class="btn lake sm" href="https://maps.app.goo.gl/hKd9tgZgVKeoF3jt7">Directions</a>
@@ -1559,11 +1559,18 @@ async function load(){
   try {
     const j = await (await fetch(API_URL + '?t=' + Date.now())).json();
     if (pending || seq !== writeSeq) return;
-    ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = j[k] || []);
-    Object.entries(j.pantry || {}).forEach(([k,v]) => S.pantry[k] = Object.assign({}, S.pantry[k], v, S.pantry[k] && S.pantry[k].fresh ? {fresh:true} : {}));
-    renderAll();
+    apply(j);
+    try { localStorage.setItem('lundData', JSON.stringify(j)); } catch(_){}
   } catch(e){ /* keep what's on screen; next poll retries */ }
 }
+function apply(j){
+  ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = j[k] || []);
+  Object.entries(j.pantry || {}).forEach(([k,v]) => S.pantry[k] = Object.assign({}, S.pantry[k], v, S.pantry[k] && S.pantry[k].fresh ? {fresh:true} : {}));
+  S.loaded = true;
+  renderAll();
+}
+/* Show the last copy this phone saw right away, then refresh it. */
+try { const saved = JSON.parse(localStorage.getItem('lundData') || 'null'); if (saved && live()) setTimeout(() => { if (!S.loaded) apply(saved); }, 0); } catch(_){}
 function readOriginal(file){
   return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
 }
@@ -1628,7 +1635,7 @@ function renderPantry(){
           <span class="cap">${esc(p.label)}<small>${fmtShort(p.at)}</small></span>
         </button>` : `<label class="pola" aria-label="Add a photo of the ${esc(pl.toLowerCase() + ' ' + p.label.toLowerCase())}">
           <div class="ph">${artFor(k)}<span class="polacam" aria-hidden="true"><svg><use href="#i-cam"/></svg></span></div>
-          <span class="cap">${esc(p.label)}<small>No photo yet</small></span>
+          <span class="cap">${esc(p.label)}<small>${S.loaded || !live() ? 'No photo yet' : 'Loading…'}</small></span>
           <input type="file" accept="image/*" data-snap="${k}">
         </label>`}`).join('')}</div>
     </div>`).join('');
