@@ -12,7 +12,7 @@ const TABS = {
   Checkout:    ['id', 'text', 'checked', 'order'],
   Pantry:      ['key', 'place', 'label', 'src', 'at'],
   Amenities:   ['id', 'item', 'place', 'note', 'order'],
-  Bring:       ['id', 'item', 'note', 'order'],
+  Bring:       ['id', 'item', 'note', 'order', 'season'],
 };
 const LIST_TAB = { groceries: 'Groceries', maintenance: 'Maintenance', inventory: 'Inventory', checkout: 'Checkout', amenities: 'Amenities', bring: 'Bring' };
 // Only the owners can change these. Their passcode lives in Project Settings > Script properties as EDIT_KEY.
@@ -35,10 +35,10 @@ const SEED = {
     ['Fire extinguisher', 'cabin', 'Floor by the kitchen cabinets, wood stove side'],
   ],
   Bring: [
-    ['Groceries', 'Check the pantry photos first'],
-    ['Boots', 'For the peninsula until the boardwalk is done'],
-    ['Blaze orange', 'During deer season'],
-    ['Lac du Flambeau fishing license', "If you're fishing. Sold at Lac du Flambeau Campground & Marina"],
+    ['Groceries', 'Check the pantry photos first', 'both'],
+    ['Boots', 'For the peninsula until the boardwalk is done', 'both'],
+    ['Blaze orange', 'During deer season', 'winter'],
+    ['Lac du Flambeau fishing license', "If you're fishing. Sold at Lac du Flambeau Campground & Marina", 'both'],
   ],
 };
 const BOOL = ['checked', 'common'];
@@ -277,7 +277,14 @@ function sheet_(name, ss) {
     sh.appendRow(TABS[name]);
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1, TABS[name].length).setFontWeight('bold');
-    (SEED[name] || []).forEach((row, i) => sh.appendRow([uid_()].concat(row, [i + 1])));
+    (SEED[name] || []).forEach((row, i) => sh.appendRow(name === 'Bring' ? [uid_(), row[0], row[1], i + 1, row[2]] : [uid_()].concat(row, [i + 1])));
+  } else if (TABS[name] && sh.getLastColumn() < TABS[name].length) {
+    // A column was added to this tab since it was made: add its header.
+    TABS[name].forEach((h, i) => { if (i >= sh.getLastColumn()) sh.getRange(1, i + 1).setValue(h).setFontWeight('bold'); });
+    if (name === 'Bring') {
+      const vals = sh.getDataRange().getValues(), col = TABS.Bring.indexOf('season') + 1;
+      for (let i = 1; i < vals.length; i++) if (vals[i][0] !== '') sh.getRange(i + 1, col).setValue(vals[i][1] === 'Blaze orange' ? 'winter' : 'both');
+    }
   }
   return sh;
 }

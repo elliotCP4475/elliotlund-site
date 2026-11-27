@@ -757,6 +757,7 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 .plist .ptags{display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; flex:none; max-width:45%}
 .ptag{font-size:.74rem; font-weight:800; border-radius:999px; padding:2px 8px; white-space:nowrap; color:#fff}
 .ptag.cabin{background:#8A4B22} .ptag.bunkhouse{background:var(--lake)}
+.ptag.winter{background:#4C6A86} .ptag.summer{background:var(--pine)}
 .plist .pedit{flex:none; align-self:center; background:none; border:0; padding:6px 2px 6px 8px; color:var(--ink-soft); font-size:.82rem; font-weight:600; text-decoration:underline; opacity:.7; cursor:pointer}
 .plist .empty{color:var(--ink-soft); border:0}
 .pform{margin-top:12px; padding-top:12px; border-top:2px solid #CDBF9C}
@@ -1181,7 +1182,8 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
   <div class="sheet-card">
     <header class="sheet-h"><h2 id="st-bring" tabindex="-1">What to bring</h2><button type="button" class="sheet-x" data-close>Close<span aria-hidden="true">&times;</span></button></header>
     <div class="sheet-b">
-      <div class="paper" style="margin-top:0">
+      <div class="chips" id="bringChips" role="toolbar" aria-label="Show items for"></div>
+      <div class="paper" style="margin-top:8px">
         <ul class="plist" id="bringList"></ul>
         <div data-addform="bring"></div>
       </div>
@@ -1875,32 +1877,38 @@ function renderAll(){ renderPantry(); renderGroceries(); renderMaintenance(); re
 /* ---------- What to bring / What's provided ----------
    Everyone can read these. Elliot and Grace sign in with the owner passcode to change them;
    the passcode is checked by the Apps Script backend, never stored in this file. */
-const PLACE = {cabin:'Cabin', bunkhouse:'Bunkhouse'};
+const PLACE = {cabin:'Cabin', bunkhouse:'Bunkhouse', winter:'Winter', summer:'Summer'};
+// Each list has one tag field: where it is (What's provided) or when to bring it (What to bring).
+const PTAG = {amen:{field:'place', opts:['cabin','bunkhouse'], label:'Where', both:'Cabin and bunkhouse'},
+              bring:{field:'season', opts:['winter','summer'], label:'When', both:'Winter and summer'}};
+const pval = (list, x) => x[PTAG[list].field] || 'both';
 const PLIST = {amen:'amenities', bring:'bring'};
+const packFilter = {amen:'all', bring:'all'};
 let amenFilter = 'all', packEd = null, signingIn = false, changingKey = false;
 let ownerKey = ''; try { ownerKey = localStorage.getItem('lundOwnerKey') || ''; } catch(_){}
-const placeTags = p => (p === 'both' ? ['cabin','bunkhouse'] : [p]).filter(x => PLACE[x]).map(x => `<span class="ptag ${x}">${PLACE[x]}</span>`).join('');
+const placeTags = (list, p) => (p === 'both' ? PTAG[list].opts : [p]).filter(x => PLACE[x]).map(x => `<span class="ptag ${x}">${PLACE[x]}</span>`).join('');
 function packForm(list, x){
   x = x || {};
   return `<form class="pform" data-pform="${list}" data-id="${esc(x.id || '')}"${x.id ? ' style="margin:0; border:0; padding:0; width:100%"' : ''}>
     <label class="field"><span>Item</span><input type="text" name="item" required value="${esc(x.item || '')}"></label>
-    ${list === 'amen' ? `<label class="field"><span>Where</span><select name="place">${['both','cabin','bunkhouse'].map(p => `<option value="${p}"${(x.place || 'both') === p ? ' selected' : ''}>${p === 'both' ? 'Cabin and bunkhouse' : PLACE[p] + ' only'}</option>`).join('')}</select></label>` : ''}
+    <label class="field"><span>${PTAG[list].label}</span><select name="tag">${['both'].concat(PTAG[list].opts).map(p => `<option value="${p}"${pval(list, x) === p ? ' selected' : ''}>${p === 'both' ? PTAG[list].both : PLACE[p] + ' only'}</option>`).join('')}</select></label>
     <label class="field"><span>Note (optional)</span><input type="text" name="note" value="${esc(x.note || '')}"></label>
     <div class="row"><button class="btn lake sm" type="submit">${x.id ? 'Save' : 'Add'}</button><button class="btn ghost sm" type="button" data-pcancel>Cancel</button>${x.id ? `<button class="btn ghost sm" type="button" data-pdel="${list}|${esc(x.id)}">Delete</button>` : ''}</div>
   </form>`;
 }
 function packRow(list, x){
   if (packEd && packEd.list === list && packEd.id === x.id) return `<li>${packForm(list, x)}</li>`;
-  return `<li><span class="pt"><b>${esc(x.item)}</b>${x.note ? `<small>${esc(x.note)}</small>` : ''}</span>${list === 'amen' ? `<span class="ptags">${placeTags(x.place)}</span>` : ''}${ownerKey ? `<button type="button" class="pedit" data-pedit="${list}|${esc(x.id)}">Edit</button>` : ''}</li>`;
+  return `<li><span class="pt"><b>${esc(x.item)}</b>${x.note ? `<small>${esc(x.note)}</small>` : ''}</span><span class="ptags">${placeTags(list, pval(list, x))}</span>${ownerKey ? `<button type="button" class="pedit" data-pedit="${list}|${esc(x.id)}">Edit</button>` : ''}</li>`;
 }
 function renderPacking(){
   const A = S.amenities || [], B = S.bring || [];
   const wait = `<li class="empty">${S.loaded || !live() ? 'Nothing listed yet.' : 'Loading…'}</li>`;
-  const n = {all:A.length, cabin:A.filter(x => x.place !== 'bunkhouse').length, bunkhouse:A.filter(x => x.place !== 'cabin').length};
-  $('#amenChips').innerHTML = [['all','All'],['cabin','Cabin'],['bunkhouse','Bunkhouse']].map(([k,l]) => `<button class="chip" type="button" data-amenf="${k}" aria-pressed="${amenFilter === k}">${l}<span class="n">${n[k]}</span></button>`).join('');
-  const shown = A.filter(x => amenFilter === 'all' || x.place === amenFilter || x.place === 'both');
-  $('#amenList').innerHTML = shown.length ? shown.map(x => packRow('amen', x)).join('') : wait;
-  $('#bringList').innerHTML = B.length ? B.map(x => packRow('bring', x)).join('') : wait;
+  [['amen', A], ['bring', B]].forEach(([list, L]) => {
+    const f = packFilter[list], has = k => x => pval(list, x) === k || pval(list, x) === 'both';
+    $('#' + list + 'Chips').innerHTML = ['all'].concat(PTAG[list].opts).map(k => `<button class="chip" type="button" data-amenf="${list}|${k}" aria-pressed="${f === k}">${k === 'all' ? 'All' : PLACE[k]}<span class="n">${k === 'all' ? L.length : L.filter(has(k)).length}</span></button>`).join('');
+    const shown = f === 'all' ? L : L.filter(has(f));
+    $('#' + list + 'List').innerHTML = shown.length ? shown.map(x => packRow(list, x)).join('') : wait;
+  });
   ['amen','bring'].forEach(l => {
     const el = document.querySelector(`[data-addform="${l}"]`);
     el.innerHTML = !ownerKey ? '' : packEd && packEd.list === l && !packEd.id ? packForm(l) : `<p style="margin:12px 0 0"><button class="linklike" type="button" data-padd="${l}" style="color:var(--ink-soft); font-weight:600; font-size:.9rem">+ Add an item</button></p>`;
@@ -1921,7 +1929,7 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-amenf],[data-pedit],[data-pcancel],[data-pdel],[data-padd],[data-osignin],[data-osignout],[data-ocancel],[data-okeychange],[data-okeycancel]');
   if (!t) return;
   const d = t.dataset;
-  if (d.amenf){ amenFilter = d.amenf; packEd = null; }
+  if (d.amenf){ const [list, k] = d.amenf.split('|'); packFilter[list] = k; packEd = null; }
   else if (d.pedit){ const [list, id] = d.pedit.split('|'); packEd = {list, id}; }
   else if (t.hasAttribute('data-pcancel')) packEd = null;
   else if (d.padd){ packEd = {list:d.padd, id:null}; }
@@ -1975,7 +1983,7 @@ document.addEventListener('submit', async e => {
   e.preventDefault();
   const list = f.dataset.pform, L = S[PLIST[list]] = S[PLIST[list]] || [];
   const fields = {item: f.item.value.trim(), note: f.note.value.trim()};
-  if (f.place) fields.place = f.place.value;
+  fields[PTAG[list].field] = f.tag.value;
   if (!fields.item) return;
   if (f.dataset.id){
     Object.assign(L.find(x => x.id === f.dataset.id) || {}, fields);
