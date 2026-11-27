@@ -748,6 +748,22 @@ button.code{font:inherit; color:inherit; cursor:pointer; width:100%; -webkit-app
 
 /* ---------- Rows: tap one and its panel slides up over the page ---------- */
 .rows{display:grid; gap:10px}
+.plist{list-style:none; margin:0; padding:0}
+.plist li{display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px dashed #CDBF9C}
+.plist li:last-child{border-bottom:0}
+.plist .pt{flex:1; min-width:0}
+.plist .pt b{display:block}
+.plist .pt small{display:block; color:var(--ink-soft); line-height:1.3}
+.plist .ptags{display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; flex:none; max-width:45%}
+.ptag{font-size:.74rem; font-weight:800; border-radius:999px; padding:2px 8px; white-space:nowrap; color:#fff}
+.ptag.cabin{background:#8A4B22} .ptag.bunkhouse{background:var(--lake)}
+.plist .pedit{flex:none; align-self:center; background:none; border:0; padding:6px 2px 6px 8px; color:var(--ink-soft); font-size:.82rem; font-weight:600; text-decoration:underline; opacity:.7; cursor:pointer}
+.plist .empty{color:var(--ink-soft); border:0}
+.pform{margin-top:12px; padding-top:12px; border-top:2px solid #CDBF9C}
+.pform .row{display:flex; gap:8px; flex-wrap:wrap}
+.ownerbar{margin:14px 2px 4px; text-align:center; font-size:.9rem}
+.ownerbar form{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; align-items:center}
+.ownerbar input{min-height:42px; border:2px solid #CDBF9C; border-radius:10px; padding:8px 10px; width:12em; background:#fff}
 .rowlink{display:flex; align-items:center; gap:12px; width:100%; min-height:64px; padding:9px 10px 9px 14px; text-align:left; cursor:pointer;
   background:linear-gradient(180deg,#5B3519,#3B2210); border:3px solid #2A1708; border-radius:12px; color:var(--cream);
   box-shadow:0 5px 0 rgba(46,26,13,.55), 0 9px 14px rgba(0,0,0,.25); transition:transform .06s, box-shadow .06s}
@@ -841,6 +857,12 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
       </div>
       <div class="plaid" aria-hidden="true"></div>
     </header>
+  </div>
+
+  <h2 class="sign sub"><svg><use href="#i-home"/></svg>Packing</h2>
+  <div class="rows" style="margin-bottom:22px">
+    <button type="button" class="rowlink" data-sheet="bring"><svg class="ic" aria-hidden="true"><use href="#i-basket"/></svg><span class="rt"><b>What to bring</b><small>Pack these</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
+    <button type="button" class="rowlink" data-sheet="amen"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg><span class="rt"><b>What's provided</b><small>At the cabin and the bunkhouse</small></span><svg class="go" aria-hidden="true"><use href="#i-chev"/></svg></button>
   </div>
 
   <h2 class="sign" id="h-arrive"><svg><use href="#i-pin"/></svg>Getting here</h2>
@@ -1152,6 +1174,31 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
   <details class="bin" id="bin-sup"></details>
 
   <details class="bin" id="bin-groceries"></details>
+    </div>
+  </div>
+</div>
+<div class="sheet" id="s-bring" role="dialog" aria-modal="true" aria-labelledby="st-bring" hidden>
+  <div class="sheet-card">
+    <header class="sheet-h"><h2 id="st-bring" tabindex="-1">What to bring</h2><button type="button" class="sheet-x" data-close>Close<span aria-hidden="true">&times;</span></button></header>
+    <div class="sheet-b">
+      <div class="paper" style="margin-top:0">
+        <ul class="plist" id="bringList"></ul>
+        <div data-addform="bring"></div>
+      </div>
+      <div class="ownerbar" data-ownerbar></div>
+    </div>
+  </div>
+</div>
+<div class="sheet" id="s-amen" role="dialog" aria-modal="true" aria-labelledby="st-amen" hidden>
+  <div class="sheet-card">
+    <header class="sheet-h"><h2 id="st-amen" tabindex="-1">What's provided</h2><button type="button" class="sheet-x" data-close>Close<span aria-hidden="true">&times;</span></button></header>
+    <div class="sheet-b">
+      <div class="chips" id="amenChips" role="toolbar" aria-label="Show items for"></div>
+      <div class="paper" style="margin-top:8px">
+        <ul class="plist" id="amenList"></ul>
+        <div data-addform="amen"></div>
+      </div>
+      <div class="ownerbar" data-ownerbar></div>
     </div>
   </div>
 </div>
@@ -1564,7 +1611,7 @@ async function load(){
   } catch(e){ /* keep what's on screen; next poll retries */ }
 }
 function apply(j){
-  ['groceries','maintenance','inventory','checkout','cleared'].forEach(k => S[k] = j[k] || []);
+  ['groceries','maintenance','inventory','checkout','cleared','amenities','bring'].forEach(k => S[k] = j[k] || []);
   Object.entries(j.pantry || {}).forEach(([k,v]) => S.pantry[k] = Object.assign({}, S.pantry[k], v, S.pantry[k] && S.pantry[k].fresh ? {fresh:true} : {}));
   S.loaded = true;
   renderAll();
@@ -1823,7 +1870,107 @@ function renderCheckout(){
       </label>`).join('')}</div>`).join('');
 }
 
-function renderAll(){ renderPantry(); renderGroceries(); renderMaintenance(); renderInventory(); renderBins(); renderCheckout(); }
+function renderAll(){ renderPantry(); renderGroceries(); renderMaintenance(); renderInventory(); renderBins(); renderCheckout(); renderPacking(); }
+
+/* ---------- What to bring / What's provided ----------
+   Everyone can read these. Elliot and Grace sign in with the owner passcode to change them;
+   the passcode is checked by the Apps Script backend, never stored in this file. */
+const PLACE = {cabin:'Cabin', bunkhouse:'Bunkhouse'};
+const PLIST = {amen:'amenities', bring:'bring'};
+let amenFilter = 'all', packEd = null, signingIn = false;
+let ownerKey = ''; try { ownerKey = localStorage.getItem('lundOwnerKey') || ''; } catch(_){}
+const placeTags = p => (p === 'both' ? ['cabin','bunkhouse'] : [p]).filter(x => PLACE[x]).map(x => `<span class="ptag ${x}">${PLACE[x]}</span>`).join('');
+function packForm(list, x){
+  x = x || {};
+  return `<form class="pform" data-pform="${list}" data-id="${esc(x.id || '')}"${x.id ? ' style="margin:0; border:0; padding:0; width:100%"' : ''}>
+    <label class="field"><span>Item</span><input type="text" name="item" required value="${esc(x.item || '')}"></label>
+    ${list === 'amen' ? `<label class="field"><span>Where</span><select name="place">${['both','cabin','bunkhouse'].map(p => `<option value="${p}"${(x.place || 'both') === p ? ' selected' : ''}>${p === 'both' ? 'Cabin and bunkhouse' : PLACE[p] + ' only'}</option>`).join('')}</select></label>` : ''}
+    <label class="field"><span>Note (optional)</span><input type="text" name="note" value="${esc(x.note || '')}"></label>
+    <div class="row"><button class="btn lake sm" type="submit">${x.id ? 'Save' : 'Add'}</button><button class="btn ghost sm" type="button" data-pcancel>Cancel</button>${x.id ? `<button class="btn ghost sm" type="button" data-pdel="${list}|${esc(x.id)}">Delete</button>` : ''}</div>
+  </form>`;
+}
+function packRow(list, x){
+  if (packEd && packEd.list === list && packEd.id === x.id) return `<li>${packForm(list, x)}</li>`;
+  return `<li><span class="pt"><b>${esc(x.item)}</b>${x.note ? `<small>${esc(x.note)}</small>` : ''}</span>${list === 'amen' ? `<span class="ptags">${placeTags(x.place)}</span>` : ''}${ownerKey ? `<button type="button" class="pedit" data-pedit="${list}|${esc(x.id)}">Edit</button>` : ''}</li>`;
+}
+function renderPacking(){
+  const A = S.amenities || [], B = S.bring || [];
+  const wait = `<li class="empty">${S.loaded || !live() ? 'Nothing listed yet.' : 'Loading…'}</li>`;
+  const n = {all:A.length, cabin:A.filter(x => x.place !== 'bunkhouse').length, bunkhouse:A.filter(x => x.place !== 'cabin').length};
+  $('#amenChips').innerHTML = [['all','All'],['cabin','Cabin'],['bunkhouse','Bunkhouse']].map(([k,l]) => `<button class="chip" type="button" data-amenf="${k}" aria-pressed="${amenFilter === k}">${l}<span class="n">${n[k]}</span></button>`).join('');
+  const shown = A.filter(x => amenFilter === 'all' || x.place === amenFilter || x.place === 'both');
+  $('#amenList').innerHTML = shown.length ? shown.map(x => packRow('amen', x)).join('') : wait;
+  $('#bringList').innerHTML = B.length ? B.map(x => packRow('bring', x)).join('') : wait;
+  ['amen','bring'].forEach(l => {
+    const el = document.querySelector(`[data-addform="${l}"]`);
+    el.innerHTML = !ownerKey ? '' : packEd && packEd.list === l && !packEd.id ? packForm(l) : `<p style="margin:12px 0 0"><button class="linklike" type="button" data-padd="${l}" style="color:var(--ink-soft); font-weight:600; font-size:.9rem">+ Add an item</button></p>`;
+  });
+  document.querySelectorAll('[data-ownerbar]').forEach(el => {
+    el.innerHTML = ownerKey ? `<span class="muted">Signed in to edit · </span><button type="button" class="linklike" data-osignout>Sign out</button>`
+      : signingIn ? `<form data-osign><input type="password" name="key" autocomplete="current-password" placeholder="Owner passcode" aria-label="Owner passcode" required><button class="btn lake sm" type="submit">Sign in</button><button class="btn ghost sm" type="button" data-ocancel>Cancel</button></form><p class="muted" data-omsg style="margin:6px 0 0"></p>`
+      : `<button type="button" class="linklike" data-osignin style="color:var(--ink-soft); font-weight:600">Owner sign-in</button>`;
+  });
+}
+function signOut(msg){ ownerKey = ''; packEd = null; try { localStorage.removeItem('lundOwnerKey'); } catch(_){} renderPacking(); if (msg) toast(msg); }
+function packSave(body){
+  return api(Object.assign({key: ownerKey}, body)).catch(e => { if (/passcode|not set up/i.test(e.message)) signOut('Signed out. Sign in again to keep packEd.'); load(); });
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-amenf],[data-pedit],[data-pcancel],[data-pdel],[data-padd],[data-osignin],[data-osignout],[data-ocancel]');
+  if (!t) return;
+  const d = t.dataset;
+  if (d.amenf){ amenFilter = d.amenf; packEd = null; }
+  else if (d.pedit){ const [list, id] = d.pedit.split('|'); packEd = {list, id}; }
+  else if (t.hasAttribute('data-pcancel')) packEd = null;
+  else if (d.padd){ packEd = {list:d.padd, id:null}; }
+  else if (d.pdel){
+    const [list, id] = d.pdel.split('|'), L = S[PLIST[list]], i = L.findIndex(x => x.id === id), gone = L[i];
+    if (i < 0) return;
+    L.splice(i, 1); packEd = null; renderPacking();
+    packSave({op:'remove', list:PLIST[list], id});
+    toast(`Deleted ${gone.item}`);
+    return;
+  }
+  else if (t.hasAttribute('data-osignin')) signingIn = true;
+  else if (t.hasAttribute('data-ocancel')) signingIn = false;
+  else if (t.hasAttribute('data-osignout')) return signOut('Signed out');
+  renderPacking();
+  const f = document.querySelector('[data-pform] input[name=item], [data-osign] input');
+  if (f && (d.pedit || d.padd || t.hasAttribute('data-osignin'))) f.focus();
+});
+document.addEventListener('submit', async e => {
+  const f = e.target;
+  if (f.matches('[data-osign]')){
+    e.preventDefault();
+    const key = f.key.value.trim(), msg = f.parentNode.querySelector('[data-omsg]'), btn = f.querySelector('button[type=submit]');
+    btn.disabled = true; msg.textContent = 'Checking…';
+    try {
+      const j = await (await fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({op:'signin', key})})).json();
+      if (!j.ok) throw new Error(j.error);
+      ownerKey = key; signingIn = false; try { localStorage.setItem('lundOwnerKey', key); } catch(_){}
+      renderPacking(); toast('Signed in. Tap Edit on any item.');
+    } catch(err){
+      btn.disabled = false;
+      msg.textContent = /not set up/i.test(err.message) ? 'Editing is not set up yet.' : /passcode/i.test(err.message) ? "That passcode didn't work." : "Couldn't reach the cabin list. Check the connection.";
+    }
+    return;
+  }
+  if (!f.matches('[data-pform]')) return;
+  e.preventDefault();
+  const list = f.dataset.pform, L = S[PLIST[list]] = S[PLIST[list]] || [];
+  const fields = {item: f.item.value.trim(), note: f.note.value.trim()};
+  if (f.place) fields.place = f.place.value;
+  if (!fields.item) return;
+  if (f.dataset.id){
+    Object.assign(L.find(x => x.id === f.dataset.id) || {}, fields);
+    packSave({op:'update', list:PLIST[list], id:f.dataset.id, fields});
+  } else {
+    const item = Object.assign({id:uid(), order:Math.max(0, ...L.map(x => +x.order || 0)) + 1}, fields);
+    L.push(item);
+    packSave({op:'add', list:PLIST[list], item});
+  }
+  packEd = null; renderPacking();
+});
 
 /* ---------- Events ---------- */
 document.addEventListener('change', e => {
