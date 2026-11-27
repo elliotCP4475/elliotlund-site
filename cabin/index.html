@@ -1951,7 +1951,7 @@ document.addEventListener('submit', async e => {
       renderPacking(); toast('Signed in. Tap Edit on any item.');
     } catch(err){
       btn.disabled = false;
-      msg.textContent = /not set up/i.test(err.message) ? 'Editing is not set up yet.' : /passcode/i.test(err.message) ? "That passcode didn't work." : "Couldn't reach the cabin list. Check the connection.";
+      msg.textContent = /emailed/i.test(err.message) ? 'A passcode was just emailed to the owner. Check your email, then sign in.' : /not set up/i.test(err.message) ? 'Editing is not set up yet.' : /passcode/i.test(err.message) ? "That passcode didn't work." : "Couldn't reach the cabin list. Check the connection.";
     }
     return;
   }

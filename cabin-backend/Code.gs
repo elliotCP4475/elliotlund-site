@@ -165,8 +165,20 @@ function handle_(r) {
 /* ---------- Owner passcode ---------- */
 function owner_(key) {
   const want = PropertiesService.getScriptProperties().getProperty('EDIT_KEY');
-  if (!want) throw new Error('Editing is not set up yet');
+  if (!want) { newPasscode_(); throw new Error('Passcode emailed to the owner'); }
   if (String(key || '') !== want) { Utilities.sleep(1500); throw new Error('Wrong passcode'); }
+}
+
+// First sign-in attempt with no passcode set: make one and email it to the owner.
+// To change it later, edit or delete EDIT_KEY in Project Settings > Script properties.
+function newPasscode_() {
+  const words = ['loon', 'pine', 'walleye', 'birch', 'canoe', 'muskie', 'cedar', 'otter', 'aspen', 'heron', 'maple', 'eagle', 'trout', 'spruce', 'moose', 'perch'];
+  const pick = () => words[Math.floor(Math.random() * words.length)];
+  const code = pick() + '-' + pick() + '-' + (1000 + Math.floor(Math.random() * 9000));
+  PropertiesService.getScriptProperties().setProperty('EDIT_KEY', code);
+  notify_('Your owner passcode', 'Owner passcode for editing What to bring and What\'s provided:\n\n' + code +
+    '\n\nOn the site, open either panel, tap Owner sign-in at the bottom and enter it. Share it with Grace.' +
+    '\nTo change it, edit EDIT_KEY in the Apps Script project under Project Settings > Script properties.');
 }
 
 /* ---------- Email to the owner (best effort) ---------- */
