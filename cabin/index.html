@@ -295,6 +295,11 @@ button.dial{padding:0; border:0; cursor:pointer}
 @keyframes nudge{0%,100%{transform:rotate(0)}10%{transform:rotate(-14deg)}20%{transform:rotate(10deg)}30%{transform:rotate(0)}}
 .osd{position:absolute; right:14px; bottom:12px; z-index:4; font:700 1.25rem/1 "Courier New", monospace; color:#7CFF7C; text-shadow:0 0 6px rgba(124,255,124,.8), 2px 2px 0 #000; opacity:0; transition:opacity .4s; pointer-events:none}
 .osd.on{opacity:1}
+.camlive{position:absolute; left:18px; top:14px; z-index:4; display:none; align-items:center; gap:5px; padding:2px 7px 2px 6px; border-radius:4px; background:rgba(0,0,0,.38); color:#fff; font:700 .68rem/1.4 Arial, sans-serif; letter-spacing:.12em; opacity:.85; pointer-events:none}
+.camlive i{width:6px; height:6px; border-radius:50%; background:#E5392F; box-shadow:0 0 4px #E5392F; animation:camlive 2s ease-in-out infinite}
+@keyframes camlive{50%{opacity:.35}}
+.tv .screen.tuned:not(.wxon) .camlive{display:flex}
+@media (prefers-reduced-motion: reduce){ .camlive i{animation:none} }
 .static{position:absolute; inset:0; z-index:4; pointer-events:none; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 2.2 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23222'/%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/160px 120px, #333; animation:snow .1s steps(3) infinite}
 .static[hidden]{display:none}
 @keyframes snow{0%{background-position:0 0}33%{background-position:-53px 21px}66%{background-position:37px -44px}100%{background-position:-11px 67px}}
@@ -915,6 +920,7 @@ html.sheet-open, html.sheet-open body{overflow:hidden}
       <div class="wxtv" id="wxTv" hidden><div class="wxtv-bar"><span class="wxlogo">WX<small>CH 5</small></span><span class="wxtv-title ol" id="wxTvBar">Northwoods Weather<small>Pokegama Lake</small></span><span class="wxclock ol" id="wxClock"></span></div><div class="wxtv-body" id="wxTvBody"><p class="wxtv-wait ol">Stand by<i>…</i></p></div><div class="wxldl"><b>LOCAL</b><span class="ol" id="wxCrawl">Pokegama Lake · Lac du Flambeau, Wisconsin · Stay tuned for your Northwoods forecast</span></div></div>
       <div class="static" id="tvStatic" hidden></div>
       <div class="osd" id="tvOsd">CH 3</div>
+      <div class="camlive" aria-hidden="true"><i></i>LIVE</div>
     </div>
     <div class="tvpanel" aria-hidden="true">
       <span class="chlbl"><b class="on" id="lblCam">CAM</b><b id="lblWx">WX</b></span>
